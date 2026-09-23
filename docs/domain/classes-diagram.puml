@@ -1,0 +1,27 @@
+@startuml
+
+class Vehiculo
+enum  TipoVehiculo
+class Tarifa
+abstract class Usuario
+class Cliente
+class Operador
+class Gerente
+class RegistroIngreso
+class Pago
+
+Cliente -up-|> Usuario
+Operador -up-|> Usuario
+Gerente -up-|> Usuario
+
+Cliente "1"--o"*" Vehiculo : "tiene"
+
+Vehiculo "*"--"1" TipoVehiculo : "pertenece"
+TipoVehiculo "1"--*"1" Tarifa : "tiene"
+Vehiculo "1"-right-*"*" RegistroIngreso : "realiza"
+Operador "1"--o"*" RegistroIngreso : "autoriza"
+RegistroIngreso "1"--*"1" Pago : "posee"
+
+Tarifa "1"-right-"*" Pago : "aplica"
+
+@enduml
