@@ -1,0 +1,40 @@
+@startuml
+title Diagrama de Paquetes - Gestión de Parqueadero
+skinparam linetype ortho
+
+package "Presentación" {
+  [MenuPrincipal]
+  [FormularioVehiculo]
+  [PantallaPago]
+}
+
+package "Persistencia" {
+  [RepositorioVehiculo]
+  [RepositorioTarifa]
+  [RepositorioRegistroIngreso]
+  [RepositorioPago]
+}
+
+package "Servicio" {
+  [GestorParqueadero]
+  [CalculadorTarifa]
+}
+
+package "Modelo" {
+  [Vehiculo]
+  [TipoVehiculo]
+  [Tarifa]
+  [Usuario]
+  [Cliente]
+  [Operador]
+  [Gerente]
+  [RegistroIngreso]
+  [Pago]
+}
+
+"Servicio" --> "Persistencia"
+"Presentación" --> "Modelo"
+"Servicio" --> "Modelo"
+"Presentación" --> "Servicio"
+"Persistencia" --> "Modelo"
+@enduml
