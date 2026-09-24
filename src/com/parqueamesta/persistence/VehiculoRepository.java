@@ -7,7 +7,6 @@ import com.parqueamesta.model.Vehiculo;
 import com.parqueamesta.persistence.utils.DB;
 
 import java.sql.Connection;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
