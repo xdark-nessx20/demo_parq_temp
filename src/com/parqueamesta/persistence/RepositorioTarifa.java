@@ -3,6 +3,7 @@ package com.parqueamesta.persistence;
 import com.parqueamesta.model.Tarifa;
 import com.parqueamesta.persistence.utils.DB;
 
+import java.math.BigDecimal;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -18,7 +19,7 @@ public record RepositorioTarifa() {
             var statement = connection.prepareStatement(query);
 
             statement.setObject(1, tarifa.idTipoVehiculo());
-            statement.setDouble(2, tarifa.valorHora());
+            statement.setBigDecimal(2, tarifa.valorHora());
             statement.setInt(3, tarifa.anioVigencia());
 
             int affectedRows = statement.executeUpdate();
@@ -38,7 +39,7 @@ public record RepositorioTarifa() {
             while (result.next()) {
                 var id = result.getObject("id", UUID.class);
                 var idTipoVehiculo = result.getObject("id_tipo_vehiculo", UUID.class);
-                var valorHora = result.getDouble("valor_hora");
+                var valorHora = result.getBigDecimal("valor_hora");
                 var anioVigencia = result.getInt("anio_vigencia");
                 tarifas.add(new Tarifa(id, idTipoVehiculo, valorHora, anioVigencia));
             }
@@ -61,12 +62,26 @@ public record RepositorioTarifa() {
                 if (result.next()) {
                     var id = result.getObject("id", UUID.class);
                     var tipo = result.getObject("id_tipo_vehiculo", UUID.class);
-                    var valorHora = result.getDouble("valor_hora");
+                    var valorHora = result.getBigDecimal("valor_hora");
                     var anioVigencia = result.getInt("anio_vigencia");
                     return Optional.of(new Tarifa(id, tipo, valorHora, anioVigencia));
                 }
             }
             return Optional.empty();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+    public boolean updateValorHora(UUID id, BigDecimal nuevoValor) {
+        var query = "UPDATE tarifa SET valor_hora = ? WHERE id = ?";
+        try (var connection = DB.conectar()) {
+            var statement = connection.prepareStatement(query);
+            statement.setBigDecimal(1, nuevoValor);
+            statement.setObject(2, id);
+
+            int affectedRows = statement.executeUpdate();
+            statement.close();
+            return affectedRows > 0;
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }

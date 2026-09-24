@@ -9,17 +9,24 @@ public class RegistroIngreso {
     private UUID idVehiculo;
     private LocalDateTime horaEntrada;
     private LocalDateTime horaSalida;
+    private UUID idOperadorEntrada;
+    private UUID idOperadorSalida;
 
-    public RegistroIngreso(UUID id, UUID idVehiculo, LocalDateTime horaEntrada, LocalDateTime horaSalida) {
+    public RegistroIngreso(UUID id, UUID idVehiculo, LocalDateTime horaEntrada, LocalDateTime horaSalida,
+                           UUID idOperadorEntrada, UUID idOperadorSalida) {
         this.id = id;
         this.idVehiculo = idVehiculo;
         this.horaEntrada = horaEntrada;
         this.horaSalida = horaSalida;
+        this.idOperadorEntrada = idOperadorEntrada;
+        this.idOperadorSalida = idOperadorSalida;
     }
 
-    public RegistroIngreso(UUID idVehiculo, LocalDateTime horaEntrada) {
+    // Constructor para crear un ingreso nuevo (el id lo genera Postgres)
+    public RegistroIngreso(UUID idVehiculo, LocalDateTime horaEntrada, UUID idOperadorEntrada) {
         this.idVehiculo = idVehiculo;
         this.horaEntrada = horaEntrada;
+        this.idOperadorEntrada = idOperadorEntrada;
     }
 
     // Getters con record style
@@ -39,6 +46,14 @@ public class RegistroIngreso {
         return horaSalida;
     }
 
+    public UUID idOperadorEntrada() {
+        return idOperadorEntrada;
+    }
+
+    public UUID idOperadorSalida() {
+        return idOperadorSalida;
+    }
+
     // Setters
     public void setIdVehiculo(UUID idVehiculo) {
         this.idVehiculo = idVehiculo;
@@ -50,6 +65,14 @@ public class RegistroIngreso {
 
     public void setHoraSalida(LocalDateTime horaSalida) {
         this.horaSalida = horaSalida;
+    }
+
+    public void setIdOperadorEntrada(UUID idOperadorEntrada) {
+        this.idOperadorEntrada = idOperadorEntrada;
+    }
+
+    public void setIdOperadorSalida(UUID idOperadorSalida) {
+        this.idOperadorSalida = idOperadorSalida;
     }
 
     @Override
@@ -65,7 +88,8 @@ public class RegistroIngreso {
 
     @Override
     public String toString() {
-        return "RegistroIngreso {id: %s, idVehiculo: %s, horaEntrada: %s, horaSalida: %s}"
-                .formatted(id, idVehiculo, horaEntrada, horaSalida);
+        return "RegistroIngreso {id: %s, idVehiculo: %s, horaEntrada: %s, horaSalida: %s, " +
+                "idOperadorEntrada: %s, idOperadorSalida: %s}"
+                .formatted(id, idVehiculo, horaEntrada, horaSalida, idOperadorEntrada, idOperadorSalida);
     }
 }

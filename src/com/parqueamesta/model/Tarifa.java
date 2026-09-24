@@ -1,15 +1,16 @@
 package com.parqueamesta.model;
 
+import java.math.BigDecimal;
 import java.util.Objects;
 import java.util.UUID;
 
 public class Tarifa {
     private UUID id;
     private UUID idTipoVehiculo;
-    private double valorHora;
+    private BigDecimal valorHora;
     private int anioVigencia;
 
-    public Tarifa(UUID id, UUID idTipoVehiculo, double valorHora, int anioVigencia) {
+    public Tarifa(UUID id, UUID idTipoVehiculo, BigDecimal valorHora, int anioVigencia) {
         this.id = id;
         this.idTipoVehiculo = idTipoVehiculo;
         this.valorHora = valorHora;
@@ -17,7 +18,7 @@ public class Tarifa {
     }
 
     // Constructor para crear una tarifa nueva (el id lo genera Postgres)
-    public Tarifa(UUID idTipoVehiculo, double valorHora, int anioVigencia) {
+    public Tarifa(UUID idTipoVehiculo, BigDecimal valorHora, int anioVigencia) {
         this.idTipoVehiculo = idTipoVehiculo;
         this.valorHora = valorHora;
         this.anioVigencia = anioVigencia;
@@ -32,7 +33,7 @@ public class Tarifa {
         return idTipoVehiculo;
     }
 
-    public double valorHora() {
+    public BigDecimal valorHora() {
         return valorHora;
     }
 
@@ -45,7 +46,7 @@ public class Tarifa {
         this.idTipoVehiculo = idTipoVehiculo;
     }
 
-    public void setValorHora(double valorHora) {
+    public void setValorHora(BigDecimal valorHora) {
         this.valorHora = valorHora;
     }
 
@@ -66,7 +67,7 @@ public class Tarifa {
 
     @Override
     public String toString() {
-        return "Tarifa {id: %s, idTipoVehiculo: %s, valorHora: %.2f, anioVigencia: %d}"
+        return "Tarifa {id: %s, idTipoVehiculo: %s, valorHora: %s, anioVigencia: %d}"
                 .formatted(id, idTipoVehiculo, valorHora, anioVigencia);
     }
 }
