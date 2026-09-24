@@ -3,7 +3,6 @@ left to right direction
 
 actor "Cliente" as c
 actor "Operador" as o
-actor "Admin" as a
 actor "Gerente" as g
 
 package "Sistema de Gestión de Parqueadero" {
@@ -20,17 +19,17 @@ package "Sistema de Gestión de Parqueadero" {
 
 c --> UC2
 c --> UC3
+c --> UC6
 c --> UC7
 
 o --> UC1
 o --> UC2
 o --> UC3
-
-a --> UC6
-a --> UC7
+o --> UC6
 
 g --> UC4
 g --> UC5
 g --> UC7
+g --> UC6
 
 @enduml
