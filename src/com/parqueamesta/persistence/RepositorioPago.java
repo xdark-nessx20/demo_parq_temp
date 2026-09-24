@@ -14,14 +14,13 @@ import java.util.UUID;
 public record RepositorioPago() {
 
     public boolean save(Pago pago) {
-        var query = "INSERT INTO pago (id, id_registro_ingreso, valor, hora_pago) VALUES (?, ?, ?, ?)";
+        var query = "INSERT INTO pago (id_registro_ingreso, valor, hora_pago) VALUES (?, ?, ?)";
         try (var connection = DB.conectar()) {
             var statement = connection.prepareStatement(query);
 
-            statement.setObject(1, pago.id());
-            statement.setObject(2, pago.idRegistroIngreso());
-            statement.setDouble(3, pago.valor());
-            statement.setTimestamp(4, Timestamp.valueOf(pago.horaPago()));
+            statement.setObject(1, pago.idRegistroIngreso());
+            statement.setDouble(2, pago.valor());
+            statement.setTimestamp(3, Timestamp.valueOf(pago.horaPago()));
 
             int affectedRows = statement.executeUpdate();
             statement.close();

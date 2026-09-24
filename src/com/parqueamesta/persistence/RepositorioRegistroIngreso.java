@@ -14,19 +14,21 @@ import java.util.UUID;
 
 public record RepositorioRegistroIngreso() {
 
-    public boolean save(RegistroIngreso registro) {
-        var query = "INSERT INTO registro_ingreso (id, id_vehiculo, hora_entrada, hora_salida) VALUES (?, ?, ?, ?)";
+    public Optional<UUID> save(RegistroIngreso registro) {
+        var query = "INSERT INTO registro_ingreso (id_vehiculo, hora_entrada, hora_salida) VALUES (?, ?, ?) RETURNING id";
         try (var connection = DB.conectar()) {
             var statement = connection.prepareStatement(query);
 
-            statement.setObject(1, registro.id());
-            statement.setObject(2, registro.idVehiculo());
-            statement.setTimestamp(3, Timestamp.valueOf(registro.horaEntrada()));
-            statement.setObject(4, registro.horaSalida() != null ? Timestamp.valueOf(registro.horaSalida()) : null);
+            statement.setObject(1, registro.idVehiculo());
+            statement.setTimestamp(2, Timestamp.valueOf(registro.horaEntrada()));
+            statement.setObject(3, registro.horaSalida() != null ? Timestamp.valueOf(registro.horaSalida()) : null);
 
-            int affectedRows = statement.executeUpdate();
-            statement.close();
-            return affectedRows > 0;
+            try (var result = statement.executeQuery()) {
+                if (result.next()) {
+                    return Optional.of(result.getObject("id", UUID.class));
+                }
+            }
+            return Optional.empty();
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
@@ -69,6 +71,31 @@ public record RepositorioRegistroIngreso() {
                 }
             }
             return Optional.empty();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    // Historial completo de un vehículo (todas sus entradas y salidas)
+    public List<RegistroIngreso> getByVehiculo(UUID idVehiculo) {
+        var query = "SELECT id, id_vehiculo, hora_entrada, hora_salida " +
+                    "FROM registro_ingreso WHERE id_vehiculo = ? ORDER BY hora_entrada DESC";
+        var registros = new ArrayList<RegistroIngreso>();
+
+        try (var connection = DB.conectar()) {
+            var statement = connection.prepareStatement(query);
+            statement.setObject(1, idVehiculo);
+
+            try (var result = statement.executeQuery()) {
+                while (result.next()) {
+                    var id = result.getObject("id", UUID.class);
+                    var horaEntrada = result.getTimestamp("hora_entrada").toLocalDateTime();
+                    var tsSalida = result.getTimestamp("hora_salida");
+                    var horaSalida = tsSalida != null ? tsSalida.toLocalDateTime() : null;
+                    registros.add(new RegistroIngreso(id, idVehiculo, horaEntrada, horaSalida));
+                }
+            }
+            return registros;
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }

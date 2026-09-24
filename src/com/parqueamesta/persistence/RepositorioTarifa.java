@@ -13,14 +13,13 @@ import java.util.UUID;
 public record RepositorioTarifa() {
 
     public boolean save(Tarifa tarifa) {
-        var query = "INSERT INTO tarifa (id, id_tipo_vehiculo, valor_hora, anio_vigencia) VALUES (?, ?, ?, ?)";
+        var query = "INSERT INTO tarifa (id_tipo_vehiculo, valor_hora, anio_vigencia) VALUES (?, ?, ?)";
         try (var connection = DB.conectar()) {
             var statement = connection.prepareStatement(query);
 
-            statement.setObject(1, tarifa.id());
-            statement.setObject(2, tarifa.idTipoVehiculo());
-            statement.setDouble(3, tarifa.valorHora());
-            statement.setInt(4, tarifa.anioVigencia());
+            statement.setObject(1, tarifa.idTipoVehiculo());
+            statement.setDouble(2, tarifa.valorHora());
+            statement.setInt(3, tarifa.anioVigencia());
 
             int affectedRows = statement.executeUpdate();
             statement.close();

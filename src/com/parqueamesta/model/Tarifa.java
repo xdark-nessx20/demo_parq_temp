@@ -16,6 +16,13 @@ public class Tarifa {
         this.anioVigencia = anioVigencia;
     }
 
+    // Constructor para crear una tarifa nueva (el id lo genera Postgres)
+    public Tarifa(UUID idTipoVehiculo, double valorHora, int anioVigencia) {
+        this.idTipoVehiculo = idTipoVehiculo;
+        this.valorHora = valorHora;
+        this.anioVigencia = anioVigencia;
+    }
+
     // Getters con record style
     public UUID id() {
         return id;

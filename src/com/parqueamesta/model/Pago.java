@@ -17,6 +17,13 @@ public class Pago {
         this.horaPago = horaPago;
     }
 
+    // Constructor para crear un pago nuevo (el id lo genera Postgres)
+    public Pago(UUID idRegistroIngreso, double valor, LocalDateTime horaPago) {
+        this.idRegistroIngreso = idRegistroIngreso;
+        this.valor = valor;
+        this.horaPago = horaPago;
+    }
+
     // Getters con record style
     public UUID id() {
         return id;
