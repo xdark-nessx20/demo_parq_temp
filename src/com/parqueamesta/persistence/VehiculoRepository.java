@@ -89,12 +89,12 @@ public record VehiculoRepository() {
         }
     }
 
-    public boolean delete(UUID id) {
-        var query = "DELETE FROM vehiculos WHERE id = ?";
+    public boolean delete(String placa) {
+        var query = "DELETE FROM vehiculos WHERE placa = ?";
 
         try (Connection connection = DB.conectar()) {
             var statement = connection.prepareStatement(query);
-            statement.setObject(1, id);
+            statement.setString(1, placa.toUpperCase());
 
             int affectedRows = statement.executeUpdate();
             statement.close();
