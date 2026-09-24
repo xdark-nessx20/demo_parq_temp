@@ -1,13 +1,12 @@
 @startuml
 left to right direction
-skinparam packageStyle rectangle
 
 actor "Cliente" as c
 actor "Operador" as o
 actor "Admin" as a
 actor "Gerente" as g
 
-rectangle "Sistema de Gestión de Parqueadero" {
+package "Sistema de Gestión de Parqueadero" {
   
   usecase "Gestionar Ingreso y\nSalida de Vehículos" as UC1
   usecase "Gestionar Pagos" as UC2
