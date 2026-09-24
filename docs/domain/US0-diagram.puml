@@ -1,0 +1,37 @@
+@startuml
+left to right direction
+skinparam packageStyle rectangle
+
+actor "Cliente" as c
+actor "Operador" as o
+actor "Admin" as a
+actor "Gerente" as g
+
+rectangle "Sistema de Gestión de Parqueadero" {
+  
+  usecase "Gestionar Ingreso y\nSalida de Vehículos" as UC1
+  usecase "Gestionar Pagos" as UC2
+  usecase "Gestionar Vehículos" as UC3
+  usecase "Gestionar Tarifas" as UC4
+  usecase "Gestionar Tipos de\nVehículo" as UC5
+  usecase "Gestionar Usuarios" as UC6
+  usecase "Consultar Información\ndel Parqueadero" as UC7
+
+}
+
+c --> UC2
+c --> UC3
+c --> UC7
+
+o --> UC1
+o --> UC2
+o --> UC3
+
+a --> UC6
+a --> UC7
+
+g --> UC4
+g --> UC5
+g --> UC7
+
+@enduml
