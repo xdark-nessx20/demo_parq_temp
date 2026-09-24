@@ -28,19 +28,19 @@ public record TipoVehiculoRepository() {
         }
     }
 
-    public Optional<TipoVehiculo> get(UUID id) {
-        var query = "SELECT * FROM tipos_vehiculo WHERE id = ?";
+    public Optional<TipoVehiculo> get(String nombre) {
+        var query = "SELECT * FROM tipos_vehiculo WHERE LOWER(nombre) LIKE LOWER(?);";
 
         try (var connection = DB.conectar()) {
             var statement = connection.prepareStatement(query);
-            statement.setObject(1, id);
+            statement.setString(1, "%" + nombre + "%");
 
             try (var result = statement.executeQuery()) {
                 if (result.next()) {
-                    UUID _id = result.getObject("id", UUID.class);
-                    var nombre = result.getString("nombre");
+                    UUID id = result.getObject("id", UUID.class);
+                    var _nombre = result.getString("_nombre");
                     var descripcion = result.getString("descripcion");
-                    return Optional.of(new TipoVehiculo(_id, nombre, descripcion));
+                    return Optional.of(new TipoVehiculo(id, _nombre, descripcion));
                 }
             }
             return Optional.empty();
