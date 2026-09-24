@@ -16,16 +16,16 @@ public class VehiculoService {
     public VehiculoService() {
     }
 
-    public boolean save(String placa, String marca, String ownerDni, String nombreTipo) {
+    public boolean save(String placa, String marca, String ownerCedula, String nombreTipo) {
         if (placaInvalida(placa)) return false;
         if (marcaInvalida(marca)) return false;
-        if (ownerDniInvalido(ownerDni)) return false;
+        if (ownerCedulaInvalido(ownerCedula)) return false;
         if (tipoInvalido(nombreTipo)) return false;
 
         var t = tipoRepo.get(nombreTipo);
         if (t.isEmpty()) return false;
 
-        var o = clienteRepo.get(ownerDni);
+        var o = clienteRepo.get(ownerCedula);
         if (o.isEmpty()) return false;
 
         var v = new Vehiculo(placa, marca, o.get(), t.get());
@@ -56,8 +56,8 @@ public class VehiculoService {
         return marca == null || marca.isBlank();
     }
 
-    private boolean ownerDniInvalido(String ownerDni) {
-        return ownerDni == null || !ownerDni.matches("^[1-9][0-9]{7}([0-9]{2})?");
+    private boolean ownerCedulaInvalido(String ownerCedula) {
+        return ownerCedula == null || !ownerCedula.matches("^[1-9][0-9]{7}([0-9]{2})?");
     }
 
     private boolean tipoInvalido(String tipo) {

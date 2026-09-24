@@ -33,7 +33,8 @@ public record VehiculoRepository() {
 
     public Optional<Vehiculo> get(String placa) {
         var query = """
-                SELECT v.id, v.marca, u.id as own_id, u.nombre as own_nombre, 
+                SELECT v.id, v.marca, 
+                       u.id as own_id, u.nombre as own_nombre, u.cedula as own_cedula, 
                        t.id as ty_id, t.nombre as ty_nombre
                 FROM vehiculos v
                 JOIN users u ON v.owner_id = u.id 
@@ -53,7 +54,8 @@ public record VehiculoRepository() {
                     //Owner
                     var owner_id = result.getObject("own_id", UUID.class);
                     var owner_name = result.getString("own_nombre");
-                    var owner = new Cliente(owner_id, owner_name);
+                    var owner_cedula = result.getString("own_cedula");
+                    var owner = new Cliente(owner_id, owner_name, owner_cedula);
 
                     //Tipo
                     var tipo_id = result.getObject("ty_id", UUID.class);
