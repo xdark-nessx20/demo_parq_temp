@@ -26,7 +26,7 @@ public class TipoVehiculoController extends HttpServlet {
             response.sendRedirect(request.getContextPath() + "/tipos-vehiculo");
         } else {
             request.setAttribute("error", "No se ha podido realizar la operacion");
-            request.getRequestDispatcher("WEB-INF/views/tipo-vehiculo/registrar.jsp").forward(request, response);
+            request.getRequestDispatcher("/WEB-INF/views/tipo-vehiculo/registrar.jsp").forward(request, response);
         }
 
     }
@@ -59,7 +59,7 @@ public class TipoVehiculoController extends HttpServlet {
             request.getRequestDispatcher("/WEB-INF/views/error.jsp").forward(request, response);
             return;
         }
-        request.setAttribute("tipo", tipo);
+        request.setAttribute("tipo", tipo.get());
         request.getRequestDispatcher("/WEB-INF/views/tipo-vehiculo/details.jsp").forward(request, response);
     }
 

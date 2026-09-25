@@ -26,7 +26,7 @@ public class ClienteController extends HttpServlet {
             response.sendRedirect(request.getContextPath() + "/clientes");
         } else {
             request.setAttribute("error", "No se ha podido realizar la operacion");
-            request.getRequestDispatcher("WEB-INF/views/cliente/registrar.jsp").forward(request, response);
+            request.getRequestDispatcher("/WEB-INF/views/cliente/registrar.jsp").forward(request, response);
         }
 
     }

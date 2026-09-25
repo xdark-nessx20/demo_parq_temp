@@ -28,7 +28,7 @@ public class VehiculoController extends HttpServlet {
             response.sendRedirect(request.getContextPath() + "/vehiculos");
         } else {
             request.setAttribute("error", "No se ha podido realizar la operacion");
-            request.getRequestDispatcher("WEB-INF/views/vehiculo/registrar.jsp").forward(request, response);
+            request.getRequestDispatcher("/WEB-INF/views/vehiculo/registrar.jsp").forward(request, response);
         }
     }
 
@@ -62,7 +62,7 @@ public class VehiculoController extends HttpServlet {
             request.getRequestDispatcher("/WEB-INF/views/error.jsp").forward(request, response);
             return;
         }
-        request.setAttribute("vehiculo", vehiculo);
+        request.setAttribute("vehiculo", vehiculo.get());
         request.getRequestDispatcher("/WEB-INF/views/vehiculo/details.jsp").forward(request, response);
     }
 
