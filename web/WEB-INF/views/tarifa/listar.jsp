@@ -10,6 +10,8 @@
 
     <h2>Tarifas vigentes</h2>
 
+    <p><a href="${pageContext.request.contextPath}/tarifas?accion=registrar">Registrar nueva tarifa</a></p>
+
     <c:if test="${not empty error}">
         <p style="color:red;"><strong>${error}</strong></p>
     </c:if>
@@ -42,6 +44,7 @@
 
             <h3>Actualizar precio</h3>
             <form action="${pageContext.request.contextPath}/tarifas" method="post">
+                <input type="hidden" name="accion" value="actualizar" />
                 <div>
                     <label for="idTarifa">ID tarifa:</label>
                     <input type="text" id="idTarifa" name="idTarifa" required />
