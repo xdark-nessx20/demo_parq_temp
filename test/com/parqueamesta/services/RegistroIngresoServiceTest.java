@@ -1,6 +1,9 @@
 package com.parqueamesta.services;
 
 import com.parqueamesta.persistence.utils.DB;
+import com.parqueamesta.services.exceptions.TicketAbiertoException;
+import com.parqueamesta.services.exceptions.TicketNoEncontradoException;
+import com.parqueamesta.services.exceptions.TicketYaCerradoException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -12,6 +15,7 @@ import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class RegistroIngresoServiceTest {
@@ -95,10 +99,10 @@ public class RegistroIngresoServiceTest {
         var fixture = crearVehiculoConTarifa(new BigDecimal("2000.00"));
 
         var primero = service.registrarIngreso(fixture.idVehiculo(), LocalDateTime.now(), UUID.randomUUID());
-        var segundo = service.registrarIngreso(fixture.idVehiculo(), LocalDateTime.now(), UUID.randomUUID());
 
         assertTrue(primero.isPresent());
-        assertTrue(segundo.isEmpty());
+        assertThrows(TicketAbiertoException.class, () ->
+                service.registrarIngreso(fixture.idVehiculo(), LocalDateTime.now(), UUID.randomUUID()));
     }
 
     @Test
@@ -127,11 +131,11 @@ public class RegistroIngresoServiceTest {
 
         var primero = service.registrarSalida(ticket.get().id(), entrada.plusHours(1), UUID.randomUUID(),
                 fixture.idTipoVehiculo());
-        var segundo = service.registrarSalida(ticket.get().id(), entrada.plusHours(2), UUID.randomUUID(),
-                fixture.idTipoVehiculo());
 
         assertTrue(primero.isPresent());
-        assertTrue(segundo.isEmpty());
+        assertThrows(TicketYaCerradoException.class, () ->
+                service.registrarSalida(ticket.get().id(), entrada.plusHours(2), UUID.randomUUID(),
+                        fixture.idTipoVehiculo()));
     }
 
     @Test
@@ -141,10 +145,10 @@ public class RegistroIngresoServiceTest {
     }
 
     @Test
-    void registrarSalida_conTicketInexistenteDevuelveVacio() {
-        var pago = service.registrarSalida(UUID.randomUUID(), LocalDateTime.now(), UUID.randomUUID(),
-                UUID.randomUUID());
-        assertTrue(pago.isEmpty());
+    void registrarSalida_conTicketInexistenteLanzaExcepcion() {
+        assertThrows(TicketNoEncontradoException.class, () ->
+                service.registrarSalida(UUID.randomUUID(), LocalDateTime.now(), UUID.randomUUID(),
+                        UUID.randomUUID()));
     }
 
     @Test
@@ -156,5 +160,24 @@ public class RegistroIngresoServiceTest {
 
         var historial = service.historialVehiculo(fixture.idVehiculo());
         assertEquals(1, historial.size());
+    }
+
+    @Test
+    void registrarSalida_revierteTicketSiFallaElPago() throws SQLException {
+        // Tarifa maxima (NUMERIC 10,2): al cobrar 2 horas = 199999999.98, desborda la columna
+        var fixture = crearVehiculoConTarifa(new BigDecimal("99999999.99"));
+        var entrada = LocalDateTime.of(2026, 9, 24, 8, 0);
+
+        var ticket = service.registrarIngreso(fixture.idVehiculo(), entrada, UUID.randomUUID());
+        assertTrue(ticket.isPresent());
+
+        // El INSERT del pago falla (overflow numerico) -> SQLException -> RuntimeException
+        assertThrows(RuntimeException.class, () ->
+                service.registrarSalida(ticket.get().id(), entrada.plusHours(2), UUID.randomUUID(),
+                        fixture.idTipoVehiculo()));
+
+        // La transaccion se revirtio: el ticket sigue abierto (hora_salida = null)
+        var ticketAbierto = service.ticketActivo(fixture.idVehiculo());
+        assertTrue(ticketAbierto.isPresent());
     }
 }

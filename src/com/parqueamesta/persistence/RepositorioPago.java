@@ -13,18 +13,24 @@ import java.util.UUID;
 
 public record RepositorioPago() {
 
-    public boolean save(Pago pago) {
+    // Version que reutiliza la conexion pasada (para participar en una transaccion).
+    public boolean save(Connection connection, Pago pago) throws SQLException {
         var query = "INSERT INTO pago (id_registro_ingreso, valor, fecha_pago) VALUES (?, ?, ?)";
+        var statement = connection.prepareStatement(query);
+
+        statement.setObject(1, pago.idRegistroIngreso());
+        statement.setBigDecimal(2, pago.valor());
+        statement.setTimestamp(3, Timestamp.valueOf(pago.fechaPago()));
+
+        int affectedRows = statement.executeUpdate();
+        statement.close();
+        return affectedRows > 0;
+    }
+
+    // Version que abre su propia conexion (uso simple, sin transaccion).
+    public boolean save(Pago pago) {
         try (var connection = DB.conectar()) {
-            var statement = connection.prepareStatement(query);
-
-            statement.setObject(1, pago.idRegistroIngreso());
-            statement.setBigDecimal(2, pago.valor());
-            statement.setTimestamp(3, Timestamp.valueOf(pago.fechaPago()));
-
-            int affectedRows = statement.executeUpdate();
-            statement.close();
-            return affectedRows > 0;
+            return save(connection, pago);
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }

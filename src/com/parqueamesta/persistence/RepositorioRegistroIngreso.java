@@ -14,7 +14,8 @@ import java.util.UUID;
 
 public record RepositorioRegistroIngreso() {
 
-    public Optional<UUID> save(RegistroIngreso registro) {
+    // Guarda un ingreso y devuelve el registro completo con el id generado por Postgres.
+    public Optional<RegistroIngreso> save(RegistroIngreso registro) {
         var query = "INSERT INTO registro_ingreso (id_vehiculo, hora_entrada, hora_salida, " +
                     "id_operador_entrada, id_operador_salida) VALUES (?, ?, ?, ?, ?) RETURNING id";
         try (var connection = DB.conectar()) {
@@ -28,7 +29,9 @@ public record RepositorioRegistroIngreso() {
 
             try (var result = statement.executeQuery()) {
                 if (result.next()) {
-                    return Optional.of(result.getObject("id", UUID.class));
+                    var id = result.getObject("id", UUID.class);
+                    return Optional.of(new RegistroIngreso(id, registro.idVehiculo(), registro.horaEntrada(),
+                            registro.horaSalida(), registro.idOperadorEntrada(), registro.idOperadorSalida()));
                 }
             }
             return Optional.empty();
@@ -142,19 +145,26 @@ public record RepositorioRegistroIngreso() {
         }
     }
 
-    // Pone la hora de salida y el operador de salida al ticket cuando el vehículo sale
-    public boolean setSalida(UUID id, LocalDateTime horaSalida, UUID idOperadorSalida) {
+    // Pone la hora de salida y el operador de salida al ticket cuando el vehículo sale.
+    // Version que reutiliza la conexion pasada (para participar en una transaccion).
+    public boolean setSalida(Connection connection, UUID id, LocalDateTime horaSalida, UUID idOperadorSalida)
+            throws SQLException {
         var query = "UPDATE registro_ingreso SET hora_salida = ?, id_operador_salida = ? WHERE id = ?";
+        var statement = connection.prepareStatement(query);
+
+        statement.setTimestamp(1, Timestamp.valueOf(horaSalida));
+        statement.setObject(2, idOperadorSalida);
+        statement.setObject(3, id);
+
+        int affectedRows = statement.executeUpdate();
+        statement.close();
+        return affectedRows > 0;
+    }
+
+    // Version que abre su propia conexion (uso simple, sin transaccion).
+    public boolean setSalida(UUID id, LocalDateTime horaSalida, UUID idOperadorSalida) {
         try (var connection = DB.conectar()) {
-            var statement = connection.prepareStatement(query);
-
-            statement.setTimestamp(1, Timestamp.valueOf(horaSalida));
-            statement.setObject(2, idOperadorSalida);
-            statement.setObject(3, id);
-
-            int affectedRows = statement.executeUpdate();
-            statement.close();
-            return affectedRows > 0;
+            return setSalida(connection, id, horaSalida, idOperadorSalida);
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
