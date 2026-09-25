@@ -26,7 +26,7 @@ public class TipoVehiculoController extends HttpServlet {
             response.sendRedirect(request.getContextPath() + "/tipos-vehiculo");
         } else {
             request.setAttribute("error", "No se ha podido realizar la operacion");
-            request.getRequestDispatcher("WEB-INF/view/tipo-vehiculo/registrar.jsp").forward(request, response);
+            request.getRequestDispatcher("WEB-INF/views/tipo-vehiculo/registrar.jsp").forward(request, response);
         }
 
     }
@@ -48,7 +48,7 @@ public class TipoVehiculoController extends HttpServlet {
     private void listar(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         var tipos = service.findAll();
         request.setAttribute("tipos", tipos);
-        request.getRequestDispatcher("/WEB-INF/view/tipo-vehiculo/listar.jsp").forward(request, response);
+        request.getRequestDispatcher("/WEB-INF/views/tipo-vehiculo/listar.jsp").forward(request, response);
     }
 
     private void buscar(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -56,11 +56,11 @@ public class TipoVehiculoController extends HttpServlet {
 
         if (tipo.isEmpty()) {
             request.setAttribute("error", "Tipo de Vehiculo no encontrado");
-            request.getRequestDispatcher("/WEB-INF/vistas/error.jsp").forward(request, response);
+            request.getRequestDispatcher("/WEB-INF/views/error.jsp").forward(request, response);
             return;
         }
         request.setAttribute("tipo", tipo);
-        request.getRequestDispatcher("/WEB-INF/view/tipo-vehiculo/details.jsp").forward(request, response);
+        request.getRequestDispatcher("/WEB-INF/views/tipo-vehiculo/details.jsp").forward(request, response);
     }
 
 }

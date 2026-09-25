@@ -2,12 +2,14 @@ package com.parqueamesta.controller;
 
 import com.parqueamesta.services.VehiculoService;
 import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
 
+@WebServlet("/vehiculos")
 public class VehiculoController extends HttpServlet {
     private final VehiculoService service = new VehiculoService();
 
@@ -26,7 +28,7 @@ public class VehiculoController extends HttpServlet {
             response.sendRedirect(request.getContextPath() + "/vehiculos");
         } else {
             request.setAttribute("error", "No se ha podido realizar la operacion");
-            request.getRequestDispatcher("WEB-INF/view/vehiculos/registrar.jsp").forward(request, response);
+            request.getRequestDispatcher("WEB-INF/views/vehiculo/registrar.jsp").forward(request, response);
         }
     }
 
@@ -57,11 +59,11 @@ public class VehiculoController extends HttpServlet {
 
         if (vehiculo.isEmpty()){
             request.setAttribute("error", "No se encontro el vehiculo");
-            request.getRequestDispatcher("/WEB-INF/vistas/error.jsp").forward(request, response);
+            request.getRequestDispatcher("/WEB-INF/views/error.jsp").forward(request, response);
             return;
         }
         request.setAttribute("vehiculo", vehiculo);
-        request.getRequestDispatcher("/WEB-INF/view/vehiculo/details.jsp").forward(request, response);
+        request.getRequestDispatcher("/WEB-INF/views/vehiculo/details.jsp").forward(request, response);
     }
 
     private void listar(HttpServletRequest request, HttpServletResponse response)
