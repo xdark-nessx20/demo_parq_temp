@@ -22,6 +22,7 @@ public class PagoServiceTest {
         try (var connection = DB.conectar(); var statement = connection.createStatement()) {
             statement.executeUpdate("DELETE FROM pago");
             statement.executeUpdate("DELETE FROM registro_ingreso");
+            statement.executeUpdate("DELETE FROM tarifa");
             statement.executeUpdate("DELETE FROM vehiculos");
             statement.executeUpdate("DELETE FROM clientes");
             statement.executeUpdate("DELETE FROM tipos_vehiculo");
