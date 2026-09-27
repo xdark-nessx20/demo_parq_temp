@@ -20,9 +20,11 @@
         <c:remove var="error" scope="session" />
     </c:if>
 
-    <p>
-        <a href="${pageContext.request.contextPath}/pagos?accion=registrar">Registrar salida y pago</a>
-    </p>
+    <c:if test="${sessionScope.usuario.rolNombre == 'OPERADOR'}">
+        <p>
+            <a href="${pageContext.request.contextPath}/pagos?accion=registrar">Registrar salida y pago</a>
+        </p>
+    </c:if>
 
     <c:choose>
         <c:when test="${empty pagos}">
@@ -47,9 +49,9 @@
                             <td>${p.fechaPagoTexto}</td>
                             <td><span class="badge ${p.pagado ? 'badge-ok' : 'badge-warn'}">${p.estado}</span></td>
                             <td>
-                                <c:if test="${not p.pagado}">
+                                <c:if test="${not p.pagado and sessionScope.usuario.rolNombre == 'OPERADOR'}">
                                     <form action="${pageContext.request.contextPath}/pagos" method="post"
-                                          onsubmit="return confirm('¿Cobrar $${p.valor}?');">
+                                          onsubmit="return confirm('¿Cobrar $${p.valorTexto}?');">
                                         <input type="hidden" name="accion" value="cobrar" />
                                         <input type="hidden" name="idPago" value="${p.id}" />
                                         <button type="submit" class="boton-verde boton-chico">Cobrar</button>

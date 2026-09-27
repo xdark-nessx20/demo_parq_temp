@@ -35,13 +35,13 @@ public class VehiculoService {
             owner = (Cliente) o.get();
         }
 
-        return repo.save(new Vehiculo(placa.toUpperCase(), owner, t.get()));
+        return repo.save(new Vehiculo(normalizarPlaca(placa), owner, t.get()));
     }
 
     public Optional<Vehiculo> findByPlaca(String placa) {
         if (placa == null || placa.isBlank()) return Optional.empty();
 
-        return repo.get(placa);
+        return repo.get(normalizarPlaca(placa));
     }
 
     public Optional<Vehiculo> findById(UUID id) {
@@ -73,7 +73,7 @@ public class VehiculoService {
     }
 
     public boolean existePlaca(String placa) {
-        return placa != null && repo.get(placa).isPresent();
+        return placa != null && repo.get(normalizarPlaca(placa)).isPresent();
     }
 
     // Valida el formato de placa segun el tipo (Carro: ABC-123 · Moto: ABC-12A).
@@ -81,9 +81,16 @@ public class VehiculoService {
         return placaValida(nombreTipo, placa);
     }
 
+    // Acepta con o sin guion (VJI43C o VJI-43C) y normaliza a "VJI-43C".
+    private String normalizarPlaca(String placa) {
+        if (placa == null) return null;
+        var p = placa.toUpperCase().replaceAll("[^A-Z0-9]", "");
+        return p.length() >= 4 ? p.substring(0, 3) + "-" + p.substring(3) : p;
+    }
+
     private boolean placaValida(String nombreTipo, String placa) {
         if (placa == null || nombreTipo == null) return false;
-        var p = placa.toUpperCase();
+        var p = normalizarPlaca(placa);
         if (nombreTipo.toLowerCase().contains("moto")) {
             return p.matches("^[A-Z]{3}-[0-9]{2}[A-Z]$");
         }

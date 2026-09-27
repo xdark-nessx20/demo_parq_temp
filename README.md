@@ -61,9 +61,9 @@ Genera `target/parqueadero-1.0.0.war`.
 
 | Rol | Cédula | Contraseña |
 |-----|--------|-----------|
-| Gerente | `1000000001` | `admin123` |
-| Operador | `2000000002` | `oper123` |
-| Cliente | `12345678` | `cliente123` |
+| Gerente | `1000000001` | `Admin123!` |
+| Operador | `2000000002` | `Oper123!` |
+| Cliente | `12345678` | `Cliente123!` |
 
 > Si no cargas los datos demo, registra un **Gerente** en `/gerentes?accion=registrar`
 > (el primero) y desde ahí crea operadores y clientes.

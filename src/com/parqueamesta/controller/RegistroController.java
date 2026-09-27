@@ -40,7 +40,7 @@ public class RegistroController extends HttpServlet {
             response.sendRedirect(request.getContextPath() + "/login");
         } else {
             request.setAttribute("error",
-                    "No se pudo crear la cuenta (nombre ≥ 6, cédula válida, contraseña ≥ 6)");
+                    "No se pudo crear la cuenta. El nombre debe tener minimo 6 letras, la cedula 8 a 10 digitos y la contrasena minimo 8 caracteres con 1 mayuscula y 1 simbolo");
             request.getRequestDispatcher(VISTA).forward(request, response);
         }
     }

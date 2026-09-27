@@ -1,9 +1,9 @@
 -- ============================================================
 -- Datos de demo para probar el sistema
--- Credenciales:
---   Gerente   1000000001 / admin123
---   Operador  2000000002 / oper123
---   Cliente   12345678   / cliente123
+-- Credenciales (cumplen la politica: 8+, 1 mayuscula, 1 simbolo):
+--   Gerente   1000000001 / Admin123!
+--   Operador  2000000002 / Oper123!
+--   Cliente   12345678   / Cliente123!
 -- ============================================================
 
 INSERT INTO tipos_vehiculo (id, nombre) VALUES
@@ -13,12 +13,15 @@ ON CONFLICT (id) DO NOTHING;
 
 INSERT INTO usuarios (id, nombre, cedula, rol, contrasena_hash) VALUES
   ('aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa', 'Gerente Demo',  '1000000001', 'GERENTE',
-   'Sb9GEbb+5DJGjV92hlXoTw==:SIMlTzS0xqO1kq5R2nvddAIvOlTQ65DMdSRnjteFbGw='),
+   '+Ujm5cJcq5eT9n4QD87Nqg==:nk6nH+7RD1Y3bpH5trrhe0JCUo9caRjhsVnqVKv4SIo='),
   ('bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb', 'Operador Demo', '2000000002', 'OPERADOR',
-   'u+k0eph7joPpXwok29y9ag==:Ms8BkLFIGvKGt4q8o0faCqQ91BiBEe45fCOk209dPHA='),
+   'vJhsm3yOJKbdboXHdaEqSw==:4nrMbL8/u+qxbATPZlHDRfppp/0U2lZTBLzMEB2xw3g='),
   ('33333333-3333-3333-3333-333333333333', 'Juan Perez',    '12345678',   'CLIENTE',
-   'lPvxnGCeOJHiI8XryRNXdg==:uOsOsItVcuMbv/MGyd6sfFkFzCq0QNbM0deECLLx1CY=')
-ON CONFLICT (cedula) DO NOTHING;
+   'WXtqtqF9PGDMbiVRCCQXFw==:wcOXtTuMusIthbZSijEpb7bsEZHIB0FermxTFWmcAIQ=')
+ON CONFLICT (cedula) DO UPDATE SET
+  contrasena_hash = EXCLUDED.contrasena_hash,
+  nombre = EXCLUDED.nombre,
+  rol = EXCLUDED.rol;
 
 INSERT INTO vehiculos (id, placa, owner_id, tipo_id) VALUES
   ('44444444-4444-4444-4444-444444444444', 'ABC-123',

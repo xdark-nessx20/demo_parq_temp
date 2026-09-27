@@ -54,6 +54,6 @@ public class ClienteService {
     }
 
     private boolean contrasenaInvalida(String contrasena) {
-        return contrasena == null || contrasena.length() < 6;
+        return !com.parqueamesta.util.PasswordPolicy.valida(contrasena);
     }
 }

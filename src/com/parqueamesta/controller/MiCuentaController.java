@@ -101,23 +101,33 @@ public class MiCuentaController extends HttpServlet {
         response.sendRedirect(request.getContextPath() + "/mi-cuenta");
     }
 
+    // Fusion: un renglon por vehiculo del cliente, con el estado segun su ultimo registro.
     private List<MovimientoCliente> listarMovimientos(Usuario cliente) {
         var lista = new ArrayList<MovimientoCliente>();
 
         for (var v : vehiculoService.findByOwner(cliente.id())) {
             var tipo = v.tipo() != null ? v.tipo().nombre() : "-";
+            var registros = registroService.historialVehiculo(v.id()); // ordenado por entrada DESC
 
-            for (var r : registroService.historialVehiculo(v.id())) {
-                var pagoOpt = pagoService.buscarPorRegistro(r.id());
-                if (pagoOpt.isPresent()) {
-                    var p = pagoOpt.get();
-                    lista.add(new MovimientoCliente(v.placa(), tipo, r.getHoraEntradaTexto(), r.getHoraSalidaTexto(),
-                            "$" + com.parqueamesta.util.Formato.moneda(p.valor()), p.getEstado(), p.id()));
-                } else {
-                    var valor = valorEstimado(v, r.horaEntrada());
-                    lista.add(new MovimientoCliente(v.placa(), tipo, r.getHoraEntradaTexto(), "-",
-                            "$" + com.parqueamesta.util.Formato.moneda(valor), "En curso", null));
-                }
+            if (registros.isEmpty()) {
+                lista.add(new MovimientoCliente(v.placa(), tipo, "-", "-", "-", "Sin movimientos", null));
+                continue;
+            }
+
+            var r = registros.get(0); // el mas reciente
+            var pagoOpt = pagoService.buscarPorRegistro(r.id());
+
+            if (r.horaSalida() == null) {
+                var valor = valorEstimado(v, r.horaEntrada());
+                lista.add(new MovimientoCliente(v.placa(), tipo, r.getHoraEntradaTexto(), "-",
+                        "$" + com.parqueamesta.util.Formato.moneda(valor), "En parqueadero", null));
+            } else if (pagoOpt.isPresent()) {
+                var p = pagoOpt.get();
+                lista.add(new MovimientoCliente(v.placa(), tipo, r.getHoraEntradaTexto(), r.getHoraSalidaTexto(),
+                        "$" + com.parqueamesta.util.Formato.moneda(p.valor()), p.getEstado(), p.id()));
+            } else {
+                lista.add(new MovimientoCliente(v.placa(), tipo, r.getHoraEntradaTexto(), r.getHoraSalidaTexto(),
+                        "-", "Cerrado", null));
             }
         }
         return lista;

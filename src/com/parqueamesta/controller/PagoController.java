@@ -45,6 +45,13 @@ public class PagoController extends HttpServlet {
             return;
         }
 
+        // Solo el Operador efectua pagos (el Gerente solo los ve).
+        if (usuario.rol() != com.parqueamesta.model.Rol.OPERADOR) {
+            request.getSession().setAttribute("error", "Solo el operador puede registrar salidas y cobrar");
+            response.sendRedirect(request.getContextPath() + "/pagos");
+            return;
+        }
+
         // El operador cobra un pago pendiente (registra el pago en el sistema).
         if ("cobrar".equals(request.getParameter("accion"))) {
             var idPago = parseUuid(request.getParameter("idPago"));

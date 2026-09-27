@@ -349,3 +349,37 @@ body > .auth { max-width: 920px; padding: 0; margin: 5vh auto; }
     .auth-side { padding: 28px; }
     .auth-side ul { margin-top: 18px; }
 }
+
+/* ---------------- Reglas de contraseña ---------------- */
+.pw-req { display: flex; gap: 8px; flex-wrap: wrap; margin: 6px 0 16px; }
+.pw-req span {
+    font-size: .78rem;
+    padding: 3px 10px;
+    border-radius: 999px;
+    background: #f1f5f9;
+    color: var(--muted);
+    border: 1px solid var(--border);
+}
+.pw-req span::before { content: "○ "; }
+.pw-req span.ok { background: var(--success-soft); color: #166534; border-color: #bbf7d0; }
+.pw-req span.ok::before { content: "✓ "; }
+
+/* ---------------- Tarjetas de rol (login) ---------------- */
+.role-cards { display: grid; gap: 12px; margin-top: 26px; }
+.role-card-lg {
+    background: #fff;
+    border: 1px solid var(--accent);
+    border-radius: var(--radius);
+    padding: 14px 16px;
+}
+.role-card-lg .rc-head { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
+.role-card-lg .rc-icon {
+    width: 34px; height: 34px; border-radius: 50%;
+    background: var(--primary-soft); color: var(--primary);
+    display: inline-flex; align-items: center; justify-content: center;
+    font-weight: 800; flex: 0 0 auto;
+}
+.role-card-lg .rc-sub { display: block; color: var(--muted); font-size: .76rem; }
+.role-card-lg ul { list-style: none; padding: 0; margin: 0; }
+.role-card-lg li { position: relative; padding: 3px 0 3px 18px; font-size: .86rem; }
+.role-card-lg li::before { content: "•"; position: absolute; left: 0; color: var(--accent); font-weight: 800; }

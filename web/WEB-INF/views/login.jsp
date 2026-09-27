@@ -13,11 +13,42 @@
         <aside class="auth-side">
             <span class="auth-brand">Parqueamesta</span>
             <p class="auth-tag">Sistema de gestión de parqueadero</p>
-            <ul>
-                <li>Control de ingresos y salidas</li>
-                <li>Cálculo automático de tarifas</li>
-                <li>Pagos en línea</li>
-            </ul>
+
+            <div class="role-cards">
+                <div class="role-card-lg">
+                    <div class="rc-head">
+                        <span class="rc-icon">O</span>
+                        <div><strong>Operador</strong><span class="rc-sub">Superpoderes para el portero</span></div>
+                    </div>
+                    <ul>
+                        <li>Registrar entradas y salidas</li>
+                        <li>Cobrar pagos</li>
+                        <li>Ver vehículos dentro</li>
+                    </ul>
+                </div>
+                <div class="role-card-lg">
+                    <div class="rc-head">
+                        <span class="rc-icon">G</span>
+                        <div><strong>Gerente</strong><span class="rc-sub">Superpoderes para ti</span></div>
+                    </div>
+                    <ul>
+                        <li>Administrar tarifas y tipos</li>
+                        <li>Gestionar clientes y vehículos</li>
+                        <li>Ver los pagos</li>
+                    </ul>
+                </div>
+                <div class="role-card-lg">
+                    <div class="rc-head">
+                        <span class="rc-icon">C</span>
+                        <div><strong>Cliente</strong><span class="rc-sub">Para tus clientes</span></div>
+                    </div>
+                    <ul>
+                        <li>Registrar sus vehículos</li>
+                        <li>Ver sus tickets</li>
+                        <li>Pagar en línea</li>
+                    </ul>
+                </div>
+            </div>
         </aside>
 
         <main class="auth-main">

@@ -79,7 +79,7 @@ public class GerenteController extends HttpServlet {
         if (service.save(nombre, cedula, contrasena)) {
             response.sendRedirect(request.getContextPath() + "/gerentes");
         } else {
-            request.setAttribute("error", "No se ha podido realizar la operacion (revise los datos)");
+            request.setAttribute("error", "No se pudo registrar. El nombre debe tener minimo 6 letras, la cedula 8 a 10 digitos y la contrasena minimo 8 caracteres con 1 mayuscula y 1 simbolo");
             request.getRequestDispatcher(VISTA_REGISTRAR).forward(request, response);
         }
     }

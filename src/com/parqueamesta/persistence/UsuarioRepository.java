@@ -129,6 +129,20 @@ public record UsuarioRepository() {
         return get(cedula).isPresent();
     }
 
+    public boolean actualizarContrasena(String cedula, String contrasenaPlano) {
+        var query = "UPDATE usuarios SET contrasena_hash = ? WHERE cedula = ?";
+        try (var connection = DB.conectar()) {
+            var statement = connection.prepareStatement(query);
+            statement.setString(1, PasswordHasher.hash(contrasenaPlano));
+            statement.setString(2, cedula);
+            int affectedRows = statement.executeUpdate();
+            statement.close();
+            return affectedRows > 0;
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     public boolean delete(String cedula) {
         var query = "DELETE FROM usuarios WHERE cedula = ?";
         try (var connection = DB.conectar()) {

@@ -13,11 +13,20 @@
         <aside class="auth-side">
             <span class="auth-brand">Parqueamesta</span>
             <p class="auth-tag">Crea tu cuenta de cliente</p>
-            <ul>
-                <li>Registra tus vehículos</li>
-                <li>Consulta tus tickets y pagos</li>
-                <li>Paga en línea</li>
-            </ul>
+
+            <div class="role-cards">
+                <div class="role-card-lg">
+                    <div class="rc-head">
+                        <span class="rc-icon">C</span>
+                        <div><strong>Cliente</strong><span class="rc-sub">Esta cuenta es para clientes</span></div>
+                    </div>
+                    <ul>
+                        <li>Registra tus vehículos</li>
+                        <li>Consulta tus tickets y pagos</li>
+                        <li>Paga en línea</li>
+                    </ul>
+                </div>
+            </div>
         </aside>
 
         <main class="auth-main">
@@ -39,8 +48,9 @@
                 </div>
                 <div>
                     <label for="contrasena">Contraseña</label>
-                    <input type="password" id="contrasena" name="contrasena" required minlength="6" />
+                    <input type="password" id="contrasena" name="contrasena" data-pw required />
                 </div>
+                <jsp:include page="/WEB-INF/views/comunes/reglas-password.jsp" />
                 <button type="submit">Crear cuenta</button>
             </form>
 

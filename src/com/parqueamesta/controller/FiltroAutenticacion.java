@@ -24,7 +24,7 @@ public class FiltroAutenticacion implements Filter {
 
     // Secciones de operacion: solo el Operador (el Gerente administra, no opera).
     private static final List<String> SOLO_OPERADOR =
-            List.of("/registros-ingreso", "/pagos");
+            List.of("/registros-ingreso");
 
     @Override
     public void doFilter(ServletRequest req, ServletResponse res, FilterChain chain)

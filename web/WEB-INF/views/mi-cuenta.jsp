@@ -41,7 +41,7 @@
         <button type="submit">Registrar vehículo</button>
     </form>
 
-    <h2>Mis movimientos</h2>
+    <h2>Mis vehículos</h2>
 
     <c:choose>
         <c:when test="${empty movimientos}">
@@ -68,8 +68,7 @@
                             <td>${m.horaEntrada}</td>
                             <td>${m.horaSalida}</td>
                             <td>${m.valor}</td>
-                            <td><span class="badge ${m.estado == 'Pagado' ? 'badge-ok' : (m.estado == 'Pendiente' ? 'badge-warn' : 'badge-info')}">${m.estado}</span></td>
-                            <td>
+                            <td><span class="badge ${m.estado == 'Pagado' ? 'badge-ok' : (m.estado == 'Pendiente' ? 'badge-warn' : 'badge-info')}">${m.estado}</span></td>                            <td>
                                 <c:if test="${m.pagable}">
                                     <form action="${pageContext.request.contextPath}/mi-cuenta" method="post"
                                           onsubmit="return confirm('¿Pagar ${m.valor}?');">

@@ -10,6 +10,8 @@
         </c:if>
         <c:if test="${sessionScope.usuario.rolNombre == 'OPERADOR'}">
             <a class="nav-link" href="${pageContext.request.contextPath}/registros-ingreso">Ingreso</a>
+        </c:if>
+        <c:if test="${sessionScope.usuario.rolNombre == 'OPERADOR' or sessionScope.usuario.rolNombre == 'GERENTE'}">
             <a class="nav-link" href="${pageContext.request.contextPath}/pagos">Pagos</a>
         </c:if>
         <c:if test="${sessionScope.usuario.rolNombre == 'GERENTE'}">
@@ -18,7 +20,6 @@
             <a class="nav-link" href="${pageContext.request.contextPath}/tipos-vehiculo">Tipos</a>
             <a class="nav-link" href="${pageContext.request.contextPath}/clientes">Clientes</a>
             <a class="nav-link" href="${pageContext.request.contextPath}/operadores">Operadores</a>
-            <a class="nav-link" href="${pageContext.request.contextPath}/gerentes">Gerentes</a>
         </c:if>
         <c:if test="${sessionScope.usuario.rolNombre == 'CLIENTE'}">
             <a class="nav-link" href="${pageContext.request.contextPath}/mi-cuenta">Mi cuenta</a>
@@ -27,6 +28,7 @@
         <span class="usuario">
             <span class="quien">${sessionScope.usuario.nombre}</span>
             <span class="rol">${sessionScope.usuario.rolNombre}</span>
+            <a class="nav-link" href="${pageContext.request.contextPath}/mi-perfil">Mi perfil</a>
             <a class="nav-link" href="${pageContext.request.contextPath}/logout">Salir</a>
         </span>
     </c:if>
