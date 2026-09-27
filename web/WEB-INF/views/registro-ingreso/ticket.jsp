@@ -23,12 +23,16 @@
     </table>
 
     <c:if test="${sinDueno}">
-        <span id="avisoSinDueno" hidden>Vehículo sin dueño: no estaba registrado. Dile al cliente que se registre en la app y lo reclame (Mi cuenta → Reclamar vehículo).</span>
+        <span id="avisoSinDuenoTitulo" hidden>Vehículo ingresado, pero sin dueño</span>
+        <span id="avisoSinDuenoTexto" hidden>La placa no estaba registrada, así que el ingreso se hizo sin propietario. Dile al cliente que se registre en la app y reclame la placa (Mi cuenta → Reclamar vehículo). Mientras no tenga dueño, el vehículo no puede salir del parqueadero y su pago solo se cobra en caja.</span>
         <jsp:include page="/WEB-INF/views/comunes/modal-mensaje.jsp" />
         <script>
             document.addEventListener('DOMContentLoaded', function () {
-                var t = document.getElementById('avisoSinDueno');
-                if (t && window.mostrarMensaje) window.mostrarMensaje('warn', t.textContent.trim());
+                var texto = document.getElementById('avisoSinDuenoTexto');
+                var titulo = document.getElementById('avisoSinDuenoTitulo');
+                if (texto && window.mostrarMensaje) {
+                    window.mostrarMensaje('warn', texto.textContent.trim(), titulo.textContent.trim());
+                }
             });
         </script>
     </c:if>
