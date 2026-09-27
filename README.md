@@ -85,6 +85,14 @@ mvn test
 ```
 22 pruebas de la capa de servicio y persistencia (requieren PostgreSQL arriba).
 
+> Los tests **borran las tablas** antes de cada prueba, por eso usan una base de datos
+> aparte (`demo_parquadero_test`, configurada en el `pom.xml`) y **no tocan** los datos
+> reales de `demo_parquadero`. Crearla una vez:
+> ```bash
+> psql -U postgres -c "CREATE DATABASE demo_parquadero_test;"
+> psql -U postgres -d demo_parquadero_test -f db/schema.sql
+> ```
+
 ## Documentación de diseño
 - `docs/domain/UC0-diagram.puml` — casos de uso (nivel 0)
 - `docs/domain/classes-diagram.puml` — modelo de clases
