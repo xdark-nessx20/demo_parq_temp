@@ -51,8 +51,7 @@
                             <td><span class="badge ${p.pagado ? 'badge-ok' : 'badge-warn'}">${p.estado}</span></td>
                             <td>
                                 <c:if test="${not p.pagado and sessionScope.usuario.rolNombre == 'OPERADOR'}">
-                                    <form action="${pageContext.request.contextPath}/pagos" method="post"
-                                          onsubmit="return confirm('¿Cobrar $${p.valorTexto}?');">
+                                    <form action="${pageContext.request.contextPath}/pagos" method="post" data-pago>
                                         <input type="hidden" name="accion" value="cobrar" />
                                         <input type="hidden" name="idPago" value="${p.id}" />
                                         <button type="submit" class="boton-verde boton-chico">Cobrar</button>
@@ -66,6 +65,7 @@
         </c:otherwise>
     </c:choose>
 
+    <jsp:include page="/WEB-INF/views/comunes/modal-pago.jsp" />
     <jsp:include page="/WEB-INF/views/comunes/auto-refresco.jsp" />
 </body>
 </html>

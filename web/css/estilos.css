@@ -345,6 +345,39 @@ body > .auth { max-width: 940px; padding: 0; margin: 5vh auto; }
 .pw-toggle.on .ic-eye { display: none; }
 .pw-toggle.on .ic-eye-off { display: inline; }
 
+/* ---------------- Modal de pago ---------------- */
+.modal-overlay {
+    position: fixed; inset: 0; z-index: 100;
+    display: none; align-items: center; justify-content: center;
+    background: rgba(15, 23, 42, .55);
+    opacity: 0; transition: opacity .25s ease;
+}
+.modal-overlay.visible { display: flex; }
+.modal-overlay.abierto { opacity: 1; }
+.modal-pago {
+    background: var(--surface); border-radius: var(--radius); box-shadow: var(--shadow-lg);
+    padding: 30px 32px; max-width: 420px; margin: 20px; text-align: center;
+    transform: scale(.92) translateY(10px); transition: transform .25s ease;
+}
+.modal-overlay.abierto .modal-pago { transform: scale(1) translateY(0); }
+.modal-pago h3 { margin: 0 0 10px; }
+.modal-pago p { color: var(--muted); font-size: .92rem; margin: 0; }
+.puntos { display: flex; gap: 9px; justify-content: center; margin-top: 20px; }
+.puntos span {
+    width: 12px; height: 12px; border-radius: 50%; background: var(--primary);
+    animation: punto 1s infinite ease-in-out;
+}
+.puntos span:nth-child(2) { animation-delay: .15s; }
+.puntos span:nth-child(3) { animation-delay: .3s; }
+@keyframes punto {
+    0%, 80%, 100% { transform: scale(.55); opacity: .45; }
+    40%           { transform: scale(1);   opacity: 1; }
+}
+@media (prefers-reduced-motion: reduce) {
+    .modal-overlay, .modal-pago { transition: none; }
+    .puntos span { animation: none; }
+}
+
 /* ---------------- Utilidades ---------------- */
 .acciones-tabla { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
 .acciones-tabla form { display: inline; }

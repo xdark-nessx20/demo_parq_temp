@@ -16,6 +16,10 @@
             var foco = document.activeElement;
             if (foco && /^(INPUT|SELECT|TEXTAREA)$/.test(foco.tagName)) return;
 
+            // No recargar mientras se esta procesando un pago (modal abierto).
+            var modal = document.getElementById('modalPago');
+            if (modal && modal.classList.contains('visible')) return;
+
             fetch(url)
                 .then(function (r) { return r.text(); })
                 .then(function (t) { if (t !== firmaActual) { window.location.reload(); } })

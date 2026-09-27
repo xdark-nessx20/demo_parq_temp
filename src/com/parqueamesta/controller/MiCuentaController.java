@@ -4,7 +4,6 @@ import com.parqueamesta.model.MovimientoCliente;
 import com.parqueamesta.model.Usuario;
 import com.parqueamesta.model.Vehiculo;
 import com.parqueamesta.services.PagoService;
-import com.parqueamesta.services.PerfilService;
 import com.parqueamesta.services.RegistroIngresoService;
 import com.parqueamesta.services.TarifaService;
 import com.parqueamesta.services.TipoVehiculoService;
@@ -34,7 +33,6 @@ public class MiCuentaController extends HttpServlet {
     private final RegistroIngresoService registroService = new RegistroIngresoService();
     private final PagoService pagoService = new PagoService();
     private final TarifaService tarifaService = new TarifaService();
-    private final PerfilService perfilService = new PerfilService();
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
@@ -91,22 +89,6 @@ public class MiCuentaController extends HttpServlet {
                 request.getSession().setAttribute("mensaje", "Vehículo registrado correctamente");
             } else {
                 request.getSession().setAttribute("error", "No se pudo registrar (revise la placa según el tipo)");
-            }
-        } else if ("nombre".equals(accion)) {
-            var actualizado = perfilService.actualizarNombre(usuario.cedula(), request.getParameter("nombre"));
-            if (actualizado.isPresent()) {
-                request.getSession().setAttribute("usuario", actualizado.get());
-                request.getSession().setAttribute("mensaje", "Datos actualizados");
-            } else {
-                request.getSession().setAttribute("error", "El nombre debe tener al menos 6 letras");
-            }
-        } else if ("contrasena".equals(accion)) {
-            if (perfilService.cambiarContrasena(usuario.cedula(),
-                    request.getParameter("actual"), request.getParameter("nueva"))) {
-                request.getSession().setAttribute("mensaje", "Contraseña actualizada");
-            } else {
-                request.getSession().setAttribute("error",
-                        "No se pudo cambiar la contraseña (revise la actual y los requisitos de la nueva)");
             }
         } else {
             var idPago = parseUuid(request.getParameter("idPago"));

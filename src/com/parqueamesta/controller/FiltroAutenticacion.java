@@ -44,8 +44,8 @@ public class FiltroAutenticacion implements Filter {
         }
 
         if (usuario.rol() == Rol.CLIENTE) {
-            // El cliente solo ve su cuenta (sus datos y contrasena viven dentro de Mi cuenta).
-            if (!path.startsWith("/mi-cuenta")) {
+            // El cliente solo puede ver su cuenta y su perfil.
+            if (!path.startsWith("/mi-cuenta") && !path.startsWith("/mi-perfil")) {
                 response.sendRedirect(request.getContextPath() + "/mi-cuenta");
                 return;
             }

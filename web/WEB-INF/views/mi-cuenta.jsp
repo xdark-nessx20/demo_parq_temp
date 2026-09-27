@@ -70,8 +70,7 @@
                             <td class="num">${m.valor}</td>
                             <td><span class="badge ${m.estado == 'Pagado' ? 'badge-ok' : (m.estado == 'Pendiente' ? 'badge-warn' : 'badge-info')}">${m.estado}</span></td>                            <td>
                                 <c:if test="${m.pagable}">
-                                    <form action="${pageContext.request.contextPath}/mi-cuenta" method="post"
-                                          onsubmit="return confirm('¿Pagar ${m.valor}?');">
+                                    <form action="${pageContext.request.contextPath}/mi-cuenta" method="post" data-pago>
                                         <input type="hidden" name="idPago" value="${m.idPago}" />
                                         <button type="submit" class="boton-verde boton-chico">Pagar</button>
                                     </form>
@@ -84,31 +83,7 @@
         </c:otherwise>
     </c:choose>
 
-    <h2>Mis datos</h2>
-    <form action="${pageContext.request.contextPath}/mi-cuenta" method="post">
-        <input type="hidden" name="accion" value="nombre" />
-        <div>
-            <label for="nombre">Nombre</label>
-            <input type="text" id="nombre" name="nombre" value="${sessionScope.usuario.nombre}" required />
-        </div>
-        <button type="submit">Guardar</button>
-    </form>
-
-    <h2>Cambiar contraseña</h2>
-    <form action="${pageContext.request.contextPath}/mi-cuenta" method="post">
-        <input type="hidden" name="accion" value="contrasena" />
-        <div>
-            <label for="actual">Contraseña actual</label>
-            <input type="password" id="actual" name="actual" required />
-        </div>
-        <div>
-            <label for="nueva">Nueva contraseña</label>
-            <input type="password" id="nueva" name="nueva" data-pw required />
-        </div>
-        <jsp:include page="/WEB-INF/views/comunes/reglas-password.jsp" />
-        <button type="submit">Cambiar contraseña</button>
-    </form>
-
     <jsp:include page="/WEB-INF/views/comunes/auto-refresco.jsp" />
+    <jsp:include page="/WEB-INF/views/comunes/modal-pago.jsp" />
 </body>
 </html>

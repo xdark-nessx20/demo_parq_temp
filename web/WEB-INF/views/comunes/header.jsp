@@ -28,9 +28,7 @@
         <span class="usuario">
             <span class="quien">${sessionScope.usuario.nombre}</span>
             <span class="rol">${sessionScope.usuario.rolNombre}</span>
-            <c:if test="${sessionScope.usuario.rolNombre != 'CLIENTE'}">
-                <a class="nav-link" href="${pageContext.request.contextPath}/mi-perfil">Mi perfil</a>
-            </c:if>
+            <a class="nav-link" href="${pageContext.request.contextPath}/mi-perfil">Mi perfil</a>
             <a class="nav-link" href="${pageContext.request.contextPath}/logout">Salir</a>
         </span>
     </c:if>
