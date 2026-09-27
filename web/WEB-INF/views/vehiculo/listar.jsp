@@ -30,8 +30,8 @@
                         <tr>
                             <td>${v.placa}</td>
                             <td>${v.marca}</td>
-                            <td>${v.ownerCedula}</td>
-                            <td>${v.tipoVehiculo}</td>
+                            <td>${v.owner.cedula}</td>
+                            <td>${v.tipo.nombre}</td>
                             <td>
                                 <a href="${pageContext.request.contextPath}/vehiculos?accion=buscar&placa=${v.placa}">
                                     Ver detalle

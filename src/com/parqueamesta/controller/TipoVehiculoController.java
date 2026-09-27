@@ -41,6 +41,7 @@ public class TipoVehiculoController extends HttpServlet {
         switch (accion) {
             case "listar" -> listar(request, response);
             case "buscar" -> buscar(request, response);
+            case "registrar" -> registrar(request, response);
             default -> response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Acción no reconocida: " + accion);
         }
     }
@@ -61,6 +62,10 @@ public class TipoVehiculoController extends HttpServlet {
         }
         request.setAttribute("tipo", tipo.get());
         request.getRequestDispatcher("/WEB-INF/views/tipo-vehiculo/details.jsp").forward(request, response);
+    }
+
+    private void registrar(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        request.getRequestDispatcher("/WEB-INF/views/tipo-vehiculo/registrar.jsp").forward(request, response);
     }
 
 }

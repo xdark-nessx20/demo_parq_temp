@@ -20,11 +20,11 @@
         </tr>
         <tr>
             <th>Cédula propietario</th>
-            <td>${vehiculo.ownerCedula}</td>
+            <td>${vehiculo.owner.cedula}</td>
         </tr>
         <tr>
             <th>Tipo</th>
-            <td>${vehiculo.tipoVehiculo}</td>
+            <td>${vehiculo.tipo.nombre}</td>
         </tr>
     </table>
 

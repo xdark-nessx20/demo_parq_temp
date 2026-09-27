@@ -11,9 +11,7 @@
     <h2>Tipos de vehículo registrados</h2>
 
     <p>
-        <a href="${pageContext.request.contextPath}/WEB-INF/views/tipo-vehiculo/registrar.jsp">
-        <!-- si tienes un Servlet/acción para mostrar el form, apunta ahí en vez de a WEB-INF directo -->
-        </a>
+        <a href="${pageContext.request.contextPath}/tipos-vehiculo?accion=registrar">Registrar tipo de vehículo</a>
     </p>
 
     <c:choose>

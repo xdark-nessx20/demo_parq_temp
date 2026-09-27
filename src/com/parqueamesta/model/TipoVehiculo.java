@@ -56,6 +56,7 @@ public class TipoVehiculo {
 
     @Override
     public String toString() {
-        return "TipoVehiculo {id: %s, nombre: %s, descripcion: %s}".formatted(id.toString(), nombre, descripcion);
+        return "TipoVehiculo {id: %s, nombre: %s, descripcion: %s}"
+                .formatted(id != null ? id.toString() : "", nombre, descripcion);
     }
 }

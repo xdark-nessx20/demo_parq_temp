@@ -111,7 +111,14 @@ public record VehiculoRepository() {
     }
 
     public List<Vehiculo> getAll() {
-        var query = "SELECT id, placa, marca FROM vehiculos";
+        var query = """
+                SELECT v.id, v.placa, v.marca, 
+                       u.id as own_id, u.nombre as own_nombre, u.cedula as own_cedula, 
+                       t.id as ty_id, t.nombre as ty_nombre
+                FROM vehiculos v
+                LEFT JOIN clientes u ON v.owner_id = u.id 
+                LEFT JOIN tipos_vehiculo t ON v.tipo_id = t.id
+                """;
         var vehiculos = new ArrayList<Vehiculo>();
 
         try (Connection connection = DB.conectar(); var statement = connection.prepareStatement(query);
@@ -121,7 +128,19 @@ public record VehiculoRepository() {
                 var placa = set.getString("placa");
                 var marca = set.getString("marca");
 
-                vehiculos.add(new Vehiculo(id, placa, marca, null, null));
+                Cliente owner = null;
+                var ownerId = set.getObject("own_id", UUID.class);
+                if (ownerId != null) {
+                    owner = new Cliente(ownerId, set.getString("own_nombre"), set.getString("own_cedula"));
+                }
+
+                TipoVehiculo tipo = null;
+                var tipoId = set.getObject("ty_id", UUID.class);
+                if (tipoId != null) {
+                    tipo = new TipoVehiculo(tipoId, set.getString("ty_nombre"), null);
+                }
+
+                vehiculos.add(new Vehiculo(id, placa, marca, owner, tipo));
             }
             return vehiculos;
 

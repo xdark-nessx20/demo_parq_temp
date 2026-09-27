@@ -48,10 +48,15 @@ public class VehiculoController extends HttpServlet {
 
     @Override
     protected void doDelete(HttpServletRequest request, HttpServletResponse response)
-            throws IOException, ServletException {
+            throws IOException {
 
         boolean wasDeleted = service.delete(request.getParameter("placa"));
-        //No sé qué hacer ahora
+
+        if (wasDeleted) {
+            response.sendRedirect(request.getContextPath() + "/vehiculos");
+        } else {
+            response.sendError(HttpServletResponse.SC_NOT_FOUND, "No se encontró el vehículo");
+        }
     }
 
     private void buscar(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
