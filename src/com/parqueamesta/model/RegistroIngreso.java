@@ -54,6 +54,31 @@ public class RegistroIngreso {
         return idOperadorSalida;
     }
 
+    // Getters JavaBean (para JSP/EL)
+    public UUID getId() {
+        return id;
+    }
+
+    public UUID getIdVehiculo() {
+        return idVehiculo;
+    }
+
+    public LocalDateTime getHoraEntrada() {
+        return horaEntrada;
+    }
+
+    public LocalDateTime getHoraSalida() {
+        return horaSalida;
+    }
+
+    public UUID getIdOperadorEntrada() {
+        return idOperadorEntrada;
+    }
+
+    public UUID getIdOperadorSalida() {
+        return idOperadorSalida;
+    }
+
     // Setters
     public void setIdVehiculo(UUID idVehiculo) {
         this.idVehiculo = idVehiculo;

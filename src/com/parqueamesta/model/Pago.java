@@ -42,6 +42,23 @@ public class Pago {
         return fechaPago;
     }
 
+    // Getters JavaBean (para JSP/EL)
+    public UUID getId() {
+        return id;
+    }
+
+    public UUID getIdRegistroIngreso() {
+        return idRegistroIngreso;
+    }
+
+    public BigDecimal getValor() {
+        return valor;
+    }
+
+    public LocalDateTime getFechaPago() {
+        return fechaPago;
+    }
+
     // Setters
     public void setIdRegistroIngreso(UUID idRegistroIngreso) {
         this.idRegistroIngreso = idRegistroIngreso;

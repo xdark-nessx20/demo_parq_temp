@@ -30,7 +30,7 @@ public class RegistroIngresoServiceTest {
             statement.executeUpdate("DELETE FROM registro_ingreso");
             statement.executeUpdate("DELETE FROM tarifa");
             statement.executeUpdate("DELETE FROM vehiculos");
-            statement.executeUpdate("DELETE FROM clientes");
+            statement.executeUpdate("DELETE FROM usuarios");
             statement.executeUpdate("DELETE FROM tipos_vehiculo");
         }
     }
@@ -50,7 +50,7 @@ public class RegistroIngresoServiceTest {
 
             UUID idCliente;
             try (var st = connection.prepareStatement(
-                    "INSERT INTO clientes (nombre, cedula) VALUES (?, ?) RETURNING id")) {
+                    "INSERT INTO usuarios (nombre, cedula, rol) VALUES (?, ?, 'CLIENTE') RETURNING id")) {
                 st.setString(1, "Cliente Test");
                 st.setString(2, sufijo);
                 try (var rs = st.executeQuery()) { rs.next(); idCliente = rs.getObject("id", UUID.class); }

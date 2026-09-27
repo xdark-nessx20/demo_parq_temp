@@ -1,30 +1,33 @@
 package com.parqueamesta.services;
 
 import com.parqueamesta.model.Operador;
-import com.parqueamesta.persistence.OperadorRepository;
+import com.parqueamesta.model.Rol;
+import com.parqueamesta.persistence.UsuarioRepository;
 
 import java.util.List;
 import java.util.Optional;
 
 public class OperadorService {
-    private final OperadorRepository repo = new OperadorRepository();
+    private final UsuarioRepository repo = new UsuarioRepository();
 
-    public boolean save(String nombre, String cedula) {
+    public boolean save(String nombre, String cedula, String contrasena) {
         if (nombreInvalido(nombre)) return false;
         if (cedulaInvalida(cedula)) return false;
+        if (contrasenaInvalida(contrasena)) return false;
 
-        var o = new Operador(nombre, cedula);
-        return repo.save(o);
+        return repo.save(new Operador(nombre, cedula), contrasena);
     }
 
     public Optional<Operador> findByCedula(String cedula) {
         if (cedulaInvalida(cedula)) return Optional.empty();
 
-        return repo.get(cedula);
+        return repo.get(cedula)
+                .filter(u -> u.rol() == Rol.OPERADOR)
+                .map(u -> (Operador) u);
     }
 
     public List<Operador> findAll() {
-        return repo.getAll();
+        return repo.getByRol(Rol.OPERADOR).stream().map(u -> (Operador) u).toList();
     }
 
     private boolean nombreInvalido(String nombre) {
@@ -33,5 +36,9 @@ public class OperadorService {
 
     private boolean cedulaInvalida(String cedula) {
         return cedula == null || !cedula.matches("^[1-9][0-9]{7}([0-9]{2})?");
+    }
+
+    private boolean contrasenaInvalida(String contrasena) {
+        return contrasena == null || contrasena.length() < 6;
     }
 }

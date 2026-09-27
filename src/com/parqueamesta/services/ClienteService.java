@@ -1,30 +1,32 @@
 package com.parqueamesta.services;
 
 import com.parqueamesta.model.Cliente;
-import com.parqueamesta.persistence.ClienteRepository;
+import com.parqueamesta.model.Rol;
+import com.parqueamesta.persistence.UsuarioRepository;
 
 import java.util.List;
 import java.util.Optional;
 
 public class ClienteService {
-    private final ClienteRepository repo = new ClienteRepository();
+    private final UsuarioRepository repo = new UsuarioRepository();
 
     public boolean save(String nombre, String cedula) {
         if (nombreInvalido(nombre)) return false;
         if (cedulaInvalida(cedula)) return false;
 
-        var c = new Cliente(nombre, cedula);
-        return repo.save(c);
+        return repo.save(new Cliente(nombre, cedula), null);
     }
 
     public Optional<Cliente> findByCedula(String cedula) {
         if (cedulaInvalida(cedula)) return Optional.empty();
 
-        return repo.get(cedula);
+        return repo.get(cedula)
+                .filter(u -> u.rol() == Rol.CLIENTE)
+                .map(u -> (Cliente) u);
     }
 
     public List<Cliente> findAll() {
-        return repo.getAll();
+        return repo.getByRol(Rol.CLIENTE).stream().map(u -> (Cliente) u).toList();
     }
 
     private boolean nombreInvalido(String nombre) {

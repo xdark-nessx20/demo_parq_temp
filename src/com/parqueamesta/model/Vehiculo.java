@@ -46,6 +46,27 @@ public class Vehiculo {
         return tipo;
     }
 
+    // Getters JavaBean (para JSP/EL)
+    public UUID getId() {
+        return id;
+    }
+
+    public String getPlaca() {
+        return placa;
+    }
+
+    public String getMarca() {
+        return marca;
+    }
+
+    public Cliente getOwner() {
+        return owner;
+    }
+
+    public TipoVehiculo getTipo() {
+        return tipo;
+    }
+
     //Setters
 
     public void setPlaca(String placa) {

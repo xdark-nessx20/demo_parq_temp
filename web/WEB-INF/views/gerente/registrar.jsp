@@ -28,6 +28,11 @@
                    value="${param.cedula}" required />
         </div>
 
+        <div>
+            <label for="contrasena">Contraseña:</label>
+            <input type="password" id="contrasena" name="contrasena" required minlength="6" />
+        </div>
+
         <button type="submit">Registrar</button>
     </form>
 

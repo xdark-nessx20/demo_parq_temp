@@ -42,8 +42,14 @@ public class VehiculoController extends HttpServlet {
         switch (accion) {
             case "listar" -> listar(request, response);
             case "buscar" -> buscar(request, response);
+            case "registrar" -> registrar(request, response);
             default -> response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Acción no reconocida: " + accion);
         }
+    }
+
+    private void registrar(HttpServletRequest request, HttpServletResponse response)
+            throws IOException, ServletException {
+        request.getRequestDispatcher("/WEB-INF/views/vehiculo/registrar.jsp").forward(request, response);
     }
 
     @Override

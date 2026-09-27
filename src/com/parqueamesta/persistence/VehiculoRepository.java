@@ -37,7 +37,7 @@ public record VehiculoRepository() {
                        u.id as own_id, u.nombre as own_nombre, u.cedula as own_cedula, 
                        t.id as ty_id, t.nombre as ty_nombre
                 FROM vehiculos v
-                JOIN clientes u ON v.owner_id = u.id 
+                JOIN usuarios u ON v.owner_id = u.id 
                 JOIN tipos_vehiculo t ON v.tipo_id = t.id
                 WHERE v.placa = ?
                 """;
@@ -77,7 +77,7 @@ public record VehiculoRepository() {
                        u.id as own_id, u.nombre as own_nombre, u.cedula as own_cedula, 
                        t.id as ty_id, t.nombre as ty_nombre
                 FROM vehiculos v
-                JOIN clientes u ON v.owner_id = u.id 
+                JOIN usuarios u ON v.owner_id = u.id 
                 JOIN tipos_vehiculo t ON v.tipo_id = t.id
                 WHERE v.id = ?
                 """;
@@ -116,7 +116,7 @@ public record VehiculoRepository() {
                        u.id as own_id, u.nombre as own_nombre, u.cedula as own_cedula, 
                        t.id as ty_id, t.nombre as ty_nombre
                 FROM vehiculos v
-                LEFT JOIN clientes u ON v.owner_id = u.id 
+                LEFT JOIN usuarios u ON v.owner_id = u.id 
                 LEFT JOIN tipos_vehiculo t ON v.tipo_id = t.id
                 """;
         var vehiculos = new ArrayList<Vehiculo>();

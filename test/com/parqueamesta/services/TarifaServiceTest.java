@@ -24,7 +24,7 @@ public class TarifaServiceTest {
             statement.executeUpdate("DELETE FROM registro_ingreso");
             statement.executeUpdate("DELETE FROM tarifa");
             statement.executeUpdate("DELETE FROM vehiculos");
-            statement.executeUpdate("DELETE FROM clientes");
+            statement.executeUpdate("DELETE FROM usuarios");
             statement.executeUpdate("DELETE FROM tipos_vehiculo");
         }
     }

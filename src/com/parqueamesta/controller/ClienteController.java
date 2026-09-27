@@ -41,8 +41,14 @@ public class ClienteController extends HttpServlet {
         switch (accion) {
             case "listar" -> listar(request, response);
             case "buscar" -> buscar(request, response);
+            case "registrar" -> registrar(request, response);
             default -> response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Acción no reconocida: " + accion);
         }
+    }
+
+    private void registrar(HttpServletRequest request, HttpServletResponse response)
+            throws IOException, ServletException {
+        request.getRequestDispatcher("/WEB-INF/views/cliente/registrar.jsp").forward(request, response);
     }
 
     private void listar(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {

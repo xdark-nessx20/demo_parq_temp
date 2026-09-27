@@ -19,8 +19,9 @@ public class GerenteController extends HttpServlet {
 
         String nombre = request.getParameter("nombre");
         String cedula = request.getParameter("cedula");
+        String contrasena = request.getParameter("contrasena");
 
-        boolean wasSaved = service.save(nombre, cedula);
+        boolean wasSaved = service.save(nombre, cedula, contrasena);
 
         if (wasSaved) {
             response.sendRedirect(request.getContextPath() + "/gerentes");
@@ -40,8 +41,14 @@ public class GerenteController extends HttpServlet {
         switch (accion) {
             case "listar" -> listar(request, response);
             case "buscar" -> buscar(request, response);
+            case "registrar" -> registrar(request, response);
             default -> response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Acción no reconocida: " + accion);
         }
+    }
+
+    private void registrar(HttpServletRequest request, HttpServletResponse response)
+            throws IOException, ServletException {
+        request.getRequestDispatcher("/WEB-INF/views/gerente/registrar.jsp").forward(request, response);
     }
 
     private void listar(HttpServletRequest request, HttpServletResponse response)

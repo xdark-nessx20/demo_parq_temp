@@ -1,8 +1,10 @@
 package com.parqueamesta.services;
 
+import com.parqueamesta.model.Cliente;
+import com.parqueamesta.model.Rol;
 import com.parqueamesta.model.Vehiculo;
-import com.parqueamesta.persistence.ClienteRepository;
 import com.parqueamesta.persistence.TipoVehiculoRepository;
+import com.parqueamesta.persistence.UsuarioRepository;
 import com.parqueamesta.persistence.VehiculoRepository;
 
 import java.util.List;
@@ -11,7 +13,7 @@ import java.util.Optional;
 public class VehiculoService {
     private final VehiculoRepository repo = new VehiculoRepository();
     private final TipoVehiculoRepository tipoRepo = new TipoVehiculoRepository();
-    private final ClienteRepository clienteRepo = new ClienteRepository();
+    private final UsuarioRepository usuarioRepo = new UsuarioRepository();
 
     public VehiculoService() {
     }
@@ -25,10 +27,10 @@ public class VehiculoService {
         var t = tipoRepo.get(nombreTipo);
         if (t.isEmpty()) return false;
 
-        var o = clienteRepo.get(ownerCedula);
-        if (o.isEmpty()) return false;
+        var o = usuarioRepo.get(ownerCedula);
+        if (o.isEmpty() || o.get().rol() != Rol.CLIENTE) return false;
 
-        var v = new Vehiculo(placa, marca, o.get(), t.get());
+        var v = new Vehiculo(placa, marca, (Cliente) o.get(), t.get());
         return repo.save(v);
     }
 

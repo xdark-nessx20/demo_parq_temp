@@ -33,6 +33,19 @@ public class TipoVehiculo {
         return descripcion;
     }
 
+    // Getters JavaBean (para JSP/EL)
+    public UUID getId() {
+        return id;
+    }
+
+    public String getNombre() {
+        return nombre;
+    }
+
+    public String getDescripcion() {
+        return descripcion;
+    }
+
     //Setters
 
     public void setNombre(String nombre) {
