@@ -5,7 +5,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Parqueamesta</title>
+    <title>Parqueamestapp</title>
 </head>
 <body>
     <jsp:include page="/WEB-INF/views/comunes/header.jsp" />
@@ -29,7 +29,7 @@
         <c:otherwise>
             <div class="login-wrap">
                 <div class="card" style="text-align:center">
-                    <h1>Parqueamesta</h1>
+                    <h1>Parqueamestapp</h1>
                     <p class="muted">Sistema de gestión de parqueadero.</p>
                     <p style="margin-top:18px"><a class="boton" href="${pageContext.request.contextPath}/login">Iniciar sesión</a></p>
                 </div>

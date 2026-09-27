@@ -1,0 +1,170 @@
+package com.parqueamestapp.persistence;
+
+import com.parqueamestapp.model.Cliente;
+import com.parqueamestapp.model.Gerente;
+import com.parqueamestapp.model.Operador;
+import com.parqueamestapp.model.Rol;
+import com.parqueamestapp.model.Usuario;
+import com.parqueamestapp.persistence.utils.DB;
+import com.parqueamestapp.persistence.utils.PasswordHasher;
+
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
+
+// Repositorio unico de personas: la tabla "usuarios" guarda clientes, operadores y gerentes,
+// diferenciados por la columna "rol".
+public record UsuarioRepository() {
+
+    public boolean save(Usuario usuario, String contrasenaPlano) {
+        if (get(usuario.cedula()).isPresent()) return false; // la cedula ya existe
+
+        var query = "INSERT INTO usuarios (nombre, cedula, rol, contrasena_hash) VALUES (?, ?, ?, ?)";
+
+        try (var connection = DB.conectar()) {
+            var statement = connection.prepareStatement(query);
+            statement.setString(1, usuario.nombre());
+            statement.setString(2, usuario.cedula());
+            statement.setString(3, usuario.rol().name());
+            statement.setString(4, contrasenaPlano == null ? null : PasswordHasher.hash(contrasenaPlano));
+
+            int affectedRows = statement.executeUpdate();
+            statement.close();
+            return affectedRows > 0;
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public Optional<Usuario> get(String cedula) {
+        var query = "SELECT id, nombre, cedula, rol FROM usuarios WHERE cedula = ?";
+
+        try (var connection = DB.conectar()) {
+            var statement = connection.prepareStatement(query);
+            statement.setString(1, cedula);
+
+            try (var result = statement.executeQuery()) {
+                if (result.next()) {
+                    return Optional.of(construir(result));
+                }
+            }
+            return Optional.empty();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public List<Usuario> getByRol(Rol rol) {
+        var query = "SELECT id, nombre, cedula, rol FROM usuarios WHERE rol = ?";
+        var usuarios = new ArrayList<Usuario>();
+
+        try (var connection = DB.conectar()) {
+            var statement = connection.prepareStatement(query);
+            statement.setString(1, rol.name());
+
+            try (var result = statement.executeQuery()) {
+                while (result.next()) {
+                    usuarios.add(construir(result));
+                }
+            }
+            return usuarios;
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public List<Usuario> getAll() {
+        var query = "SELECT id, nombre, cedula, rol FROM usuarios";
+        var usuarios = new ArrayList<Usuario>();
+
+        try (var connection = DB.conectar(); var statement = connection.prepareStatement(query);
+             var result = statement.executeQuery()) {
+            while (result.next()) {
+                usuarios.add(construir(result));
+            }
+            return usuarios;
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    // Verifica cedula + contraseña contra el hash almacenado. Devuelve el usuario si son validas.
+    public Optional<Usuario> autenticar(String cedula, String contrasenaPlano) {
+        if (cedula == null || contrasenaPlano == null) return Optional.empty();
+
+        var query = "SELECT id, nombre, cedula, rol, contrasena_hash FROM usuarios WHERE cedula = ?";
+
+        try (var connection = DB.conectar()) {
+            var statement = connection.prepareStatement(query);
+            statement.setString(1, cedula);
+
+            try (var result = statement.executeQuery()) {
+                if (result.next() && PasswordHasher.verificar(contrasenaPlano, result.getString("contrasena_hash"))) {
+                    return Optional.of(construir(result));
+                }
+            }
+            return Optional.empty();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public boolean update(String cedula, String nombre) {
+        var query = "UPDATE usuarios SET nombre = ? WHERE cedula = ?";
+        try (var connection = DB.conectar()) {
+            var statement = connection.prepareStatement(query);
+            statement.setString(1, nombre);
+            statement.setString(2, cedula);
+            int affectedRows = statement.executeUpdate();
+            statement.close();
+            return affectedRows > 0;
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public boolean existe(String cedula) {
+        return get(cedula).isPresent();
+    }
+
+    public boolean actualizarContrasena(String cedula, String contrasenaPlano) {
+        var query = "UPDATE usuarios SET contrasena_hash = ? WHERE cedula = ?";
+        try (var connection = DB.conectar()) {
+            var statement = connection.prepareStatement(query);
+            statement.setString(1, PasswordHasher.hash(contrasenaPlano));
+            statement.setString(2, cedula);
+            int affectedRows = statement.executeUpdate();
+            statement.close();
+            return affectedRows > 0;
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public boolean delete(String cedula) {
+        var query = "DELETE FROM usuarios WHERE cedula = ?";
+        try (var connection = DB.conectar()) {
+            var statement = connection.prepareStatement(query);
+            statement.setString(1, cedula);
+            int affectedRows = statement.executeUpdate();
+            statement.close();
+            return affectedRows > 0;
+        } catch (SQLException e) {
+            return false; // p.ej. el usuario tiene vehiculos asociados (FK)
+        }
+    }
+
+    // Crea la subclase correcta (Cliente/Operador/Gerente) segun el rol de la fila.
+    private Usuario construir(java.sql.ResultSet result) throws SQLException {
+        var id = result.getObject("id", UUID.class);
+        var nombre = result.getString("nombre");
+        var cedula = result.getString("cedula");
+        return switch (Rol.valueOf(result.getString("rol"))) {
+            case CLIENTE -> new Cliente(id, nombre, cedula);
+            case OPERADOR -> new Operador(id, nombre, cedula);
+            case GERENTE -> new Gerente(id, nombre, cedula);
+        };
+    }
+}

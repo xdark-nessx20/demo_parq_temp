@@ -1,9 +1,12 @@
 @startuml
-title Diagrama de Paquetes - Gestión de Parqueadero
+title Diagrama de Paquetes - Arquitectura por Capas
 skinparam linetype ortho
+skinparam packageStyle rectangle
 
-package "Presentación (controller)" {
+package "Presentacion (controller)" {
   [LoginController]
+  [LogoutController]
+  [RegistroController]
   [DentroController]
   [RegistroIngresoController]
   [PagoController]
@@ -14,6 +17,7 @@ package "Presentación (controller)" {
   [GerenteController]
   [TipoVehiculoController]
   [MiCuentaController]
+  [MiPerfilController]
   [FiltroAutenticacion]
 }
 
@@ -26,6 +30,7 @@ package "Servicio (services)" {
   [OperadorService]
   [GerenteService]
   [TipoVehiculoService]
+  [PerfilService]
 }
 
 package "Persistencia (persistence)" {
@@ -50,11 +55,20 @@ package "Modelo (model)" {
   [Tarifa]
   [RegistroIngreso]
   [Pago]
+  [MovimientoCliente]
+  [VehiculoDentro]
 }
 
-"Presentación (controller)" --> "Servicio (services)"
-"Presentación (controller)" --> "Modelo (model)"
+package "Transversal (util)" {
+  [Formato]
+  [PasswordPolicy]
+}
+
+"Presentacion (controller)" --> "Servicio (services)"
+"Presentacion (controller)" --> "Modelo (model)"
+"Presentacion (controller)" --> "Transversal (util)"
 "Servicio (services)" --> "Persistencia (persistence)"
 "Servicio (services)" --> "Modelo (model)"
+"Servicio (services)" --> "Transversal (util)"
 "Persistencia (persistence)" --> "Modelo (model)"
 @enduml

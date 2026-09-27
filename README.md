@@ -8,10 +8,10 @@ implementado en **Java puro con Servlets + JSP + JDBC y PostgreSQL, sin framewor
 | Capa | Paquete | Contiene |
 |------|---------|----------|
 | Presentación | `web/WEB-INF/views` + `web/css` | JSP (vistas) y CSS |
-| Controlador | `com.parqueamesta.controller` | Servlets (`XController`), `FiltroAutenticacion` |
-| Servicio | `com.parqueamesta.services` | Reglas de negocio (`XService`) |
-| Persistencia | `com.parqueamesta.persistence` | DAOs con JDBC (`RepositorioX`) |
-| Modelo | `com.parqueamesta.model` | POJOs (Vehiculo, Usuario, Tarifa, RegistroIngreso, Pago...) |
+| Controlador | `com.parqueamestapp.controller` | Servlets (`XController`), `FiltroAutenticacion` |
+| Servicio | `com.parqueamestapp.services` | Reglas de negocio (`XService`) |
+| Persistencia | `com.parqueamestapp.persistence` | DAOs con JDBC (`RepositorioX`) |
+| Modelo | `com.parqueamestapp.model` | POJOs (Vehiculo, Usuario, Tarifa, RegistroIngreso, Pago...) |
 
 Regla de oro: **el JSP nunca habla con la BD**; todo pasa por controlador → servicio → persistencia.
 
@@ -45,7 +45,7 @@ psql -d demo_parquadero -f db/schema.sql
 # (opcional) datos de demo
 psql -d demo_parquadero -f db/datos-demo.sql
 ```
-La conexión está en `src/com/parqueamesta/persistence/utils/DB.java` (localhost:5432, `demo_parquadero`).
+La conexión está en `src/com/parqueamestapp/persistence/utils/DB.java` (localhost:5432, `demo_parquadero`).
 
 ### 2. Compilar y empaquetar
 ```bash

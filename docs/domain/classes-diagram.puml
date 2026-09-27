@@ -1,5 +1,6 @@
 @startuml
-title Modelo de Clases - Gestión de Parqueadero
+title Modelo de Clases - Gestion de Parqueadero
+skinparam classAttributeIconSize 0
 
 abstract class Usuario {
   - id: UUID
@@ -18,24 +19,47 @@ enum Rol {
 }
 
 class Vehiculo {
+  - id: UUID
   - placa: String
 }
 class TipoVehiculo {
+  - id: UUID
   - nombre: String
-  - descripcion: String
+  - formatoPlaca: String
 }
 class Tarifa {
+  - id: UUID
+  - idTipoVehiculo: UUID
   - valorHora: BigDecimal
   - anioVigencia: int
 }
 class RegistroIngreso {
+  - id: UUID
+  - idVehiculo: UUID
   - horaEntrada: LocalDateTime
   - horaSalida: LocalDateTime
+  - idOperadorEntrada: UUID
+  - idOperadorSalida: UUID
 }
 class Pago {
+  - id: UUID
+  - idRegistroIngreso: UUID
   - valor: BigDecimal
   - fechaPago: LocalDateTime
   - pagado: boolean
+}
+class MovimientoCliente <<vista>> {
+  - placa: String
+  - horaEntrada: String
+  - horaSalida: String
+  - valor: String
+  - estado: String
+}
+class VehiculoDentro <<vista>> {
+  - placa: String
+  - tipo: String
+  - owner: String
+  - tiempo: String
 }
 
 Cliente -up-|> Usuario
@@ -43,11 +67,21 @@ Operador -up-|> Usuario
 Gerente -up-|> Usuario
 Usuario ..> Rol
 
-Cliente "0..1" --o "*" Vehiculo : "es dueño de"
-Vehiculo "*" -- "1" TipoVehiculo : "es de tipo"
-TipoVehiculo "1" -- "*" Tarifa : "tiene tarifa"
-Vehiculo "1" -right- "*" RegistroIngreso : "realiza"
-Operador "0..1" --o "*" RegistroIngreso : "autoriza"
-RegistroIngreso "1" -- "0..1" Pago : "posee"
+Cliente "1" --o "*" Vehiculo : es dueno de
+Vehiculo "*" -- "1" TipoVehiculo : es de tipo
+TipoVehiculo "1" -- "*" Tarifa : tiene tarifa
+Vehiculo "1" -- "*" RegistroIngreso : realiza
+Operador "0..1" --o "*" RegistroIngreso : registra entrada/salida
+RegistroIngreso "1" -- "0..1" Pago : posee
+
+note right of TipoVehiculo
+  formatoPlaca es texto: "CARRO" (AAA-000)
+  o "MOTO" (AAA-00A)
+end note
+
+note bottom of Vehiculo
+  El dueno es obligatorio (owner_id NOT NULL):
+  todo vehiculo pertenece a un Cliente.
+end note
 
 @enduml

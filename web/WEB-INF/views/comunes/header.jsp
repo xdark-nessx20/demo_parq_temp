@@ -2,7 +2,7 @@
 <%@ taglib prefix="c" uri="jakarta.tags.core" %>
 <link rel="stylesheet" href="${pageContext.request.contextPath}/css/estilos.css">
 <nav class="navbar">
-    <a class="brand" href="${pageContext.request.contextPath}/index.jsp">Parqueamesta</a>
+    <a class="brand" href="${pageContext.request.contextPath}/index.jsp">Parqueamestapp</a>
 
     <c:if test="${not empty sessionScope.usuario}">
         <c:if test="${sessionScope.usuario.rolNombre == 'OPERADOR' or sessionScope.usuario.rolNombre == 'GERENTE'}">

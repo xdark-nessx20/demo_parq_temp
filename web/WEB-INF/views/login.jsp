@@ -11,7 +11,7 @@
 <body>
     <div class="auth">
         <aside class="auth-side">
-            <span class="auth-brand">Parqueamesta</span>
+            <span class="auth-brand">Parqueamestapp</span>
             <p class="auth-tag">Sistema de gestión de parqueadero</p>
 
             <div class="role-cards">
