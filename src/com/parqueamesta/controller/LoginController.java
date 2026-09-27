@@ -46,7 +46,7 @@ public class LoginController extends HttpServlet {
         return switch (rol) {
             case GERENTE -> "/dentro";
             case OPERADOR -> "/dentro";
-            case CLIENTE -> "/vehiculos";
+            case CLIENTE -> "/mi-cuenta";
         };
     }
 }

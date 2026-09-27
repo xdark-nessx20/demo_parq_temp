@@ -18,6 +18,9 @@
             <a href="${pageContext.request.contextPath}/operadores">Operadores</a>
             <a href="${pageContext.request.contextPath}/gerentes">Gerentes</a>
         </c:if>
+        <c:if test="${sessionScope.usuario.rolNombre == 'CLIENTE'}">
+            <a href="${pageContext.request.contextPath}/mi-cuenta">Mi cuenta</a>
+        </c:if>
         <span class="usuario">
             ${sessionScope.usuario.nombre} (${sessionScope.usuario.rolNombre})
             <a href="${pageContext.request.contextPath}/logout">Salir</a>

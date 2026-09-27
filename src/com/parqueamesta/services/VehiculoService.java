@@ -54,6 +54,11 @@ public class VehiculoService {
         return repo.getAll();
     }
 
+    public List<Vehiculo> findByOwner(UUID ownerId) {
+        if (ownerId == null) return List.of();
+        return repo.getByOwner(ownerId);
+    }
+
     public boolean delete(String placa){
         if (placa == null || placa.isBlank()) return false;
 

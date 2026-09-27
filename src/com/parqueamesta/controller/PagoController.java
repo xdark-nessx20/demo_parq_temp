@@ -38,6 +38,18 @@ public class PagoController extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws IOException, ServletException {
 
+        // El operador cobra un pago pendiente (registra el pago en el sistema).
+        if ("cobrar".equals(request.getParameter("accion"))) {
+            var idPago = parseUuid(request.getParameter("idPago"));
+            if (idPago.isPresent() && pagoService.marcarPagado(idPago.get())) {
+                request.getSession().setAttribute("mensaje", "Pago cobrado correctamente");
+            } else {
+                request.getSession().setAttribute("error", "No se pudo cobrar el pago");
+            }
+            response.sendRedirect(request.getContextPath() + "/pagos");
+            return;
+        }
+
         var idRegistro = parseUuid(request.getParameter("idRegistro"));
         var idOperador = parseUuid(request.getParameter("idOperador"));
 

@@ -147,6 +147,47 @@ public record VehiculoRepository() {
         }
     }
 
+    public List<Vehiculo> getByOwner(UUID ownerId) {
+        var query = """
+                SELECT v.id, v.placa, 
+                       u.id as own_id, u.nombre as own_nombre, u.cedula as own_cedula, 
+                       t.id as ty_id, t.nombre as ty_nombre
+                FROM vehiculos v
+                LEFT JOIN usuarios u ON v.owner_id = u.id 
+                LEFT JOIN tipos_vehiculo t ON v.tipo_id = t.id
+                WHERE v.owner_id = ?
+                """;
+        var vehiculos = new ArrayList<Vehiculo>();
+
+        try (Connection connection = DB.conectar()) {
+            var statement = connection.prepareStatement(query);
+            statement.setObject(1, ownerId);
+            try (var set = statement.executeQuery()) {
+                while (set.next()) {
+                    var id = set.getObject("id", UUID.class);
+                    var placa = set.getString("placa");
+
+                    Cliente owner = null;
+                    var ownerIdR = set.getObject("own_id", UUID.class);
+                    if (ownerIdR != null) {
+                        owner = new Cliente(ownerIdR, set.getString("own_nombre"), set.getString("own_cedula"));
+                    }
+
+                    TipoVehiculo tipo = null;
+                    var tipoId = set.getObject("ty_id", UUID.class);
+                    if (tipoId != null) {
+                        tipo = new TipoVehiculo(tipoId, set.getString("ty_nombre"), null);
+                    }
+
+                    vehiculos.add(new Vehiculo(id, placa, owner, tipo));
+                }
+            }
+            return vehiculos;
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     public boolean delete(String placa) {
         var query = "DELETE FROM vehiculos WHERE placa = ?";
 

@@ -1,0 +1,111 @@
+package com.parqueamesta.controller;
+
+import com.parqueamesta.model.MovimientoCliente;
+import com.parqueamesta.model.Usuario;
+import com.parqueamesta.model.Vehiculo;
+import com.parqueamesta.services.PagoService;
+import com.parqueamesta.services.RegistroIngresoService;
+import com.parqueamesta.services.TarifaService;
+import com.parqueamesta.services.VehiculoService;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.WebServlet;
+import jakarta.servlet.http.HttpServlet;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+
+import java.io.IOException;
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
+
+// Portal del cliente: ve sus vehiculos, sus tickets (en curso o cerrados) y paga online.
+@WebServlet("/mi-cuenta")
+public class MiCuentaController extends HttpServlet {
+    private static final String VISTA = "/WEB-INF/views/mi-cuenta.jsp";
+    private static final String VISTA_LOGIN = "/WEB-INF/views/login.jsp";
+
+    private final VehiculoService vehiculoService = new VehiculoService();
+    private final RegistroIngresoService registroService = new RegistroIngresoService();
+    private final PagoService pagoService = new PagoService();
+    private final TarifaService tarifaService = new TarifaService();
+
+    @Override
+    protected void doGet(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        var usuario = usuarioDeSesion(request);
+        if (usuario == null) {
+            request.setAttribute("error", "Debe iniciar sesión");
+            request.getRequestDispatcher(VISTA_LOGIN).forward(request, response);
+            return;
+        }
+
+        request.setAttribute("movimientos", listarMovimientos(usuario));
+        request.getRequestDispatcher(VISTA).forward(request, response);
+    }
+
+    @Override
+    protected void doPost(HttpServletRequest request, HttpServletResponse response)
+            throws IOException, ServletException {
+        var usuario = usuarioDeSesion(request);
+        if (usuario == null) {
+            request.setAttribute("error", "Debe iniciar sesión");
+            request.getRequestDispatcher(VISTA_LOGIN).forward(request, response);
+            return;
+        }
+
+        var idPago = parseUuid(request.getParameter("idPago"));
+        if (idPago.isPresent() && pagoService.marcarPagado(idPago.get())) {
+            request.getSession().setAttribute("mensaje", "Pago realizado correctamente");
+        } else {
+            request.getSession().setAttribute("error", "No se pudo procesar el pago");
+        }
+        response.sendRedirect(request.getContextPath() + "/mi-cuenta");
+    }
+
+    private List<MovimientoCliente> listarMovimientos(Usuario cliente) {
+        var lista = new ArrayList<MovimientoCliente>();
+
+        for (var v : vehiculoService.findByOwner(cliente.id())) {
+            var tipo = v.tipo() != null ? v.tipo().nombre() : "-";
+
+            for (var r : registroService.historialVehiculo(v.id())) {
+                var pagoOpt = pagoService.buscarPorRegistro(r.id());
+                if (pagoOpt.isPresent()) {
+                    var p = pagoOpt.get();
+                    lista.add(new MovimientoCliente(v.placa(), tipo, r.getHoraEntradaTexto(), r.getHoraSalidaTexto(),
+                            "$" + p.valor(), p.getEstado(), p.id()));
+                } else {
+                    // ticket todavia en curso: valor estimado hasta ahora
+                    var valor = valorEstimado(v, r.horaEntrada());
+                    lista.add(new MovimientoCliente(v.placa(), tipo, r.getHoraEntradaTexto(), "-",
+                            "$" + valor, "En curso", null));
+                }
+            }
+        }
+        return lista;
+    }
+
+    private BigDecimal valorEstimado(Vehiculo v, LocalDateTime entrada) {
+        if (v.tipo() == null) return BigDecimal.ZERO;
+        return tarifaService.tarifaActual(v.tipo().id())
+                .map(t -> tarifaService.calcular(t.valorHora(), entrada, LocalDateTime.now()))
+                .orElse(BigDecimal.ZERO);
+    }
+
+    private Usuario usuarioDeSesion(HttpServletRequest request) {
+        var session = request.getSession(false);
+        return session == null ? null : (Usuario) session.getAttribute("usuario");
+    }
+
+    private Optional<UUID> parseUuid(String valor) {
+        if (valor == null || valor.isBlank()) return Optional.empty();
+        try {
+            return Optional.of(UUID.fromString(valor));
+        } catch (IllegalArgumentException e) {
+            return Optional.empty();
+        }
+    }
+}

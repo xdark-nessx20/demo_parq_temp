@@ -10,11 +10,12 @@ import java.util.Optional;
 public class ClienteService {
     private final UsuarioRepository repo = new UsuarioRepository();
 
-    public boolean save(String nombre, String cedula) {
+    public boolean save(String nombre, String cedula, String contrasena) {
         if (nombreInvalido(nombre)) return false;
         if (cedulaInvalida(cedula)) return false;
+        if (contrasenaInvalida(contrasena)) return false;
 
-        return repo.save(new Cliente(nombre, cedula), null);
+        return repo.save(new Cliente(nombre, cedula), contrasena);
     }
 
     public Optional<Cliente> findByCedula(String cedula) {
@@ -35,5 +36,9 @@ public class ClienteService {
 
     private boolean cedulaInvalida(String cedula) {
         return cedula == null || !cedula.matches("^[1-9][0-9]{7}([0-9]{2})?");
+    }
+
+    private boolean contrasenaInvalida(String contrasena) {
+        return contrasena == null || contrasena.length() < 6;
     }
 }

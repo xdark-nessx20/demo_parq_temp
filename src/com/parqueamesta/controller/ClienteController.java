@@ -19,8 +19,9 @@ public class ClienteController extends HttpServlet {
 
         String nombre = request.getParameter("nombre");
         String cedula = request.getParameter("cedula");
+        String contrasena = request.getParameter("contrasena");
 
-        boolean wasSaved = service.save(nombre, cedula);
+        boolean wasSaved = service.save(nombre, cedula, contrasena);
 
         if (wasSaved) {
             response.sendRedirect(request.getContextPath() + "/clientes");

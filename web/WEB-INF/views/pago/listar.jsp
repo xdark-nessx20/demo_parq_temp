@@ -11,6 +11,15 @@
 
     <h2>Pagos registrados</h2>
 
+    <c:if test="${not empty sessionScope.mensaje}">
+        <p class="mensaje mensaje-ok">${sessionScope.mensaje}</p>
+        <c:remove var="mensaje" scope="session" />
+    </c:if>
+    <c:if test="${not empty sessionScope.error}">
+        <p class="mensaje mensaje-error">${sessionScope.error}</p>
+        <c:remove var="error" scope="session" />
+    </c:if>
+
     <p>
         <a href="${pageContext.request.contextPath}/pagos?accion=registrar">Registrar salida y pago</a>
     </p>
@@ -26,6 +35,8 @@
                         <th>Vehículo</th>
                         <th>Valor</th>
                         <th>Fecha de pago</th>
+                        <th>Estado</th>
+                        <th></th>
                     </tr>
                 </thead>
                 <tbody>
@@ -34,6 +45,17 @@
                             <td>${placasPorRegistro[p.idRegistroIngreso]}</td>
                             <td>$${p.valor}</td>
                             <td>${p.fechaPagoTexto}</td>
+                            <td>${p.estado}</td>
+                            <td>
+                                <c:if test="${not p.pagado}">
+                                    <form action="${pageContext.request.contextPath}/pagos" method="post"
+                                          onsubmit="return confirm('¿Cobrar $${p.valor}?');">
+                                        <input type="hidden" name="accion" value="cobrar" />
+                                        <input type="hidden" name="idPago" value="${p.id}" />
+                                        <button type="submit" class="boton-verde boton-chico">Cobrar</button>
+                                    </form>
+                                </c:if>
+                            </td>
                         </tr>
                     </c:forEach>
                 </tbody>

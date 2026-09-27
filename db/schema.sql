@@ -51,5 +51,6 @@ CREATE TABLE IF NOT EXISTS pago (
     id                  uuid          PRIMARY KEY DEFAULT gen_random_uuid(),
     id_registro_ingreso uuid          REFERENCES registro_ingreso(id),
     valor               numeric(10,2) NOT NULL,
-    fecha_pago          timestamp
+    fecha_pago          timestamp,
+    pagado              boolean       NOT NULL DEFAULT false
 );

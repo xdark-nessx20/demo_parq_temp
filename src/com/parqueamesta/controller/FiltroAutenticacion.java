@@ -43,10 +43,25 @@ public class FiltroAutenticacion implements Filter {
             return;
         }
 
-        if (esSoloGerente(path) && usuario.rol() != Rol.GERENTE) {
-            session.setAttribute("error", "No tiene permiso para esa sección");
-            response.sendRedirect(request.getContextPath() + "/dentro");
-            return;
+        if (usuario.rol() == Rol.CLIENTE) {
+            // El cliente solo puede ver su propia cuenta.
+            if (!path.startsWith("/mi-cuenta")) {
+                response.sendRedirect(request.getContextPath() + "/mi-cuenta");
+                return;
+            }
+        } else {
+            // Operador/Gerente no entran al portal del cliente.
+            if (path.startsWith("/mi-cuenta")) {
+                session.setAttribute("error", "No tiene permiso para esa sección");
+                response.sendRedirect(request.getContextPath() + "/dentro");
+                return;
+            }
+            // Secciones exclusivas del Gerente.
+            if (esSoloGerente(path) && usuario.rol() != Rol.GERENTE) {
+                session.setAttribute("error", "No tiene permiso para esa sección");
+                response.sendRedirect(request.getContextPath() + "/dentro");
+                return;
+            }
         }
 
         chain.doFilter(req, res);
