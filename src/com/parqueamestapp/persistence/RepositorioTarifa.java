@@ -1,0 +1,103 @@
+package com.parqueamestapp.persistence;
+
+import com.parqueamestapp.model.Tarifa;
+import com.parqueamestapp.persistence.utils.DB;
+
+import java.math.BigDecimal;
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
+
+public record RepositorioTarifa() {
+
+    public boolean save(Tarifa tarifa) {
+        var query = "INSERT INTO tarifa (id_tipo_vehiculo, valor_hora, anio_vigencia) VALUES (?, ?, ?)";
+        try (var connection = DB.conectar()) {
+            var statement = connection.prepareStatement(query);
+
+            statement.setObject(1, tarifa.idTipoVehiculo());
+            statement.setBigDecimal(2, tarifa.valorHora());
+            statement.setInt(3, tarifa.anioVigencia());
+
+            int affectedRows = statement.executeUpdate();
+            statement.close();
+            return affectedRows > 0;
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public List<Tarifa> getAll() {
+        var query = "SELECT id, id_tipo_vehiculo, valor_hora, anio_vigencia FROM tarifa";
+        var tarifas = new ArrayList<Tarifa>();
+
+        try (Connection connection = DB.conectar(); var statement = connection.prepareStatement(query);
+             var result = statement.executeQuery()) {
+            while (result.next()) {
+                var id = result.getObject("id", UUID.class);
+                var idTipoVehiculo = result.getObject("id_tipo_vehiculo", UUID.class);
+                var valorHora = result.getBigDecimal("valor_hora");
+                var anioVigencia = result.getInt("anio_vigencia");
+                tarifas.add(new Tarifa(id, idTipoVehiculo, valorHora, anioVigencia));
+            }
+            return tarifas;
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public Optional<Tarifa> getByTipoYAnio(UUID idTipoVehiculo, int anio) {
+        var query = "SELECT id, id_tipo_vehiculo, valor_hora, anio_vigencia FROM tarifa " +
+                    "WHERE id_tipo_vehiculo = ? AND anio_vigencia = ?";
+
+        try (var connection = DB.conectar()) {
+            var statement = connection.prepareStatement(query);
+            statement.setObject(1, idTipoVehiculo);
+            statement.setInt(2, anio);
+
+            try (var result = statement.executeQuery()) {
+                if (result.next()) {
+                    var id = result.getObject("id", UUID.class);
+                    var tipo = result.getObject("id_tipo_vehiculo", UUID.class);
+                    var valorHora = result.getBigDecimal("valor_hora");
+                    var anioVigencia = result.getInt("anio_vigencia");
+                    return Optional.of(new Tarifa(id, tipo, valorHora, anioVigencia));
+                }
+            }
+            return Optional.empty();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+    public boolean updateValorHora(UUID id, BigDecimal nuevoValor) {
+        var query = "UPDATE tarifa SET valor_hora = ? WHERE id = ?";
+        try (var connection = DB.conectar()) {
+            var statement = connection.prepareStatement(query);
+            statement.setBigDecimal(1, nuevoValor);
+            statement.setObject(2, id);
+
+            int affectedRows = statement.executeUpdate();
+            statement.close();
+            return affectedRows > 0;
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public boolean delete(UUID id) {
+        var query = "DELETE FROM tarifa WHERE id = ?";
+        try (var connection = DB.conectar()) {
+            var statement = connection.prepareStatement(query);
+            statement.setObject(1, id);
+
+            int affectedRows = statement.executeUpdate();
+            statement.close();
+            return affectedRows > 0;
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+}

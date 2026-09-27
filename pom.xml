@@ -4,12 +4,12 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>com.parqueamesta</groupId>
+    <groupId>com.parqueamestapp</groupId>
     <artifactId>parqueadero</artifactId>
     <version>1.0.0</version>
     <packaging>war</packaging>
 
-    <name>Parqueamesta - Taller Arquitectura por Capas</name>
+    <name>Parqueamestapp - Taller Arquitectura por Capas</name>
 
     <properties>
         <maven.compiler.release>22</maven.compiler.release>
