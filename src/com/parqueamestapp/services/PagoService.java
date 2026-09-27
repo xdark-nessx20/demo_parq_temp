@@ -2,6 +2,7 @@ package com.parqueamestapp.services;
 
 import com.parqueamestapp.model.Pago;
 import com.parqueamestapp.persistence.RepositorioPago;
+import com.parqueamestapp.services.exceptions.PagoYaProcesadoException;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -30,8 +31,13 @@ public class PagoService {
     }
 
     // Marca un pago como pagado (lo paga el cliente online o lo cobra el operador).
+    // Regla: no se puede procesar un pago que ya fue pagado.
     public boolean marcarPagado(UUID idPago) {
         if (idPago == null) return false;
+        var pago = repo.get(idPago).orElseThrow(PagoYaProcesadoException::new);
+        if (pago.pagado()) {
+            throw new PagoYaProcesadoException();
+        }
         return repo.marcarPagado(idPago);
     }
 }

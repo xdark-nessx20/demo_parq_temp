@@ -17,9 +17,7 @@
         </div>
     </div>
 
-    <c:if test="${not empty error}">
-        <p style="color:red;"><strong>${error}</strong></p>
-    </c:if>
+<jsp:include page="/WEB-INF/views/comunes/mensajes.jsp" />
 
     <c:choose>
         <c:when test="${empty tarifas}">

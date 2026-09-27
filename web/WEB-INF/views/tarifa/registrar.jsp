@@ -16,9 +16,7 @@
         </div>
     </div>
 
-    <c:if test="${not empty error}">
-        <p style="color:red;"><strong>${error}</strong></p>
-    </c:if>
+<jsp:include page="/WEB-INF/views/comunes/mensajes.jsp" />
 
     <form action="${pageContext.request.contextPath}/tarifas" method="post">
         <input type="hidden" name="accion" value="registrar" />

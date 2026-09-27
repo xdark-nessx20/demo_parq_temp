@@ -32,12 +32,14 @@ CREATE TABLE IF NOT EXISTS vehiculos (
     tipo_id  uuid        REFERENCES tipos_vehiculo(id)
 );
 
--- Tarifa por hora de cada tipo de vehículo, por año de vigencia
+-- Tarifa por hora de cada tipo de vehículo, por año de vigencia.
+-- Regla: solo UNA tarifa por tipo de vehículo y año (UNIQUE).
 CREATE TABLE IF NOT EXISTS tarifa (
     id               uuid          PRIMARY KEY DEFAULT gen_random_uuid(),
     id_tipo_vehiculo uuid          REFERENCES tipos_vehiculo(id),
     valor_hora       numeric(10,2) NOT NULL,
-    anio_vigencia    integer       NOT NULL
+    anio_vigencia    integer       NOT NULL,
+    UNIQUE (id_tipo_vehiculo, anio_vigencia)
 );
 
 -- Registro de entrada/salida de un vehículo (el "ticket")

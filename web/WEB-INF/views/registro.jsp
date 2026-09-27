@@ -33,9 +33,7 @@
             <h1>Crear cuenta</h1>
             <p class="muted">Para clientes: registra tus vehículos y paga tus parqueos.</p>
 
-            <c:if test="${not empty error}">
-                <p class="mensaje mensaje-error">${error}</p>
-            </c:if>
+<jsp:include page="/WEB-INF/views/comunes/mensajes.jsp" />
 
             <form action="${pageContext.request.contextPath}/registro" method="post">
                 <div>

@@ -89,9 +89,9 @@ public record RepositorioPago() {
         }
     }
 
-    // Marca un pago como pagado.
+    // Marca un pago como pagado (solo si aun no lo estaba: idempotente).
     public boolean marcarPagado(UUID id) {
-        var query = "UPDATE pago SET pagado = true WHERE id = ?";
+        var query = "UPDATE pago SET pagado = true WHERE id = ? AND pagado = false";
 
         try (var connection = DB.conectar()) {
             var statement = connection.prepareStatement(query);

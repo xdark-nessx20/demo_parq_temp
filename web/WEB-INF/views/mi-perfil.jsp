@@ -41,7 +41,7 @@
         <button type="submit">Cambiar contraseña</button>
     </form>
 
-    <jsp:include page="/WEB-INF/views/comunes/modal-mensaje.jsp" />
+    <jsp:include page="/WEB-INF/views/comunes/mensajes.jsp" />
     <script>
         // Envia el cambio de contrasena por AJAX: muestra un modal y conserva los
         // campos si hay error/advertencia; los limpia si fue exitoso.

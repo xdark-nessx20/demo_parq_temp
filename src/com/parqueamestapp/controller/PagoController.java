@@ -6,6 +6,7 @@ import com.parqueamestapp.services.PagoService;
 import com.parqueamestapp.services.RegistroIngresoService;
 import com.parqueamestapp.services.TarifaService;
 import com.parqueamestapp.services.VehiculoService;
+import com.parqueamestapp.services.exceptions.PagoYaProcesadoException;
 import com.parqueamestapp.services.exceptions.TarifaNoEncontradaException;
 import com.parqueamestapp.services.exceptions.TicketNoEncontradoException;
 import com.parqueamestapp.services.exceptions.TicketYaCerradoException;
@@ -56,10 +57,14 @@ public class PagoController extends HttpServlet {
         // El operador cobra un pago pendiente (registra el pago en el sistema).
         if ("cobrar".equals(request.getParameter("accion"))) {
             var idPago = parseUuid(request.getParameter("idPago"));
-            if (idPago.isPresent() && pagoService.marcarPagado(idPago.get())) {
-                request.getSession().setAttribute("mensaje", "Pago cobrado correctamente");
-            } else {
-                request.getSession().setAttribute("error", "No se pudo cobrar el pago");
+            try {
+                if (idPago.isPresent() && pagoService.marcarPagado(idPago.get())) {
+                    request.getSession().setAttribute("mensaje", "Pago cobrado correctamente");
+                } else {
+                    request.getSession().setAttribute("error", "No se pudo cobrar el pago");
+                }
+            } catch (PagoYaProcesadoException e) {
+                request.getSession().setAttribute("error", e.getMessage());
             }
             response.sendRedirect(request.getContextPath() + "/pagos");
             return;
@@ -85,6 +90,9 @@ public class PagoController extends HttpServlet {
             request.setAttribute("error", e.getMessage());
             mostrarFormulario(request, response);
         } catch (TicketNoEncontradoException e) {
+            request.setAttribute("error", e.getMessage());
+            mostrarFormulario(request, response);
+        } catch (com.parqueamestapp.services.exceptions.VehiculoSinDuenoException e) {
             request.setAttribute("error", e.getMessage());
             mostrarFormulario(request, response);
         }

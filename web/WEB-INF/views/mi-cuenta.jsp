@@ -8,19 +8,11 @@
 </head>
 <body>
     <jsp:include page="/WEB-INF/views/comunes/header.jsp" />
+    <jsp:include page="/WEB-INF/views/comunes/mensajes.jsp" />
 
     <h1>Mi cuenta</h1>
     <p class="muted">Vehículos y movimientos de <strong>${sessionScope.usuario.nombre}</strong>.
         <span id="vivo" style="color:#16a34a;">●</span> <span class="muted">En vivo</span></p>
-
-    <c:if test="${not empty sessionScope.mensaje}">
-        <p class="mensaje mensaje-ok">${sessionScope.mensaje}</p>
-        <c:remove var="mensaje" scope="session" />
-    </c:if>
-    <c:if test="${not empty sessionScope.error}">
-        <p class="mensaje mensaje-error">${sessionScope.error}</p>
-        <c:remove var="error" scope="session" />
-    </c:if>
 
     <h2>Registrar mi vehículo</h2>
     <form action="${pageContext.request.contextPath}/mi-cuenta" method="post">

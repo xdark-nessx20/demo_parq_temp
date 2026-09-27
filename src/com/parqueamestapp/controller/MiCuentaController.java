@@ -102,10 +102,14 @@ public class MiCuentaController extends HttpServlet {
             }
         } else {
             var idPago = parseUuid(request.getParameter("idPago"));
-            if (idPago.isPresent() && pagoService.marcarPagado(idPago.get())) {
-                request.getSession().setAttribute("mensaje", "Pago realizado correctamente");
-            } else {
-                request.getSession().setAttribute("error", "No se pudo procesar el pago");
+            try {
+                if (idPago.isPresent() && pagoService.marcarPagado(idPago.get())) {
+                    request.getSession().setAttribute("mensaje", "Pago realizado correctamente");
+                } else {
+                    request.getSession().setAttribute("error", "No se pudo procesar el pago");
+                }
+            } catch (com.parqueamestapp.services.exceptions.PagoYaProcesadoException e) {
+                request.getSession().setAttribute("error", e.getMessage());
             }
         }
 

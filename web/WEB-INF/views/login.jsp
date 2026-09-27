@@ -55,13 +55,7 @@
             <h1>Entra a tu cuenta</h1>
             <p class="muted">Ingresa tu cédula y contraseña.</p>
 
-            <c:if test="${not empty error}">
-                <p class="mensaje mensaje-error">${error}</p>
-            </c:if>
-            <c:if test="${not empty sessionScope.mensaje}">
-                <p class="mensaje mensaje-ok">${sessionScope.mensaje}</p>
-                <c:remove var="mensaje" scope="session" />
-            </c:if>
+<jsp:include page="/WEB-INF/views/comunes/mensajes.jsp" />
 
             <form action="${pageContext.request.contextPath}/login" method="post">
                 <div>

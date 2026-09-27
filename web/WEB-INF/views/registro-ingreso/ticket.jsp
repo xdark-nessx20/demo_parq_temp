@@ -23,10 +23,14 @@
     </table>
 
     <c:if test="${sinDueno}">
-        <p class="mensaje mensaje-error">
-            <strong>Vehículo sin dueño.</strong> No estaba registrado, así que entró sin propietario.
-            Dile al cliente que se registre en la app y lo reclame (Mi cuenta → Reclamar vehículo).
-        </p>
+        <span id="avisoSinDueno" hidden>Vehículo sin dueño: no estaba registrado. Dile al cliente que se registre en la app y lo reclame (Mi cuenta → Reclamar vehículo).</span>
+        <jsp:include page="/WEB-INF/views/comunes/modal-mensaje.jsp" />
+        <script>
+            document.addEventListener('DOMContentLoaded', function () {
+                var t = document.getElementById('avisoSinDueno');
+                if (t && window.mostrarMensaje) window.mostrarMensaje('warn', t.textContent.trim());
+            });
+        </script>
     </c:if>
 
     <div class="acciones">
