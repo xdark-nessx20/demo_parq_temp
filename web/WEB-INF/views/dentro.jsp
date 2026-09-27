@@ -39,6 +39,7 @@
                 <thead>
                     <tr>
                         <th>Placa</th>
+                        <th>Propietario</th>
                         <th>Tipo</th>
                         <th>Entrada</th>
                         <th>Tiempo</th>
@@ -49,6 +50,7 @@
                     <c:forEach var="v" items="${vehiculosDentro}">
                         <tr>
                             <td><span class="placa">${v.placa}</span></td>
+                            <td>${v.owner}</td>
                             <td>${v.tipo}</td>
                             <td>${v.horaEntrada}</td>
                             <td>${v.tiempo}</td>

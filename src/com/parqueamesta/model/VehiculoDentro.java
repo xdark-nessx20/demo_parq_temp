@@ -7,13 +7,15 @@ public class VehiculoDentro {
     private final UUID id;
     private final String placa;
     private final String tipo;
+    private final String owner;
     private final String horaEntrada;
     private final String tiempo;
 
-    public VehiculoDentro(UUID id, String placa, String tipo, String horaEntrada, String tiempo) {
+    public VehiculoDentro(UUID id, String placa, String tipo, String owner, String horaEntrada, String tiempo) {
         this.id = id;
         this.placa = placa;
         this.tipo = tipo;
+        this.owner = owner;
         this.horaEntrada = horaEntrada;
         this.tiempo = tiempo;
     }
@@ -28,6 +30,10 @@ public class VehiculoDentro {
 
     public String getTipo() {
         return tipo;
+    }
+
+    public String getOwner() {
+        return owner;
     }
 
     public String getHoraEntrada() {
