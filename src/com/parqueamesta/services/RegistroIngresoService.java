@@ -4,11 +4,13 @@ import com.parqueamesta.model.Pago;
 import com.parqueamesta.model.RegistroIngreso;
 import com.parqueamesta.persistence.RepositorioPago;
 import com.parqueamesta.persistence.RepositorioRegistroIngreso;
+import com.parqueamesta.persistence.VehiculoRepository;
 import com.parqueamesta.persistence.utils.DB;
 import com.parqueamesta.services.exceptions.TarifaNoEncontradaException;
 import com.parqueamesta.services.exceptions.TicketAbiertoException;
 import com.parqueamesta.services.exceptions.TicketNoEncontradoException;
 import com.parqueamesta.services.exceptions.TicketYaCerradoException;
+import com.parqueamesta.services.exceptions.VehiculoNoEncontradoException;
 
 import java.sql.SQLException;
 import java.time.LocalDateTime;
@@ -21,6 +23,7 @@ public class RegistroIngresoService {
     private final RepositorioPago pagoRepo = new RepositorioPago();
     private final TarifaService tarifaService = new TarifaService();
     private final PagoService pagoService = new PagoService();
+    private final VehiculoRepository vehiculoRepo = new VehiculoRepository();
 
     public RegistroIngresoService() {
     }
@@ -38,11 +41,10 @@ public class RegistroIngresoService {
 
     // Registra la salida: cierra el ticket, calcula el valor y genera el pago.
     // Todo ocurre en una sola transaccion: si falla algo, se revierte (rollback).
-    // Recibe idTipoVehiculo porque el VehiculoRepository aun no tiene getById(id).
-    // TODO: cuando Ivan o Luis termine, ahi si uso Vehiculo (vehiculo.tipo().id()).
+    // El tipo de vehiculo se obtiene del propio vehiculo asociado al ticket.
     public Optional<Pago> registrarSalida(UUID idRegistroIngreso, LocalDateTime horaSalida,
-                                          UUID idOperadorSalida, UUID idTipoVehiculo) {
-        if (idRegistroIngreso == null || horaSalida == null || idTipoVehiculo == null) return Optional.empty();
+                                          UUID idOperadorSalida) {
+        if (idRegistroIngreso == null || horaSalida == null) return Optional.empty();
 
         var registroOpt = repo.get(idRegistroIngreso);
         if (registroOpt.isEmpty()) {
@@ -53,6 +55,10 @@ public class RegistroIngresoService {
         if (registro.horaSalida() != null) {
             throw new TicketYaCerradoException();
         }
+
+        var vehiculo = vehiculoRepo.getById(registro.idVehiculo())
+                .orElseThrow(VehiculoNoEncontradoException::new);
+        var idTipoVehiculo = vehiculo.tipo().id();
 
         var tarifaOpt = tarifaService.tarifaActual(idTipoVehiculo);
         if (tarifaOpt.isEmpty()) {

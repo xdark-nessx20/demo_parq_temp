@@ -5,6 +5,7 @@ import com.parqueamesta.services.RegistroIngresoService;
 import com.parqueamesta.services.exceptions.TarifaNoEncontradaException;
 import com.parqueamesta.services.exceptions.TicketNoEncontradoException;
 import com.parqueamesta.services.exceptions.TicketYaCerradoException;
+import com.parqueamesta.services.exceptions.VehiculoNoEncontradoException;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -32,9 +33,8 @@ public class PagoController extends HttpServlet {
 
         var idRegistro = parseUuid(request.getParameter("idRegistro"));
         var idOperador = parseUuid(request.getParameter("idOperador"));
-        var idTipoVehiculo = parseUuid(request.getParameter("idTipoVehiculo"));
 
-        if (idRegistro.isEmpty() || idOperador.isEmpty() || idTipoVehiculo.isEmpty()) {
+        if (idRegistro.isEmpty() || idOperador.isEmpty()) {
             request.setAttribute("error", "Los IDs no son válidos");
             request.getRequestDispatcher(VISTA_REGISTRAR).forward(request, response);
             return;
@@ -44,12 +44,11 @@ public class PagoController extends HttpServlet {
             var pago = registroService.registrarSalida(
                     idRegistro.get(),
                     LocalDateTime.now(),
-                    idOperador.get(),
-                    idTipoVehiculo.get());
+                    idOperador.get());
 
             request.setAttribute("pago", pago.get());
             request.getRequestDispatcher(VISTA_PAGAR).forward(request, response);
-        } catch (TarifaNoEncontradaException e) {
+        } catch (TarifaNoEncontradaException | VehiculoNoEncontradoException e) {
             request.setAttribute("error", e.getMessage());
             request.getRequestDispatcher(VISTA_REGISTRAR).forward(request, response);
         } catch (TicketYaCerradoException e) {

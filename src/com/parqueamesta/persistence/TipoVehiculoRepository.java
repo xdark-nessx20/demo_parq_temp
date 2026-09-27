@@ -38,9 +38,9 @@ public record TipoVehiculoRepository() {
             try (var result = statement.executeQuery()) {
                 if (result.next()) {
                     UUID id = result.getObject("id", UUID.class);
-                    var _nombre = result.getString("_nombre");
+                    var nombreTipo = result.getString("nombre");
                     var descripcion = result.getString("descripcion");
-                    return Optional.of(new TipoVehiculo(id, _nombre, descripcion));
+                    return Optional.of(new TipoVehiculo(id, nombreTipo, descripcion));
                 }
             }
             return Optional.empty();

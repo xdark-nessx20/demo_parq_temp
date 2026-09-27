@@ -23,12 +23,6 @@
         </div>
 
         <div>
-            <label for="idTipoVehiculo">ID del tipo de vehículo:</label>
-            <input type="text" id="idTipoVehiculo" name="idTipoVehiculo"
-                   value="${param.idTipoVehiculo}" required />
-        </div>
-
-        <div>
             <label for="idOperador">ID del operador:</label>
             <input type="text" id="idOperador" name="idOperador"
                    value="${param.idOperador}" required />

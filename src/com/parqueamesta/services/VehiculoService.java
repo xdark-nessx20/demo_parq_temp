@@ -49,7 +49,7 @@ public class VehiculoService {
     }
 
     private boolean placaInvalida(String placa) {
-        return placa == null || !placa.matches("[A-Z]{3}-[0-9]{3}]");
+        return placa == null || !placa.matches("[A-Z]{3}-[0-9]{3}");
     }
 
     private boolean marcaInvalida(String marca) {

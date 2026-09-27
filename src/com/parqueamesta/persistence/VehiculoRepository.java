@@ -37,7 +37,7 @@ public record VehiculoRepository() {
                        u.id as own_id, u.nombre as own_nombre, u.cedula as own_cedula, 
                        t.id as ty_id, t.nombre as ty_nombre
                 FROM vehiculos v
-                JOIN users u ON v.owner_id = u.id 
+                JOIN clientes u ON v.owner_id = u.id 
                 JOIN tipos_vehiculo t ON v.tipo_id = t.id
                 WHERE v.placa = ?
                 """;
@@ -63,6 +63,45 @@ public record VehiculoRepository() {
                     var tipo = new TipoVehiculo(tipo_id, tipo_name, null);
 
                     return Optional.of(new Vehiculo(id, placa, marca, owner, tipo));
+                }
+            }
+            return Optional.empty();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public Optional<Vehiculo> getById(UUID id) {
+        var query = """
+                SELECT v.id, v.placa, v.marca, 
+                       u.id as own_id, u.nombre as own_nombre, u.cedula as own_cedula, 
+                       t.id as ty_id, t.nombre as ty_nombre
+                FROM vehiculos v
+                JOIN clientes u ON v.owner_id = u.id 
+                JOIN tipos_vehiculo t ON v.tipo_id = t.id
+                WHERE v.id = ?
+                """;
+
+        try (Connection connection = DB.conectar()) {
+            var statement = connection.prepareStatement(query);
+            statement.setObject(1, id);
+
+            try (var result = statement.executeQuery()) {
+                if (result.next()) {
+                    var vid = result.getObject("id", UUID.class);
+                    var placa = result.getString("placa");
+                    var marca = result.getString("marca");
+
+                    var owner_id = result.getObject("own_id", UUID.class);
+                    var owner_name = result.getString("own_nombre");
+                    var owner_cedula = result.getString("own_cedula");
+                    var owner = new Cliente(owner_id, owner_name, owner_cedula);
+
+                    var tipo_id = result.getObject("ty_id", UUID.class);
+                    var tipo_name = result.getString("ty_nombre");
+                    var tipo = new TipoVehiculo(tipo_id, tipo_name, null);
+
+                    return Optional.of(new Vehiculo(vid, placa, marca, owner, tipo));
                 }
             }
             return Optional.empty();

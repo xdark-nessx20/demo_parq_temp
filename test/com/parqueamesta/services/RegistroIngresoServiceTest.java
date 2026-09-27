@@ -114,7 +114,7 @@ public class RegistroIngresoServiceTest {
         var ticket = service.registrarIngreso(fixture.idVehiculo(), entrada, UUID.randomUUID());
         assertTrue(ticket.isPresent());
 
-        var pago = service.registrarSalida(ticket.get().id(), salida, UUID.randomUUID(), fixture.idTipoVehiculo());
+        var pago = service.registrarSalida(ticket.get().id(), salida, UUID.randomUUID());
 
         assertTrue(pago.isPresent());
         assertEquals(new BigDecimal("4000.00"), pago.get().valor());
@@ -129,13 +129,11 @@ public class RegistroIngresoServiceTest {
         var ticket = service.registrarIngreso(fixture.idVehiculo(), entrada, UUID.randomUUID());
         assertTrue(ticket.isPresent());
 
-        var primero = service.registrarSalida(ticket.get().id(), entrada.plusHours(1), UUID.randomUUID(),
-                fixture.idTipoVehiculo());
+        var primero = service.registrarSalida(ticket.get().id(), entrada.plusHours(1), UUID.randomUUID());
 
         assertTrue(primero.isPresent());
         assertThrows(TicketYaCerradoException.class, () ->
-                service.registrarSalida(ticket.get().id(), entrada.plusHours(2), UUID.randomUUID(),
-                        fixture.idTipoVehiculo()));
+                service.registrarSalida(ticket.get().id(), entrada.plusHours(2), UUID.randomUUID()));
     }
 
     @Test
@@ -147,8 +145,7 @@ public class RegistroIngresoServiceTest {
     @Test
     void registrarSalida_conTicketInexistenteLanzaExcepcion() {
         assertThrows(TicketNoEncontradoException.class, () ->
-                service.registrarSalida(UUID.randomUUID(), LocalDateTime.now(), UUID.randomUUID(),
-                        UUID.randomUUID()));
+                service.registrarSalida(UUID.randomUUID(), LocalDateTime.now(), UUID.randomUUID()));
     }
 
     @Test
@@ -173,8 +170,7 @@ public class RegistroIngresoServiceTest {
 
         // El INSERT del pago falla (overflow numerico) -> SQLException -> RuntimeException
         assertThrows(RuntimeException.class, () ->
-                service.registrarSalida(ticket.get().id(), entrada.plusHours(2), UUID.randomUUID(),
-                        fixture.idTipoVehiculo()));
+                service.registrarSalida(ticket.get().id(), entrada.plusHours(2), UUID.randomUUID()));
 
         // La transaccion se revirtio: el ticket sigue abierto (hora_salida = null)
         var ticketAbierto = service.ticketActivo(fixture.idVehiculo());
