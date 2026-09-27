@@ -16,9 +16,7 @@
         </div>
     </div>
 
-    <c:if test="${not empty error}">
-        <p class="mensaje mensaje-error">${error}</p>
-    </c:if>
+<jsp:include page="/WEB-INF/views/comunes/mensajes.jsp" />
 
     <form action="${pageContext.request.contextPath}/gerentes" method="post">
         <input type="hidden" name="accion" value="editar" />

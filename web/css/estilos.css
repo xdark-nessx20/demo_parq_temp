@@ -371,6 +371,7 @@ body > .auth { max-width: 940px; padding: 0; margin: 5vh auto; }
     transform: scale(.92) translateY(10px); transition: transform .25s ease;
 }
 .modal-overlay.abierto .modal-mensaje { transform: scale(1) translateY(0); }
+.modal-mensaje .mm-titulo { margin: 0 0 8px; font-size: 1.05rem; }
 .modal-mensaje p { margin: 0 0 18px; color: var(--text); }
 .mm-icono {
     width: 48px; height: 48px; border-radius: 50%; margin: 0 auto 14px;

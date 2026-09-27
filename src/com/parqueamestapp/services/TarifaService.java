@@ -2,6 +2,7 @@ package com.parqueamestapp.services;
 
 import com.parqueamestapp.model.Tarifa;
 import com.parqueamestapp.persistence.RepositorioTarifa;
+import com.parqueamestapp.services.exceptions.TarifaDuplicadaException;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -18,8 +19,12 @@ public class TarifaService {
     public TarifaService() {
     }
 
+    // Regla: solo puede existir UNA tarifa por tipo de vehiculo y anio.
     public boolean save(UUID idTipoVehiculo, BigDecimal valorHora, int anioVigencia) {
         if (idTipoVehiculo == null || valorHora == null || valorHora.signum() <= 0) return false;
+        if (repo.getByTipoYAnio(idTipoVehiculo, anioVigencia).isPresent()) {
+            throw new TarifaDuplicadaException();
+        }
         return repo.save(new Tarifa(idTipoVehiculo, valorHora, anioVigencia));
     }
 

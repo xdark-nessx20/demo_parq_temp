@@ -2,7 +2,6 @@ package com.parqueamestapp.controller;
 
 import com.parqueamestapp.model.RegistroIngreso;
 import com.parqueamestapp.model.Usuario;
-import com.parqueamestapp.services.ClienteService;
 import com.parqueamestapp.services.OperadorService;
 import com.parqueamestapp.services.RegistroIngresoService;
 import com.parqueamestapp.services.TipoVehiculoService;
@@ -31,7 +30,6 @@ public class RegistroIngresoController extends HttpServlet {
     private final VehiculoService vehiculoService = new VehiculoService();
     private final OperadorService operadorService = new OperadorService();
     private final TipoVehiculoService tipoService = new TipoVehiculoService();
-    private final ClienteService clienteService = new ClienteService();
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
@@ -53,17 +51,12 @@ public class RegistroIngresoController extends HttpServlet {
             return;
         }
 
-        // Si el vehiculo no existe, se crea en este momento CON su dueno (cliente).
+        // Si el vehiculo no existe, se crea SIN dueno: el cliente lo reclama luego
+        // en la app (asi el operador no puede "asignarselo" a quien no es).
         var vehiculo = vehiculoService.findByPlaca(placa).orElse(null);
         if (vehiculo == null) {
-            String cedulaCliente = request.getParameter("cedulaCliente");
-            if (cedulaCliente == null || cedulaCliente.isBlank()) {
-                request.setAttribute("error", "El vehículo es nuevo: indique el propietario (cliente)");
-                mostrarFormulario(request, response);
-                return;
-            }
-            if (!vehiculoService.save(placa, cedulaCliente, tipoNombre)) {
-                request.setAttribute("error", "No se pudo registrar el vehículo (revise el propietario)");
+            if (!vehiculoService.save(placa, null, tipoNombre)) {
+                request.setAttribute("error", "No se pudo registrar el vehículo (revise la placa según el tipo)");
                 mostrarFormulario(request, response);
                 return;
             }
@@ -78,6 +71,7 @@ public class RegistroIngresoController extends HttpServlet {
         try {
             var ticket = service.registrarIngreso(vehiculo.id(), LocalDateTime.now(), usuario.id());
             request.setAttribute("ticket", ticket.get());
+            request.setAttribute("sinDueno", vehiculo.owner() == null);
             cargarMapas(request);
             request.getRequestDispatcher(VISTA_TICKET).forward(request, response);
         } catch (TicketAbiertoException e) {
@@ -154,7 +148,6 @@ public class RegistroIngresoController extends HttpServlet {
     private void mostrarFormulario(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         request.setAttribute("tipos", tipoService.findAll());
-        request.setAttribute("clientes", clienteService.findAll());
         request.getRequestDispatcher(VISTA_REGISTRAR).forward(request, response);
     }
 

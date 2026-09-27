@@ -8,6 +8,7 @@
 </head>
 <body>
     <jsp:include page="/WEB-INF/views/comunes/header.jsp" />
+    <jsp:include page="/WEB-INF/views/comunes/mensajes.jsp" />
 
     <div class="page-head">
         <h2>Ocurrió un error</h2>
@@ -16,16 +17,7 @@
         </div>
     </div>
 
-    <p>
-        <c:choose>
-            <c:when test="${not empty error}">
-                ${error}
-            </c:when>
-            <c:otherwise>
-                No se pudo completar la operación solicitada.
-            </c:otherwise>
-        </c:choose>
-    </p>
+    <p class="muted">No se pudo completar la operación solicitada.</p>
 
 </body>
 </html>

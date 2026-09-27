@@ -86,7 +86,14 @@ public class TarifaController extends HttpServlet {
             return;
         }
 
-        boolean ok = service.save(idTipoVehiculo.get(), valorHora.get(), anioVigencia.get());
+        boolean ok;
+        try {
+            ok = service.save(idTipoVehiculo.get(), valorHora.get(), anioVigencia.get());
+        } catch (com.parqueamestapp.services.exceptions.TarifaDuplicadaException e) {
+            request.setAttribute("error", e.getMessage());
+            mostrarFormulario(request, response);
+            return;
+        }
 
         if (ok) {
             response.sendRedirect(request.getContextPath() + "/tarifas");

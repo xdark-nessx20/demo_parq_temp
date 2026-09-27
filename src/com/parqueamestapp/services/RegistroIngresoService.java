@@ -11,6 +11,7 @@ import com.parqueamestapp.services.exceptions.TicketAbiertoException;
 import com.parqueamestapp.services.exceptions.TicketNoEncontradoException;
 import com.parqueamestapp.services.exceptions.TicketYaCerradoException;
 import com.parqueamestapp.services.exceptions.VehiculoNoEncontradoException;
+import com.parqueamestapp.services.exceptions.VehiculoSinDuenoException;
 
 import java.sql.SQLException;
 import java.time.LocalDateTime;
@@ -58,6 +59,12 @@ public class RegistroIngresoService {
 
         var vehiculo = vehiculoRepo.getById(registro.idVehiculo())
                 .orElseThrow(VehiculoNoEncontradoException::new);
+
+        // Regla: no se puede dar salida a un vehiculo sin dueno.
+        if (vehiculo.owner() == null) {
+            throw new VehiculoSinDuenoException();
+        }
+
         var idTipoVehiculo = vehiculo.tipo().id();
 
         var tarifaOpt = tarifaService.tarifaActual(idTipoVehiculo);
