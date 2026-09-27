@@ -27,16 +27,6 @@
             </select>
         </div>
 
-        <div>
-            <label for="idOperador">Operador:</label>
-            <select id="idOperador" name="idOperador" required>
-                <option value="">-- Seleccione un operador --</option>
-                <c:forEach var="o" items="${operadores}">
-                    <option value="${o.id}">${o.nombre} (${o.cedula})</option>
-                </c:forEach>
-            </select>
-        </div>
-
         <button type="submit">Registrar salida</button>
     </form>
 

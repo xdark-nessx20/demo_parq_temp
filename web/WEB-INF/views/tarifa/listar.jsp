@@ -34,7 +34,7 @@
                     <c:forEach var="t" items="${tarifas}">
                         <tr>
                             <td>${tipoNombres[t.idTipoVehiculo]}</td>
-                            <td>$${t.valorHora}</td>
+                            <td>$${t.valorHoraTexto}</td>
                             <td>${t.anioVigencia}</td>
                         </tr>
                     </c:forEach>
@@ -49,7 +49,7 @@
                     <select id="idTarifa" name="idTarifa" required>
                         <option value="">-- Seleccione una tarifa --</option>
                         <c:forEach var="t" items="${tarifas}">
-                            <option value="${t.id}">$${t.valorHora} / hora (${t.anioVigencia})</option>
+                            <option value="${t.id}">$${t.valorHoraTexto} / hora (${t.anioVigencia})</option>
                         </c:forEach>
                     </select>
                 </div>

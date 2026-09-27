@@ -15,6 +15,8 @@ import java.util.UUID;
 
 public record VehiculoRepository() {
     public boolean save(Vehiculo vehiculo) {
+        if (get(vehiculo.placa()).isPresent()) return false; // la placa ya existe
+
         var query = "INSERT INTO vehiculos (placa, owner_id, tipo_id) VALUES (?, ?, ?)";
         try (Connection conn = DB.conectar()) {
             var statement = conn.prepareStatement(query);
@@ -214,7 +216,7 @@ public record VehiculoRepository() {
 
             return affectedRows > 0;
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            return false; // p.ej. el vehiculo tiene tickets asociados (FK)
         }
     }
 

@@ -72,6 +72,10 @@ public class VehiculoService {
         return repo.updateTipo(placa, t.get().id());
     }
 
+    public boolean existePlaca(String placa) {
+        return placa != null && repo.get(placa).isPresent();
+    }
+
     // Valida el formato de placa segun el tipo (Carro: ABC-123 · Moto: ABC-12A).
     public boolean placaValidaPara(String nombreTipo, String placa) {
         return placaValida(nombreTipo, placa);

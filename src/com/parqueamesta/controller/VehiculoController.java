@@ -50,17 +50,6 @@ public class VehiculoController extends HttpServlet {
         }
     }
 
-    @Override
-    protected void doDelete(HttpServletRequest request, HttpServletResponse response)
-            throws IOException {
-        boolean wasDeleted = service.delete(request.getParameter("placa"));
-        if (wasDeleted) {
-            response.sendRedirect(request.getContextPath() + "/vehiculos");
-        } else {
-            response.sendError(HttpServletResponse.SC_NOT_FOUND, "No se encontró el vehículo");
-        }
-    }
-
     private void listar(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         request.setAttribute("vehiculos", service.findAll());
@@ -92,6 +81,12 @@ public class VehiculoController extends HttpServlet {
         String placa = request.getParameter("placa");
         String ownerCedula = request.getParameter("cedulaCliente");
         String tipoNombre = request.getParameter("tipoVehiculo");
+
+        if (service.existePlaca(placa)) {
+            request.setAttribute("error", "Ya existe un vehículo con la placa " + placa);
+            mostrarFormulario(request, response);
+            return;
+        }
 
         if (service.save(placa, ownerCedula, tipoNombre)) {
             response.sendRedirect(request.getContextPath() + "/vehiculos");
@@ -131,7 +126,11 @@ public class VehiculoController extends HttpServlet {
 
     private void eliminar(HttpServletRequest request, HttpServletResponse response)
             throws IOException {
-        service.delete(request.getParameter("placa"));
+        if (service.delete(request.getParameter("placa"))) {
+            request.getSession().setAttribute("mensaje", "Vehículo eliminado");
+        } else {
+            request.getSession().setAttribute("error", "No se pudo eliminar (puede tener tickets asociados)");
+        }
         response.sendRedirect(request.getContextPath() + "/vehiculos");
     }
 }

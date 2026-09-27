@@ -1,6 +1,6 @@
 package com.parqueamesta.controller;
 
-import com.parqueamesta.services.OperadorService;
+import com.parqueamesta.model.Usuario;
 import com.parqueamesta.services.PagoService;
 import com.parqueamesta.services.RegistroIngresoService;
 import com.parqueamesta.services.TarifaService;
@@ -27,16 +27,23 @@ public class PagoController extends HttpServlet {
     private static final String VISTA_LISTAR = "/WEB-INF/views/pago/listar.jsp";
     private static final String VISTA_REGISTRAR = "/WEB-INF/views/pago/registrar.jsp";
     private static final String VISTA_ERROR = "/WEB-INF/views/error.jsp";
+    private static final String VISTA_LOGIN = "/WEB-INF/views/login.jsp";
 
     private final RegistroIngresoService registroService = new RegistroIngresoService();
     private final PagoService pagoService = new PagoService();
-    private final OperadorService operadorService = new OperadorService();
     private final TarifaService tarifaService = new TarifaService();
     private final VehiculoService vehiculoService = new VehiculoService();
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws IOException, ServletException {
+
+        var usuario = usuarioDeSesion(request);
+        if (usuario == null) {
+            request.setAttribute("error", "Debe iniciar sesión");
+            request.getRequestDispatcher(VISTA_LOGIN).forward(request, response);
+            return;
+        }
 
         // El operador cobra un pago pendiente (registra el pago en el sistema).
         if ("cobrar".equals(request.getParameter("accion"))) {
@@ -51,20 +58,15 @@ public class PagoController extends HttpServlet {
         }
 
         var idRegistro = parseUuid(request.getParameter("idRegistro"));
-        var idOperador = parseUuid(request.getParameter("idOperador"));
-
-        if (idRegistro.isEmpty() || idOperador.isEmpty()) {
-            request.setAttribute("error", "Los IDs no son válidos");
-            request.getRequestDispatcher(VISTA_REGISTRAR).forward(request, response);
+        if (idRegistro.isEmpty()) {
+            request.setAttribute("error", "Seleccione un ticket");
+            mostrarFormulario(request, response);
             return;
         }
 
         try {
-            var pago = registroService.registrarSalida(
-                    idRegistro.get(),
-                    LocalDateTime.now(),
-                    idOperador.get());
-
+            // El operador de la salida es el usuario de la sesión.
+            var pago = registroService.registrarSalida(idRegistro.get(), LocalDateTime.now(), usuario.id());
             request.setAttribute("pago", pago.get());
             cargarDesglose(request, idRegistro.get());
             request.getRequestDispatcher(VISTA_PAGAR).forward(request, response);
@@ -97,8 +99,7 @@ public class PagoController extends HttpServlet {
 
     private void listar(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        var pagos = pagoService.listar();
-        request.setAttribute("pagos", pagos);
+        request.setAttribute("pagos", pagoService.listar());
         cargarPlacas(request);
         request.getRequestDispatcher(VISTA_LISTAR).forward(request, response);
     }
@@ -114,7 +115,6 @@ public class PagoController extends HttpServlet {
         }
 
         var pago = pagoService.buscarPorRegistro(idRegistro.get());
-
         if (pago.isEmpty()) {
             request.setAttribute("error", "Pago no encontrado");
             request.getRequestDispatcher(VISTA_ERROR).forward(request, response);
@@ -123,6 +123,18 @@ public class PagoController extends HttpServlet {
         request.setAttribute("pago", pago.get());
         cargarDesglose(request, idRegistro.get());
         request.getRequestDispatcher(VISTA_PAGAR).forward(request, response);
+    }
+
+    private void registrar(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        mostrarFormulario(request, response);
+    }
+
+    // Carga los tickets abiertos (para el desplegable) y muestra el formulario.
+    private void mostrarFormulario(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        request.setAttribute("tickets", registroService.ticketsActivos());
+        request.getRequestDispatcher(VISTA_REGISTRAR).forward(request, response);
     }
 
     // Carga el desglose del pago (vehiculo, horas, tarifa por hora) para la pantalla de pago.
@@ -140,7 +152,7 @@ public class PagoController extends HttpServlet {
         if (vehiculo.tipo() == null) return;
 
         tarifaService.tarifaActual(vehiculo.tipo().id()).ifPresent(t -> {
-            request.setAttribute("valorHora", t.valorHora());
+            request.setAttribute("valorHoraTexto", com.parqueamesta.util.Formato.moneda(t.valorHora()));
             request.setAttribute("horas",
                     tarifaService.horasCobradasPublico(registro.horaEntrada(), registro.horaSalida()));
         });
@@ -156,17 +168,9 @@ public class PagoController extends HttpServlet {
         request.setAttribute("placasPorRegistro", placasPorRegistro);
     }
 
-    private void registrar(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        mostrarFormulario(request, response);
-    }
-
-    // Carga los tickets abiertos y los operadores (para los desplegables) y muestra el formulario.
-    private void mostrarFormulario(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        request.setAttribute("tickets", registroService.ticketsActivos());
-        request.setAttribute("operadores", operadorService.findAll());
-        request.getRequestDispatcher(VISTA_REGISTRAR).forward(request, response);
+    private Usuario usuarioDeSesion(HttpServletRequest request) {
+        var session = request.getSession(false);
+        return session == null ? null : (Usuario) session.getAttribute("usuario");
     }
 
     private Optional<UUID> parseUuid(String valor) {

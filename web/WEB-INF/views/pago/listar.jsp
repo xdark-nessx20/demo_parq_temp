@@ -43,7 +43,7 @@
                     <c:forEach var="p" items="${pagos}">
                         <tr>
                             <td>${placasPorRegistro[p.idRegistroIngreso]}</td>
-                            <td>$${p.valor}</td>
+                            <td>$${p.valorTexto}</td>
                             <td>${p.fechaPagoTexto}</td>
                             <td>${p.estado}</td>
                             <td>

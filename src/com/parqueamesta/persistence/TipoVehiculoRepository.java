@@ -107,7 +107,7 @@ public record TipoVehiculoRepository() {
             statement.close();
             return affectedRows > 0;
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            return false; // p.ej. el tipo tiene tarifas o vehiculos asociados (FK)
         }
     }
 }

@@ -19,6 +19,8 @@ import java.util.UUID;
 public record UsuarioRepository() {
 
     public boolean save(Usuario usuario, String contrasenaPlano) {
+        if (get(usuario.cedula()).isPresent()) return false; // la cedula ya existe
+
         var query = "INSERT INTO usuarios (nombre, cedula, rol, contrasena_hash) VALUES (?, ?, ?, ?)";
 
         try (var connection = DB.conectar()) {
@@ -123,6 +125,10 @@ public record UsuarioRepository() {
         }
     }
 
+    public boolean existe(String cedula) {
+        return get(cedula).isPresent();
+    }
+
     public boolean delete(String cedula) {
         var query = "DELETE FROM usuarios WHERE cedula = ?";
         try (var connection = DB.conectar()) {
@@ -132,7 +138,7 @@ public record UsuarioRepository() {
             statement.close();
             return affectedRows > 0;
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            return false; // p.ej. el usuario tiene vehiculos asociados (FK)
         }
     }
 

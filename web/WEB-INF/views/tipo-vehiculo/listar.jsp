@@ -8,6 +8,7 @@
 </head>
 <body>
     <jsp:include page="/WEB-INF/views/comunes/header.jsp" />
+    <jsp:include page="/WEB-INF/views/comunes/mensajes.jsp" />
 
     <h2>Tipos de vehículo registrados</h2>
 

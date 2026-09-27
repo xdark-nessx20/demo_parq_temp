@@ -15,9 +15,9 @@
         <tr><th>Vehículo</th><td>${vehiculoPlaca}</td></tr>
         <tr><th>Hora entrada</th><td>${horaEntrada}</td></tr>
         <tr><th>Hora salida</th><td>${horaSalida}</td></tr>
-        <tr><th>Tarifa por hora</th><td>$${valorHora}</td></tr>
+        <tr><th>Tarifa por hora</th><td>$${valorHoraTexto}</td></tr>
         <tr><th>Horas cobradas</th><td>${horas}</td></tr>
-        <tr><th>Total a pagar</th><td>$${pago.valor}</td></tr>
+        <tr><th>Total a pagar</th><td>$${pago.valorTexto}</td></tr>
         <tr><th>Fecha de pago</th><td>${pago.fechaPagoTexto}</td></tr>
     </table>
 

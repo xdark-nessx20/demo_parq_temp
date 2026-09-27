@@ -64,7 +64,9 @@ public class MiCuentaController extends HttpServlet {
         if ("registrarVehiculo".equals(accion)) {
             var placa = request.getParameter("placa");
             var tipoNombre = request.getParameter("tipoVehiculo");
-            if (vehiculoService.save(placa, usuario.cedula(), tipoNombre)) {
+            if (vehiculoService.existePlaca(placa)) {
+                request.getSession().setAttribute("error", "Ya existe un vehículo con la placa " + placa);
+            } else if (vehiculoService.save(placa, usuario.cedula(), tipoNombre)) {
                 request.getSession().setAttribute("mensaje", "Vehículo registrado correctamente");
             } else {
                 request.getSession().setAttribute("error", "No se pudo registrar (revise la placa según el tipo)");
@@ -92,11 +94,11 @@ public class MiCuentaController extends HttpServlet {
                 if (pagoOpt.isPresent()) {
                     var p = pagoOpt.get();
                     lista.add(new MovimientoCliente(v.placa(), tipo, r.getHoraEntradaTexto(), r.getHoraSalidaTexto(),
-                            "$" + p.valor(), p.getEstado(), p.id()));
+                            "$" + com.parqueamesta.util.Formato.moneda(p.valor()), p.getEstado(), p.id()));
                 } else {
                     var valor = valorEstimado(v, r.horaEntrada());
                     lista.add(new MovimientoCliente(v.placa(), tipo, r.getHoraEntradaTexto(), "-",
-                            "$" + valor, "En curso", null));
+                            "$" + com.parqueamesta.util.Formato.moneda(valor), "En curso", null));
                 }
             }
         }

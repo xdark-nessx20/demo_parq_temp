@@ -58,6 +58,11 @@ public class Tarifa {
         return anioVigencia;
     }
 
+    // Valor con separador de miles (p.ej. 1.800,00)
+    public String getValorHoraTexto() {
+        return com.parqueamesta.util.Formato.moneda(valorHora);
+    }
+
     // Setters
     public void setIdTipoVehiculo(UUID idTipoVehiculo) {
         this.idTipoVehiculo = idTipoVehiculo;

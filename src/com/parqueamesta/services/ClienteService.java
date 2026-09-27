@@ -41,6 +41,10 @@ public class ClienteService {
         return repo.delete(cedula);
     }
 
+    public boolean existeCedula(String cedula) {
+        return cedula != null && repo.get(cedula).isPresent();
+    }
+
     private boolean nombreInvalido(String nombre) {
         return nombre == null || nombre.isBlank() || nombre.length() < 6;
     }

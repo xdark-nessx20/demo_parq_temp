@@ -110,7 +110,12 @@ public class TipoVehiculoController extends HttpServlet {
 
     private void eliminar(HttpServletRequest request, HttpServletResponse response)
             throws IOException {
-        parseUuid(request.getParameter("id")).ifPresent(service::delete);
+        var id = parseUuid(request.getParameter("id"));
+        if (id.isPresent() && service.delete(id.get())) {
+            request.getSession().setAttribute("mensaje", "Tipo eliminado");
+        } else {
+            request.getSession().setAttribute("error", "No se pudo eliminar (puede tener tarifas o vehículos asociados)");
+        }
         response.sendRedirect(request.getContextPath() + "/tipos-vehiculo");
     }
 

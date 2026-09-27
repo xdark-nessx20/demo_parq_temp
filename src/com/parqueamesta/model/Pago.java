@@ -82,6 +82,11 @@ public class Pago {
         return fechaPago == null ? "" : fechaPago.format(FORMATO);
     }
 
+    // Valor con separador de miles (p.ej. 1.800,00)
+    public String getValorTexto() {
+        return com.parqueamesta.util.Formato.moneda(valor);
+    }
+
     public String getEstado() {
         return pagado ? "Pagado" : "Pendiente";
     }

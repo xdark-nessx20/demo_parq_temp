@@ -70,10 +70,16 @@ public class GerenteController extends HttpServlet {
         String cedula = request.getParameter("cedula");
         String contrasena = request.getParameter("contrasena");
 
+        if (service.existeCedula(cedula)) {
+            request.setAttribute("error", "Ya existe un usuario con la cédula " + cedula);
+            request.getRequestDispatcher(VISTA_REGISTRAR).forward(request, response);
+            return;
+        }
+
         if (service.save(nombre, cedula, contrasena)) {
             response.sendRedirect(request.getContextPath() + "/gerentes");
         } else {
-            request.setAttribute("error", "No se ha podido realizar la operacion");
+            request.setAttribute("error", "No se ha podido realizar la operacion (revise los datos)");
             request.getRequestDispatcher(VISTA_REGISTRAR).forward(request, response);
         }
     }
@@ -106,7 +112,11 @@ public class GerenteController extends HttpServlet {
 
     private void eliminar(HttpServletRequest request, HttpServletResponse response)
             throws IOException {
-        service.delete(request.getParameter("cedula"));
+        if (service.delete(request.getParameter("cedula"))) {
+            request.getSession().setAttribute("mensaje", "Gerente eliminado");
+        } else {
+            request.getSession().setAttribute("error", "No se pudo eliminar");
+        }
         response.sendRedirect(request.getContextPath() + "/gerentes");
     }
 }
