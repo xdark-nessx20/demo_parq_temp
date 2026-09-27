@@ -7,6 +7,7 @@
     <title>Registrar tarifa</title>
 </head>
 <body>
+    <jsp:include page="/WEB-INF/views/comunes/header.jsp" />
 
     <h2>Registrar nueva tarifa</h2>
 
@@ -18,9 +19,13 @@
         <input type="hidden" name="accion" value="registrar" />
 
         <div>
-            <label for="idTipoVehiculo">ID del tipo de vehículo:</label>
-            <input type="text" id="idTipoVehiculo" name="idTipoVehiculo"
-                   value="${param.idTipoVehiculo}" required />
+            <label for="idTipoVehiculo">Tipo de vehículo:</label>
+            <select id="idTipoVehiculo" name="idTipoVehiculo" required>
+                <option value="">-- Seleccione un tipo --</option>
+                <c:forEach var="t" items="${tipos}">
+                    <option value="${t.id}">${t.nombre}</option>
+                </c:forEach>
+            </select>
         </div>
 
         <div>
@@ -32,7 +37,7 @@
         <div>
             <label for="anioVigencia">Año de vigencia:</label>
             <input type="number" id="anioVigencia" name="anioVigencia"
-                   value="${param.anioVigencia}" required />
+                   value="${empty param.anioVigencia ? anioActual : param.anioVigencia}" required />
         </div>
 
         <button type="submit">Registrar</button>

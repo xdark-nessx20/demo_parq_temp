@@ -7,6 +7,7 @@
     <title>Registros de ingreso</title>
 </head>
 <body>
+    <jsp:include page="/WEB-INF/views/comunes/header.jsp" />
 
     <h2>Registros de ingreso</h2>
 
@@ -24,8 +25,7 @@
             <table border="1" cellpadding="6">
                 <thead>
                     <tr>
-                        <th>ID ticket</th>
-                        <th>ID vehículo</th>
+                        <th>Vehículo</th>
                         <th>Hora entrada</th>
                         <th>Hora salida</th>
                         <th>Operador entrada</th>
@@ -35,12 +35,11 @@
                 <tbody>
                     <c:forEach var="r" items="${ingresos}">
                         <tr>
-                            <td>${r.id}</td>
-                            <td>${r.idVehiculo}</td>
-                            <td>${r.horaEntrada}</td>
-                            <td>${r.horaSalida}</td>
-                            <td>${r.idOperadorEntrada}</td>
-                            <td>${r.idOperadorSalida}</td>
+                            <td>${placas[r.idVehiculo]}</td>
+                            <td>${r.horaEntradaTexto}</td>
+                            <td>${r.horaSalidaTexto}</td>
+                            <td>${operadores[r.idOperadorEntrada]}</td>
+                            <td>${operadores[r.idOperadorSalida]}</td>
                         </tr>
                     </c:forEach>
                 </tbody>

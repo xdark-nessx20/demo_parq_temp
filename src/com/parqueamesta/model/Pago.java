@@ -2,10 +2,13 @@ package com.parqueamesta.model;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Objects;
 import java.util.UUID;
 
 public class Pago {
+    private static final DateTimeFormatter FORMATO = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
+
     private UUID id;
     private UUID idRegistroIngreso;
     private BigDecimal valor;
@@ -57,6 +60,11 @@ public class Pago {
 
     public LocalDateTime getFechaPago() {
         return fechaPago;
+    }
+
+    // Fecha formateada para mostrar en pantalla (dd/MM/yyyy HH:mm)
+    public String getFechaPagoTexto() {
+        return fechaPago == null ? "" : fechaPago.format(FORMATO);
     }
 
     // Setters

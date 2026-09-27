@@ -7,6 +7,7 @@
     <title>Registrar tipo de vehículo</title>
 </head>
 <body>
+    <jsp:include page="/WEB-INF/views/comunes/header.jsp" />
 
     <h2>Registrar tipo de vehículo</h2>
 

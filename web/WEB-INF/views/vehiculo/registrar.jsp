@@ -7,6 +7,7 @@
     <title>Registrar vehículo</title>
 </head>
 <body>
+    <jsp:include page="/WEB-INF/views/comunes/header.jsp" />
 
     <h2>Registrar vehículo</h2>
 
@@ -23,25 +24,29 @@
         </div>
 
         <div>
-            <label for="marca">Marca:</label>
-            <input type="text" id="marca" name="marca"
-                   value="${param.marca}" required />
-        </div>
-
-        <div>
-            <label for="cedulaCliente">Cédula del propietario:</label>
-            <input type="text" id="cedulaCliente" name="cedulaCliente"
-                   value="${param.cedulaCliente}" required />
+            <label for="cedulaCliente">Propietario (opcional):</label>
+            <select id="cedulaCliente" name="cedulaCliente">
+                <option value="">-- Sin dueño --</option>
+                <c:forEach var="cl" items="${clientes}">
+                    <option value="${cl.cedula}">${cl.nombre} (${cl.cedula})</option>
+                </c:forEach>
+            </select>
         </div>
 
         <div>
             <label for="tipoVehiculo">Tipo de vehículo:</label>
-            <input type="text" id="tipoVehiculo" name="tipoVehiculo"
-                   value="${param.tipoVehiculo}" required />
+            <select id="tipoVehiculo" name="tipoVehiculo" required>
+                <option value="">-- Seleccione un tipo --</option>
+                <c:forEach var="t" items="${tipos}">
+                    <option value="${t.nombre}">${t.nombre}</option>
+                </c:forEach>
+            </select>
         </div>
 
         <button type="submit">Registrar</button>
     </form>
+
+    <p><a href="${pageContext.request.contextPath}/vehiculos">Volver a vehículos</a></p>
 
 </body>
 </html>

@@ -6,6 +6,7 @@
     <title>Detalle del vehículo</title>
 </head>
 <body>
+    <jsp:include page="/WEB-INF/views/comunes/header.jsp" />
 
     <h2>Detalle: ${vehiculo.placa}</h2>
 
@@ -13,10 +14,6 @@
         <tr>
             <th>Placa</th>
             <td>${vehiculo.placa}</td>
-        </tr>
-        <tr>
-            <th>Marca</th>
-            <td>${vehiculo.marca}</td>
         </tr>
         <tr>
             <th>Cédula propietario</th>

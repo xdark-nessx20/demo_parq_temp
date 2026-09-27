@@ -24,7 +24,6 @@ CREATE TABLE IF NOT EXISTS tipos_vehiculo (
 CREATE TABLE IF NOT EXISTS vehiculos (
     id       uuid        PRIMARY KEY DEFAULT gen_random_uuid(),
     placa    varchar(20) NOT NULL UNIQUE,
-    marca    varchar(50),
     owner_id uuid        REFERENCES usuarios(id),
     tipo_id  uuid        REFERENCES tipos_vehiculo(id)
 );

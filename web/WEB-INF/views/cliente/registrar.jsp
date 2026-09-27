@@ -7,6 +7,7 @@
     <title>Registrar cliente</title>
 </head>
 <body>
+    <jsp:include page="/WEB-INF/views/comunes/header.jsp" />
 
     <h2>Registrar cliente</h2>
 

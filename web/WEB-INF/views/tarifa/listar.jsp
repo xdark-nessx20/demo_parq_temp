@@ -7,6 +7,7 @@
     <title>Tarifas</title>
 </head>
 <body>
+    <jsp:include page="/WEB-INF/views/comunes/header.jsp" />
 
     <h2>Tarifas vigentes</h2>
 
@@ -24,8 +25,7 @@
             <table border="1" cellpadding="6">
                 <thead>
                     <tr>
-                        <th>ID tarifa</th>
-                        <th>ID tipo vehículo</th>
+                        <th>Tipo de vehículo</th>
                         <th>Valor por hora</th>
                         <th>Año vigencia</th>
                     </tr>
@@ -33,8 +33,7 @@
                 <tbody>
                     <c:forEach var="t" items="${tarifas}">
                         <tr>
-                            <td>${t.id}</td>
-                            <td>${t.idTipoVehiculo}</td>
+                            <td>${tipoNombres[t.idTipoVehiculo]}</td>
                             <td>$${t.valorHora}</td>
                             <td>${t.anioVigencia}</td>
                         </tr>
@@ -46,8 +45,13 @@
             <form action="${pageContext.request.contextPath}/tarifas" method="post">
                 <input type="hidden" name="accion" value="actualizar" />
                 <div>
-                    <label for="idTarifa">ID tarifa:</label>
-                    <input type="text" id="idTarifa" name="idTarifa" required />
+                    <label for="idTarifa">Tarifa:</label>
+                    <select id="idTarifa" name="idTarifa" required>
+                        <option value="">-- Seleccione una tarifa --</option>
+                        <c:forEach var="t" items="${tarifas}">
+                            <option value="${t.id}">$${t.valorHora} / hora (${t.anioVigencia})</option>
+                        </c:forEach>
+                    </select>
                 </div>
                 <div>
                     <label for="nuevoValor">Nuevo valor por hora:</label>

@@ -1,6 +1,7 @@
 package com.parqueamesta.controller;
 
 import com.parqueamesta.services.TarifaService;
+import com.parqueamesta.services.TipoVehiculoService;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -9,6 +10,8 @@ import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.time.Year;
+import java.util.HashMap;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -18,6 +21,7 @@ public class TarifaController extends HttpServlet {
     private static final String VISTA_REGISTRAR = "/WEB-INF/views/tarifa/registrar.jsp";
 
     private final TarifaService service = new TarifaService();
+    private final TipoVehiculoService tipoService = new TipoVehiculoService();
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
@@ -49,11 +53,22 @@ public class TarifaController extends HttpServlet {
             throws ServletException, IOException {
         var tarifas = service.listar();
         request.setAttribute("tarifas", tarifas);
+        var tipoNombres = new HashMap<UUID, String>();
+        for (var t : tipoService.findAll()) tipoNombres.put(t.id(), t.nombre());
+        request.setAttribute("tipoNombres", tipoNombres);
         request.getRequestDispatcher(VISTA_LISTAR).forward(request, response);
     }
 
     private void registrar(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        mostrarFormulario(request, response);
+    }
+
+    // Carga los tipos de vehiculo (para el desplegable) y muestra el formulario.
+    private void mostrarFormulario(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        request.setAttribute("tipos", tipoService.findAll());
+        request.setAttribute("anioActual", Year.now().getValue());
         request.getRequestDispatcher(VISTA_REGISTRAR).forward(request, response);
     }
 
@@ -65,7 +80,7 @@ public class TarifaController extends HttpServlet {
 
         if (idTipoVehiculo.isEmpty() || valorHora.isEmpty() || anioVigencia.isEmpty()) {
             request.setAttribute("error", "Los datos no son válidos");
-            request.getRequestDispatcher(VISTA_REGISTRAR).forward(request, response);
+            mostrarFormulario(request, response);
             return;
         }
 
@@ -75,7 +90,7 @@ public class TarifaController extends HttpServlet {
             response.sendRedirect(request.getContextPath() + "/tarifas");
         } else {
             request.setAttribute("error", "No se pudo crear la tarifa (el valor debe ser mayor a 0)");
-            request.getRequestDispatcher(VISTA_REGISTRAR).forward(request, response);
+            mostrarFormulario(request, response);
         }
     }
 

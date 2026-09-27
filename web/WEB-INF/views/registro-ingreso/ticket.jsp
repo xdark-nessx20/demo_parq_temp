@@ -7,14 +7,14 @@
     <title>Ticket de ingreso</title>
 </head>
 <body>
+    <jsp:include page="/WEB-INF/views/comunes/header.jsp" />
 
     <h2>Ingreso registrado</h2>
 
     <table border="1" cellpadding="6">
-        <tr><th>ID ticket</th><td>${ticket.id}</td></tr>
-        <tr><th>ID vehículo</th><td>${ticket.idVehiculo}</td></tr>
-        <tr><th>Hora entrada</th><td>${ticket.horaEntrada}</td></tr>
-        <tr><th>Operador entrada</th><td>${ticket.idOperadorEntrada}</td></tr>
+        <tr><th>Vehículo</th><td>${placas[ticket.idVehiculo]}</td></tr>
+        <tr><th>Hora entrada</th><td>${ticket.horaEntradaTexto}</td></tr>
+        <tr><th>Operador entrada</th><td>${operadores[ticket.idOperadorEntrada]}</td></tr>
     </table>
 
     <p><a href="${pageContext.request.contextPath}/registros-ingreso">Registrar otro ingreso</a></p>

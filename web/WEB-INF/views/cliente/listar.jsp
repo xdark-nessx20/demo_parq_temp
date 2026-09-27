@@ -7,6 +7,7 @@
     <title>Clientes</title>
 </head>
 <body>
+    <jsp:include page="/WEB-INF/views/comunes/header.jsp" />
 
     <h2>Clientes registrados</h2>
 

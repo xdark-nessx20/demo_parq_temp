@@ -1,6 +1,8 @@
 package com.parqueamesta.controller;
 
+import com.parqueamesta.services.OperadorService;
 import com.parqueamesta.services.RegistroIngresoService;
+import com.parqueamesta.services.VehiculoService;
 import com.parqueamesta.services.exceptions.TicketAbiertoException;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -10,6 +12,7 @@ import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
+import java.util.HashMap;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -20,6 +23,8 @@ public class RegistroIngresoController extends HttpServlet {
     private static final String VISTA_REGISTRAR = "/WEB-INF/views/registro-ingreso/registrar.jsp";
 
     private final RegistroIngresoService service = new RegistroIngresoService();
+    private final VehiculoService vehiculoService = new VehiculoService();
+    private final OperadorService operadorService = new OperadorService();
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
@@ -41,10 +46,11 @@ public class RegistroIngresoController extends HttpServlet {
                     idOperador.get());
 
             request.setAttribute("ticket", ticket.get());
+            cargarMapas(request);
             request.getRequestDispatcher(VISTA_TICKET).forward(request, response);
         } catch (TicketAbiertoException e) {
             request.setAttribute("error", e.getMessage());
-            request.getRequestDispatcher(VISTA_REGISTRAR).forward(request, response);
+            mostrarFormulario(request, response);
         }
     }
 
@@ -67,6 +73,7 @@ public class RegistroIngresoController extends HttpServlet {
             throws ServletException, IOException {
         var ingresos = service.listar();
         request.setAttribute("ingresos", ingresos);
+        cargarMapas(request);
         request.getRequestDispatcher(VISTA_LISTAR).forward(request, response);
     }
 
@@ -82,11 +89,30 @@ public class RegistroIngresoController extends HttpServlet {
 
         var historial = service.historialVehiculo(idVehiculo.get());
         request.setAttribute("ingresos", historial);
+        cargarMapas(request);
         request.getRequestDispatcher(VISTA_LISTAR).forward(request, response);
+    }
+
+    // Mapas id->texto para mostrar placas y nombres en vez de UUIDs.
+    private void cargarMapas(HttpServletRequest request) {
+        var placas = new HashMap<UUID, String>();
+        for (var v : vehiculoService.findAll()) placas.put(v.id(), v.placa());
+        var operadores = new HashMap<UUID, String>();
+        for (var o : operadorService.findAll()) operadores.put(o.id(), o.nombre());
+        request.setAttribute("placas", placas);
+        request.setAttribute("operadores", operadores);
     }
 
     private void registrar(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        mostrarFormulario(request, response);
+    }
+
+    // Carga vehiculos y operadores (para los desplegables) y muestra el formulario.
+    private void mostrarFormulario(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        request.setAttribute("vehiculos", vehiculoService.findAll());
+        request.setAttribute("operadores", operadorService.findAll());
         request.getRequestDispatcher(VISTA_REGISTRAR).forward(request, response);
     }
 

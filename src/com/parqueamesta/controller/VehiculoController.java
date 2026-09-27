@@ -1,5 +1,7 @@
 package com.parqueamesta.controller;
 
+import com.parqueamesta.services.ClienteService;
+import com.parqueamesta.services.TipoVehiculoService;
 import com.parqueamesta.services.VehiculoService;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -12,23 +14,24 @@ import java.io.IOException;
 @WebServlet("/vehiculos")
 public class VehiculoController extends HttpServlet {
     private final VehiculoService service = new VehiculoService();
+    private final ClienteService clienteService = new ClienteService();
+    private final TipoVehiculoService tipoService = new TipoVehiculoService();
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws IOException, ServletException {
 
         String placa = request.getParameter("placa");
-        String marca = request.getParameter("marca");
         String ownerCedula = request.getParameter("cedulaCliente");
         String tipoNombre = request.getParameter("tipoVehiculo");
 
-        boolean wasSaved = service.save(placa, marca, ownerCedula, tipoNombre);
+        boolean wasSaved = service.save(placa, ownerCedula, tipoNombre);
 
         if (wasSaved) {
             response.sendRedirect(request.getContextPath() + "/vehiculos");
         } else {
             request.setAttribute("error", "No se ha podido realizar la operacion");
-            request.getRequestDispatcher("/WEB-INF/views/vehiculo/registrar.jsp").forward(request, response);
+            mostrarFormulario(request, response);
         }
     }
 
@@ -49,6 +52,14 @@ public class VehiculoController extends HttpServlet {
 
     private void registrar(HttpServletRequest request, HttpServletResponse response)
             throws IOException, ServletException {
+        mostrarFormulario(request, response);
+    }
+
+    // Carga clientes y tipos de vehiculo (para los desplegables) y muestra el formulario.
+    private void mostrarFormulario(HttpServletRequest request, HttpServletResponse response)
+            throws IOException, ServletException {
+        request.setAttribute("clientes", clienteService.findAll());
+        request.setAttribute("tipos", tipoService.findAll());
         request.getRequestDispatcher("/WEB-INF/views/vehiculo/registrar.jsp").forward(request, response);
     }
 

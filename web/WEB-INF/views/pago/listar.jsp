@@ -7,6 +7,7 @@
     <title>Pagos</title>
 </head>
 <body>
+    <jsp:include page="/WEB-INF/views/comunes/header.jsp" />
 
     <h2>Pagos registrados</h2>
 
@@ -22,8 +23,7 @@
             <table border="1" cellpadding="6">
                 <thead>
                     <tr>
-                        <th>ID pago</th>
-                        <th>ID ticket</th>
+                        <th>Vehículo</th>
                         <th>Valor</th>
                         <th>Fecha de pago</th>
                     </tr>
@@ -31,10 +31,9 @@
                 <tbody>
                     <c:forEach var="p" items="${pagos}">
                         <tr>
-                            <td>${p.id}</td>
-                            <td>${p.idRegistroIngreso}</td>
+                            <td>${placasPorRegistro[p.idRegistroIngreso]}</td>
                             <td>$${p.valor}</td>
-                            <td>${p.fechaPago}</td>
+                            <td>${p.fechaPagoTexto}</td>
                         </tr>
                     </c:forEach>
                 </tbody>

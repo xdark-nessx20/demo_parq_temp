@@ -6,6 +6,7 @@
     <title>Detalle del operador</title>
 </head>
 <body>
+    <jsp:include page="/WEB-INF/views/comunes/header.jsp" />
 
     <h2>Detalle: ${operador.nombre}</h2>
 

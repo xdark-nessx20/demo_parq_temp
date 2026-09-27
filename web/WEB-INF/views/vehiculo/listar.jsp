@@ -7,6 +7,7 @@
     <title>Vehículos</title>
 </head>
 <body>
+    <jsp:include page="/WEB-INF/views/comunes/header.jsp" />
 
     <h2>Vehículos registrados</h2>
 
@@ -21,7 +22,6 @@
                 <thead>
                     <tr>
                         <th>Placa</th>
-                        <th>Marca</th>
                         <th>Cédula propietario</th>
                         <th>Tipo</th>
                         <th>Acciones</th>
@@ -31,7 +31,6 @@
                     <c:forEach var="v" items="${vehiculos}">
                         <tr>
                             <td>${v.placa}</td>
-                            <td>${v.marca}</td>
                             <td>${v.owner.cedula}</td>
                             <td>${v.tipo.nombre}</td>
                             <td>

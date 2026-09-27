@@ -7,6 +7,7 @@
     <title>Registrar salida</title>
 </head>
 <body>
+    <jsp:include page="/WEB-INF/views/comunes/header.jsp" />
 
     <h2>Registrar salida de vehículo</h2>
 
@@ -17,19 +18,29 @@
     <form action="${pageContext.request.contextPath}/pagos" method="post">
 
         <div>
-            <label for="idRegistro">ID del ticket:</label>
-            <input type="text" id="idRegistro" name="idRegistro"
-                   value="${param.idRegistro}" required />
+            <label for="idRegistro">Ticket:</label>
+            <select id="idRegistro" name="idRegistro" required>
+                <option value="">-- Seleccione un ticket abierto --</option>
+                <c:forEach var="r" items="${tickets}">
+                    <option value="${r.id}">Ticket ${r.id} (entrada ${r.horaEntrada})</option>
+                </c:forEach>
+            </select>
         </div>
 
         <div>
-            <label for="idOperador">ID del operador:</label>
-            <input type="text" id="idOperador" name="idOperador"
-                   value="${param.idOperador}" required />
+            <label for="idOperador">Operador:</label>
+            <select id="idOperador" name="idOperador" required>
+                <option value="">-- Seleccione un operador --</option>
+                <c:forEach var="o" items="${operadores}">
+                    <option value="${o.id}">${o.nombre} (${o.cedula})</option>
+                </c:forEach>
+            </select>
         </div>
 
         <button type="submit">Registrar salida</button>
     </form>
+
+    <p><a href="${pageContext.request.contextPath}/pagos">Volver a pagos</a></p>
 
 </body>
 </html>

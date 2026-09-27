@@ -9,6 +9,7 @@ import com.parqueamesta.persistence.VehiculoRepository;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 public class VehiculoService {
     private final VehiculoRepository repo = new VehiculoRepository();
@@ -18,26 +19,35 @@ public class VehiculoService {
     public VehiculoService() {
     }
 
-    public boolean save(String placa, String marca, String ownerCedula, String nombreTipo) {
+    // El dueño (cliente) es opcional: puede registrarse un vehiculo sin propietario.
+    public boolean save(String placa, String ownerCedula, String nombreTipo) {
         if (placaInvalida(placa)) return false;
-        if (marcaInvalida(marca)) return false;
-        if (ownerCedulaInvalido(ownerCedula)) return false;
         if (tipoInvalido(nombreTipo)) return false;
 
         var t = tipoRepo.get(nombreTipo);
         if (t.isEmpty()) return false;
 
-        var o = usuarioRepo.get(ownerCedula);
-        if (o.isEmpty() || o.get().rol() != Rol.CLIENTE) return false;
+        Cliente owner = null;
+        if (ownerCedula != null && !ownerCedula.isBlank()) {
+            if (ownerCedulaInvalido(ownerCedula)) return false;
+            var o = usuarioRepo.get(ownerCedula);
+            if (o.isEmpty() || o.get().rol() != Rol.CLIENTE) return false;
+            owner = (Cliente) o.get();
+        }
 
-        var v = new Vehiculo(placa, marca, (Cliente) o.get(), t.get());
-        return repo.save(v);
+        return repo.save(new Vehiculo(placa, owner, t.get()));
     }
 
     public Optional<Vehiculo> findByPlaca(String placa) {
         if (placaInvalida(placa)) return Optional.empty();
 
         return repo.get(placa);
+    }
+
+    public Optional<Vehiculo> findById(UUID id) {
+        if (id == null) return Optional.empty();
+
+        return repo.getById(id);
     }
 
     public List<Vehiculo> findAll(){
@@ -52,10 +62,6 @@ public class VehiculoService {
 
     private boolean placaInvalida(String placa) {
         return placa == null || !placa.matches("[A-Z]{3}-[0-9]{3}");
-    }
-
-    private boolean marcaInvalida(String marca) {
-        return marca == null || marca.isBlank();
     }
 
     private boolean ownerCedulaInvalido(String ownerCedula) {

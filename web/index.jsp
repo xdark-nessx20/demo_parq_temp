@@ -7,28 +7,23 @@
     <title>Parqueadero</title>
 </head>
 <body>
-
-    <h1>Parqueadero</h1>
+    <jsp:include page="/WEB-INF/views/comunes/header.jsp" />
 
     <c:choose>
         <c:when test="${not empty sessionScope.usuario}">
-            <p>Bienvenido, <strong>${sessionScope.usuario.nombre}</strong> (${sessionScope.usuario.rol})</p>
+            <h1>Hola, ${sessionScope.usuario.nombre}</h1>
+            <p>Rol: <strong>${sessionScope.usuario.rolNombre}</strong></p>
 
-            <ul>
-                <li><a href="${pageContext.request.contextPath}/registros-ingreso">Registros de ingreso</a></li>
-                <li><a href="${pageContext.request.contextPath}/pagos">Pagos</a></li>
-                <li><a href="${pageContext.request.contextPath}/tarifas">Tarifas</a></li>
-                <li><a href="${pageContext.request.contextPath}/vehiculos">Vehículos</a></li>
-                <li><a href="${pageContext.request.contextPath}/clientes">Clientes</a></li>
-                <li><a href="${pageContext.request.contextPath}/operadores">Operadores</a></li>
-                <li><a href="${pageContext.request.contextPath}/gerentes">Gerentes</a></li>
-            </ul>
-
-            <p><a href="${pageContext.request.contextPath}/logout">Cerrar sesión</a></p>
+            <div class="acciones">
+                <a class="boton" href="${pageContext.request.contextPath}/registros-ingreso?accion=registrar">Registrar ingreso</a>
+                <a class="boton" href="${pageContext.request.contextPath}/pagos?accion=registrar">Registrar salida</a>
+                <a class="boton" href="${pageContext.request.contextPath}/registros-ingreso">Ver registros</a>
+            </div>
         </c:when>
         <c:otherwise>
-            <p>Bienvenido. Por favor inicie sesión.</p>
-            <p><a href="${pageContext.request.contextPath}/login">Iniciar sesión</a></p>
+            <h1>Bienvenido al parqueadero</h1>
+            <p>Inicie sesión para continuar.</p>
+            <p><a class="boton" href="${pageContext.request.contextPath}/login">Iniciar sesión</a></p>
         </c:otherwise>
     </c:choose>
 

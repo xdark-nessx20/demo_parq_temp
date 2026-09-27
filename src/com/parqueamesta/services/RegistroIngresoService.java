@@ -95,6 +95,17 @@ public class RegistroIngresoService {
         return repo.getActiveByVehiculo(idVehiculo);
     }
 
+    // Todos los tickets abiertos (para elegir en la pantalla de salida).
+    public List<RegistroIngreso> ticketsActivos() {
+        return repo.getActivos();
+    }
+
+    // Busca un ticket por id.
+    public Optional<RegistroIngreso> buscar(UUID id) {
+        if (id == null) return Optional.empty();
+        return repo.get(id);
+    }
+
     public List<RegistroIngreso> listar() {
         return repo.getAll();
     }

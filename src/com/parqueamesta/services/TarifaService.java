@@ -51,4 +51,9 @@ public class TarifaService {
         long horas = (long) Math.ceil(minutos / 60.0);
         return Math.max(horas, 1);
     }
+
+    // Horas que se cobran por una estadia (minimo 1, fracciones hacia arriba).
+    public long horasCobradasPublico(LocalDateTime horaEntrada, LocalDateTime horaSalida) {
+        return horasCobradas(horaEntrada, horaSalida);
+    }
 }

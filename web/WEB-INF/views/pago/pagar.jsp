@@ -7,14 +7,18 @@
     <title>Pago</title>
 </head>
 <body>
+    <jsp:include page="/WEB-INF/views/comunes/header.jsp" />
 
     <h2>Pago registrado</h2>
 
     <table border="1" cellpadding="6">
-        <tr><th>ID pago</th><td>${pago.id}</td></tr>
-        <tr><th>ID ticket</th><td>${pago.idRegistroIngreso}</td></tr>
-        <tr><th>Valor</th><td>$${pago.valor}</td></tr>
-        <tr><th>Fecha de pago</th><td>${pago.fechaPago}</td></tr>
+        <tr><th>Vehículo</th><td>${vehiculoPlaca}</td></tr>
+        <tr><th>Hora entrada</th><td>${horaEntrada}</td></tr>
+        <tr><th>Hora salida</th><td>${horaSalida}</td></tr>
+        <tr><th>Tarifa por hora</th><td>$${valorHora}</td></tr>
+        <tr><th>Horas cobradas</th><td>${horas}</td></tr>
+        <tr><th>Total a pagar</th><td>$${pago.valor}</td></tr>
+        <tr><th>Fecha de pago</th><td>${pago.fechaPagoTexto}</td></tr>
     </table>
 
     <p><a href="${pageContext.request.contextPath}/pagos">Registrar otra salida</a></p>

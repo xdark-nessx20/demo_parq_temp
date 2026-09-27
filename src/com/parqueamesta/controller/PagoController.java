@@ -1,7 +1,10 @@
 package com.parqueamesta.controller;
 
+import com.parqueamesta.services.OperadorService;
 import com.parqueamesta.services.PagoService;
 import com.parqueamesta.services.RegistroIngresoService;
+import com.parqueamesta.services.TarifaService;
+import com.parqueamesta.services.VehiculoService;
 import com.parqueamesta.services.exceptions.TarifaNoEncontradaException;
 import com.parqueamesta.services.exceptions.TicketNoEncontradoException;
 import com.parqueamesta.services.exceptions.TicketYaCerradoException;
@@ -14,6 +17,7 @@ import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
+import java.util.HashMap;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -26,6 +30,9 @@ public class PagoController extends HttpServlet {
 
     private final RegistroIngresoService registroService = new RegistroIngresoService();
     private final PagoService pagoService = new PagoService();
+    private final OperadorService operadorService = new OperadorService();
+    private final TarifaService tarifaService = new TarifaService();
+    private final VehiculoService vehiculoService = new VehiculoService();
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
@@ -47,16 +54,17 @@ public class PagoController extends HttpServlet {
                     idOperador.get());
 
             request.setAttribute("pago", pago.get());
+            cargarDesglose(request, idRegistro.get());
             request.getRequestDispatcher(VISTA_PAGAR).forward(request, response);
         } catch (TarifaNoEncontradaException | VehiculoNoEncontradoException e) {
             request.setAttribute("error", e.getMessage());
-            request.getRequestDispatcher(VISTA_REGISTRAR).forward(request, response);
+            mostrarFormulario(request, response);
         } catch (TicketYaCerradoException e) {
             request.setAttribute("error", e.getMessage());
-            request.getRequestDispatcher(VISTA_REGISTRAR).forward(request, response);
+            mostrarFormulario(request, response);
         } catch (TicketNoEncontradoException e) {
             request.setAttribute("error", e.getMessage());
-            request.getRequestDispatcher(VISTA_REGISTRAR).forward(request, response);
+            mostrarFormulario(request, response);
         }
     }
 
@@ -79,6 +87,7 @@ public class PagoController extends HttpServlet {
             throws ServletException, IOException {
         var pagos = pagoService.listar();
         request.setAttribute("pagos", pagos);
+        cargarPlacas(request);
         request.getRequestDispatcher(VISTA_LISTAR).forward(request, response);
     }
 
@@ -100,11 +109,51 @@ public class PagoController extends HttpServlet {
             return;
         }
         request.setAttribute("pago", pago.get());
+        cargarDesglose(request, idRegistro.get());
         request.getRequestDispatcher(VISTA_PAGAR).forward(request, response);
+    }
+
+    // Carga el desglose del pago (vehiculo, horas, tarifa por hora) para la pantalla de pago.
+    private void cargarDesglose(HttpServletRequest request, UUID idRegistro) {
+        var registro = registroService.buscar(idRegistro).orElse(null);
+        if (registro == null) return;
+
+        request.setAttribute("horaEntrada", registro.getHoraEntradaTexto());
+        request.setAttribute("horaSalida", registro.getHoraSalidaTexto());
+
+        var vehiculo = vehiculoService.findById(registro.idVehiculo()).orElse(null);
+        if (vehiculo == null) return;
+
+        request.setAttribute("vehiculoPlaca", vehiculo.placa());
+        if (vehiculo.tipo() == null) return;
+
+        tarifaService.tarifaActual(vehiculo.tipo().id()).ifPresent(t -> {
+            request.setAttribute("valorHora", t.valorHora());
+            request.setAttribute("horas",
+                    tarifaService.horasCobradasPublico(registro.horaEntrada(), registro.horaSalida()));
+        });
+    }
+
+    // Mapa registro->placa para mostrar el vehiculo en el listado de pagos.
+    private void cargarPlacas(HttpServletRequest request) {
+        var placasPorRegistro = new HashMap<UUID, String>();
+        for (var r : registroService.listar()) {
+            var placa = vehiculoService.findById(r.idVehiculo()).map(v -> v.placa()).orElse("");
+            placasPorRegistro.put(r.id(), placa);
+        }
+        request.setAttribute("placasPorRegistro", placasPorRegistro);
     }
 
     private void registrar(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        mostrarFormulario(request, response);
+    }
+
+    // Carga los tickets abiertos y los operadores (para los desplegables) y muestra el formulario.
+    private void mostrarFormulario(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        request.setAttribute("tickets", registroService.ticketsActivos());
+        request.setAttribute("operadores", operadorService.findAll());
         request.getRequestDispatcher(VISTA_REGISTRAR).forward(request, response);
     }
 

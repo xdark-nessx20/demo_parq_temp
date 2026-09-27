@@ -50,6 +50,10 @@ public abstract class Usuario {
         return rol();
     }
 
+    public String getRolNombre() {
+        return rol().name();
+    }
+
     @Override
     public boolean equals(Object o) {
         if (!(o instanceof Usuario usuario)) return false;

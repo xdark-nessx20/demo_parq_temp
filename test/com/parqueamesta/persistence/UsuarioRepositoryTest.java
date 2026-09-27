@@ -19,6 +19,9 @@ public class UsuarioRepositoryTest {
     @BeforeEach
     void limpiar() throws SQLException {
         try (var connection = DB.conectar(); var statement = connection.createStatement()) {
+            statement.executeUpdate("DELETE FROM pago");
+            statement.executeUpdate("DELETE FROM registro_ingreso");
+            statement.executeUpdate("DELETE FROM vehiculos");
             statement.executeUpdate("DELETE FROM usuarios");
         }
     }
