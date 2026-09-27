@@ -50,7 +50,7 @@ public class ClienteService {
     }
 
     private boolean cedulaInvalida(String cedula) {
-        return cedula == null || !cedula.matches("^[1-9][0-9]{7}([0-9]{2})?");
+        return cedula == null || !cedula.matches("^[1-9][0-9]{7,9}$");
     }
 
     private boolean contrasenaInvalida(String contrasena) {

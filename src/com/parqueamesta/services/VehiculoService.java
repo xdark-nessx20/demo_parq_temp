@@ -98,7 +98,7 @@ public class VehiculoService {
     }
 
     private boolean ownerCedulaInvalido(String ownerCedula) {
-        return !ownerCedula.matches("^[1-9][0-9]{7}([0-9]{2})?");
+        return !ownerCedula.matches("^[1-9][0-9]{7,9}$");
     }
 
     private boolean tipoInvalido(String tipo) {
