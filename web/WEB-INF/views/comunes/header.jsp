@@ -39,3 +39,4 @@
         </span>
     </c:if>
 </nav>
+<jsp:include page="/WEB-INF/views/comunes/ver-contrasena.jsp" />

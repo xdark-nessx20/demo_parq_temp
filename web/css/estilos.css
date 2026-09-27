@@ -316,6 +316,19 @@ body > .auth { max-width: 940px; padding: 0; margin: 5vh auto; }
 .pw-req span.ok { background: var(--success-soft); color: #14532d; border-color: #86efac; }
 .pw-req span.ok::before { content: "✓ "; }
 
+/* ---------------- Ojo ver/ocultar contraseña ---------------- */
+.pw-wrap { position: relative; display: block; }
+.pw-wrap input { padding-right: 44px; }
+.pw-toggle {
+    position: absolute; top: 50%; right: 6px; transform: translateY(-50%);
+    background: none; border: none; padding: 6px; color: var(--muted);
+    cursor: pointer; display: inline-flex; border-radius: 6px; font-size: 0;
+}
+.pw-toggle:hover { background: var(--thead); color: var(--text); }
+.pw-toggle .ic-eye-off { display: none; }
+.pw-toggle.on .ic-eye { display: none; }
+.pw-toggle.on .ic-eye-off { display: inline; }
+
 /* ---------------- Utilidades ---------------- */
 .acciones-tabla { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
 .acciones-tabla form { display: inline; }

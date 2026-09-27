@@ -31,7 +31,7 @@
 
         <div>
             <label for="contrasena">Contraseña (para entrar a "Mi cuenta"):</label>
-            <input type="password" id="contrasena" name="contrasena" data-pw required />
+            <input type="password" id="contrasena" name="contrasena" value="${param.contrasena}" data-pw required />
         </div>
         <jsp:include page="/WEB-INF/views/comunes/reglas-password.jsp" />
 

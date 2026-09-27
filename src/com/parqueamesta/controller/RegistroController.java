@@ -29,6 +29,12 @@ public class RegistroController extends HttpServlet {
         String cedula = request.getParameter("cedula");
         String contrasena = request.getParameter("contrasena");
 
+        if (!com.parqueamesta.util.PasswordPolicy.valida(contrasena)) {
+            request.setAttribute("error", "La contraseña no cumple con los requisitos necesarios");
+            request.getRequestDispatcher(VISTA).forward(request, response);
+            return;
+        }
+
         if (clienteService.existeCedula(cedula)) {
             request.setAttribute("error", "Ya existe una cuenta con la cédula " + cedula);
             request.getRequestDispatcher(VISTA).forward(request, response);
@@ -40,7 +46,7 @@ public class RegistroController extends HttpServlet {
             response.sendRedirect(request.getContextPath() + "/login");
         } else {
             request.setAttribute("error",
-                    "No se pudo crear la cuenta. El nombre debe tener minimo 6 letras, la cedula 8 a 10 digitos y la contrasena minimo 8 caracteres con 1 mayuscula y 1 simbolo");
+                    "No se pudo crear la cuenta. Revisa el nombre (mínimo 6 letras) y la cédula (8 a 10 dígitos)");
             request.getRequestDispatcher(VISTA).forward(request, response);
         }
     }

@@ -70,6 +70,12 @@ public class GerenteController extends HttpServlet {
         String cedula = request.getParameter("cedula");
         String contrasena = request.getParameter("contrasena");
 
+        if (!com.parqueamesta.util.PasswordPolicy.valida(contrasena)) {
+            request.setAttribute("error", "La contraseña no cumple con los requisitos necesarios");
+            request.getRequestDispatcher(VISTA_REGISTRAR).forward(request, response);
+            return;
+        }
+
         if (service.existeCedula(cedula)) {
             request.setAttribute("error", "Ya existe un usuario con la cédula " + cedula);
             request.getRequestDispatcher(VISTA_REGISTRAR).forward(request, response);
@@ -79,7 +85,7 @@ public class GerenteController extends HttpServlet {
         if (service.save(nombre, cedula, contrasena)) {
             response.sendRedirect(request.getContextPath() + "/gerentes");
         } else {
-            request.setAttribute("error", "No se pudo registrar. El nombre debe tener minimo 6 letras, la cedula 8 a 10 digitos y la contrasena minimo 8 caracteres con 1 mayuscula y 1 simbolo");
+            request.setAttribute("error", "No se pudo registrar. Revisa el nombre (mínimo 6 letras) y la cédula (8 a 10 dígitos)");
             request.getRequestDispatcher(VISTA_REGISTRAR).forward(request, response);
         }
     }

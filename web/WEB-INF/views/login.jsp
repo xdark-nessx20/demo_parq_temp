@@ -71,7 +71,8 @@
                 </div>
                 <div>
                     <label for="contrasena">Contraseña</label>
-                    <input type="password" id="contrasena" name="contrasena" autocomplete="current-password" required />
+                    <input type="password" id="contrasena" name="contrasena"
+                           value="${param.contrasena}" autocomplete="current-password" required />
                 </div>
                 <button type="submit">Iniciar sesión</button>
             </form>
@@ -81,5 +82,6 @@
             </p>
         </main>
     </div>
+    <jsp:include page="/WEB-INF/views/comunes/ver-contrasena.jsp" />
 </body>
 </html>
