@@ -6,31 +6,29 @@
     <title>Detalle del vehículo</title>
 </head>
 <body>
+    <jsp:include page="/WEB-INF/views/comunes/header.jsp" />
 
-    <h2>Detalle: ${vehiculo.placa}</h2>
+    <div class="page-head">
+        <h2>Detalle: ${vehiculo.placa}</h2>
+        <div class="page-head-acciones">
+            <a class="boton boton-secundario" href="${pageContext.request.contextPath}/vehiculos">Volver</a>
+        </div>
+    </div>
 
-    <table border="1" cellpadding="6">
+    <table>
         <tr>
             <th>Placa</th>
             <td>${vehiculo.placa}</td>
         </tr>
         <tr>
-            <th>Marca</th>
-            <td>${vehiculo.marca}</td>
-        </tr>
-        <tr>
             <th>Cédula propietario</th>
-            <td>${vehiculo.ownerCedula}</td>
+            <td>${vehiculo.owner.cedula}</td>
         </tr>
         <tr>
             <th>Tipo</th>
-            <td>${vehiculo.tipoVehiculo}</td>
+            <td>${vehiculo.tipo.nombre}</td>
         </tr>
     </table>
-
-    <p>
-        <a href="${pageContext.request.contextPath}/vehiculos">Volver al listado</a>
-    </p>
 
 </body>
 </html>

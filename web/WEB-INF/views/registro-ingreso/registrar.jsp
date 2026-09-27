@@ -7,8 +7,14 @@
     <title>Registrar ingreso</title>
 </head>
 <body>
+    <jsp:include page="/WEB-INF/views/comunes/header.jsp" />
 
-    <h2>Registrar ingreso de vehículo</h2>
+    <div class="page-head">
+        <h2>Registrar ingreso de vehículo</h2>
+        <div class="page-head-acciones">
+            <a class="boton boton-secundario" href="${pageContext.request.contextPath}/registros-ingreso">Volver</a>
+        </div>
+    </div>
 
     <c:if test="${not empty error}">
         <p style="color:red;"><strong>${error}</strong></p>
@@ -17,15 +23,30 @@
     <form action="${pageContext.request.contextPath}/registros-ingreso" method="post">
 
         <div>
-            <label for="idVehiculo">ID del vehículo:</label>
-            <input type="text" id="idVehiculo" name="idVehiculo"
-                   value="${param.idVehiculo}" required />
+            <label for="placa">Placa:</label>
+            <input type="text" id="placa" name="placa" value="${param.placa}"
+                   placeholder="ABC-123 (carro) · ABC-12A (moto)" required />
         </div>
 
         <div>
-            <label for="idOperador">ID del operador:</label>
-            <input type="text" id="idOperador" name="idOperador"
-                   value="${param.idOperador}" required />
+            <label for="tipoVehiculo">Tipo de vehículo:</label>
+            <select id="tipoVehiculo" name="tipoVehiculo" required>
+                <option value="">-- Seleccione un tipo --</option>
+                <c:forEach var="t" items="${tipos}">
+                    <option value="${t.nombre}" ${param.tipoVehiculo == t.nombre ? 'selected' : ''}>${t.nombre}</option>
+                </c:forEach>
+            </select>
+        </div>
+
+        <div>
+            <label for="cedulaCliente">Propietario (cliente):</label>
+            <select id="cedulaCliente" name="cedulaCliente">
+                <option value="">-- Seleccione el propietario --</option>
+                <c:forEach var="cl" items="${clientes}">
+                    <option value="${cl.cedula}" ${param.cedulaCliente == cl.cedula ? 'selected' : ''}>${cl.nombre} (${cl.cedula})</option>
+                </c:forEach>
+            </select>
+            <small class="muted">Solo se usa si el vehículo es nuevo; una placa ya registrada conserva su dueño.</small>
         </div>
 
         <button type="submit">Registrar entrada</button>

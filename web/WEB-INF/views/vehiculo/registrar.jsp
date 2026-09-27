@@ -7,8 +7,14 @@
     <title>Registrar vehículo</title>
 </head>
 <body>
+    <jsp:include page="/WEB-INF/views/comunes/header.jsp" />
 
-    <h2>Registrar vehículo</h2>
+    <div class="page-head">
+        <h2>Registrar vehículo</h2>
+        <div class="page-head-acciones">
+            <a class="boton boton-secundario" href="${pageContext.request.contextPath}/vehiculos">Volver</a>
+        </div>
+    </div>
 
     <c:if test="${not empty error}">
         <p style="color:red;"><strong>${error}</strong></p>
@@ -23,25 +29,26 @@
         </div>
 
         <div>
-            <label for="marca">Marca:</label>
-            <input type="text" id="marca" name="marca"
-                   value="${param.marca}" required />
-        </div>
-
-        <div>
-            <label for="cedulaCliente">Cédula del propietario:</label>
-            <input type="text" id="cedulaCliente" name="cedulaCliente"
-                   value="${param.cedulaCliente}" required />
+            <label for="cedulaCliente">Propietario:</label>
+            <select id="cedulaCliente" name="cedulaCliente" required>
+                <option value="">-- Seleccione un cliente --</option>
+                <c:forEach var="cl" items="${clientes}">
+                    <option value="${cl.cedula}" ${param.cedulaCliente == cl.cedula ? 'selected' : ''}>${cl.nombre} (${cl.cedula})</option>
+                </c:forEach>
+            </select>
         </div>
 
         <div>
             <label for="tipoVehiculo">Tipo de vehículo:</label>
-            <input type="text" id="tipoVehiculo" name="tipoVehiculo"
-                   value="${param.tipoVehiculo}" required />
+            <select id="tipoVehiculo" name="tipoVehiculo" required>
+                <option value="">-- Seleccione un tipo --</option>
+                <c:forEach var="t" items="${tipos}">
+                    <option value="${t.nombre}">${t.nombre}</option>
+                </c:forEach>
+            </select>
         </div>
 
         <button type="submit">Registrar</button>
     </form>
-
 </body>
 </html>

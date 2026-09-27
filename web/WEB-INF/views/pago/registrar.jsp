@@ -7,8 +7,14 @@
     <title>Registrar salida</title>
 </head>
 <body>
+    <jsp:include page="/WEB-INF/views/comunes/header.jsp" />
 
-    <h2>Registrar salida de vehículo</h2>
+    <div class="page-head">
+        <h2>Registrar salida de vehículo</h2>
+        <div class="page-head-acciones">
+            <a class="boton boton-secundario" href="${pageContext.request.contextPath}/pagos">Volver</a>
+        </div>
+    </div>
 
     <c:if test="${not empty error}">
         <p style="color:red;"><strong>${error}</strong></p>
@@ -17,21 +23,13 @@
     <form action="${pageContext.request.contextPath}/pagos" method="post">
 
         <div>
-            <label for="idRegistro">ID del ticket:</label>
-            <input type="text" id="idRegistro" name="idRegistro"
-                   value="${param.idRegistro}" required />
-        </div>
-
-        <div>
-            <label for="idTipoVehiculo">ID del tipo de vehículo:</label>
-            <input type="text" id="idTipoVehiculo" name="idTipoVehiculo"
-                   value="${param.idTipoVehiculo}" required />
-        </div>
-
-        <div>
-            <label for="idOperador">ID del operador:</label>
-            <input type="text" id="idOperador" name="idOperador"
-                   value="${param.idOperador}" required />
+            <label for="idRegistro">Vehículo (ticket abierto):</label>
+            <select id="idRegistro" name="idRegistro" required>
+                <option value="">-- Seleccione un vehículo --</option>
+                <c:forEach var="r" items="${tickets}">
+                    <option value="${r.id}">${empty placasPorRegistro[r.id] ? 'Vehículo sin placa' : placasPorRegistro[r.id]} — entrada ${r.horaEntradaTexto}</option>
+                </c:forEach>
+            </select>
         </div>
 
         <button type="submit">Registrar salida</button>

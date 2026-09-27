@@ -28,4 +28,10 @@ public class PagoService {
     public List<Pago> listar() {
         return repo.getAll();
     }
+
+    // Marca un pago como pagado (lo paga el cliente online o lo cobra el operador).
+    public boolean marcarPagado(UUID idPago) {
+        if (idPago == null) return false;
+        return repo.marcarPagado(idPago);
+    }
 }

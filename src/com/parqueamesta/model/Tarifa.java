@@ -41,6 +41,28 @@ public class Tarifa {
         return anioVigencia;
     }
 
+    // Getters JavaBean (para JSP/EL)
+    public UUID getId() {
+        return id;
+    }
+
+    public UUID getIdTipoVehiculo() {
+        return idTipoVehiculo;
+    }
+
+    public BigDecimal getValorHora() {
+        return valorHora;
+    }
+
+    public int getAnioVigencia() {
+        return anioVigencia;
+    }
+
+    // Valor con separador de miles (p.ej. 1.800,00)
+    public String getValorHoraTexto() {
+        return com.parqueamesta.util.Formato.moneda(valorHora);
+    }
+
     // Setters
     public void setIdTipoVehiculo(UUID idTipoVehiculo) {
         this.idTipoVehiculo = idTipoVehiculo;

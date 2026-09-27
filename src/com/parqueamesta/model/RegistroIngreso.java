@@ -1,10 +1,13 @@
 package com.parqueamesta.model;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Objects;
 import java.util.UUID;
 
 public class RegistroIngreso {
+    private static final DateTimeFormatter FORMATO = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
+
     private UUID id;
     private UUID idVehiculo;
     private LocalDateTime horaEntrada;
@@ -52,6 +55,40 @@ public class RegistroIngreso {
 
     public UUID idOperadorSalida() {
         return idOperadorSalida;
+    }
+
+    // Getters JavaBean (para JSP/EL)
+    public UUID getId() {
+        return id;
+    }
+
+    public UUID getIdVehiculo() {
+        return idVehiculo;
+    }
+
+    public LocalDateTime getHoraEntrada() {
+        return horaEntrada;
+    }
+
+    public LocalDateTime getHoraSalida() {
+        return horaSalida;
+    }
+
+    public UUID getIdOperadorEntrada() {
+        return idOperadorEntrada;
+    }
+
+    public UUID getIdOperadorSalida() {
+        return idOperadorSalida;
+    }
+
+    // Fechas formateadas para mostrar en pantalla (dd/MM/yyyy HH:mm)
+    public String getHoraEntradaTexto() {
+        return horaEntrada == null ? "" : horaEntrada.format(FORMATO);
+    }
+
+    public String getHoraSalidaTexto() {
+        return horaSalida == null ? "" : horaSalida.format(FORMATO);
     }
 
     // Setters

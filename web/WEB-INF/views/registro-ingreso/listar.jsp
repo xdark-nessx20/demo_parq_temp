@@ -7,25 +7,27 @@
     <title>Registros de ingreso</title>
 </head>
 <body>
+    <jsp:include page="/WEB-INF/views/comunes/header.jsp" />
 
-    <h2>Registros de ingreso</h2>
-
-    <p>
-        <a href="${pageContext.request.contextPath}/registros-ingreso?accion=registrar">Registrar ingreso</a>
-        &nbsp;|&nbsp;
-        <a href="${pageContext.request.contextPath}/pagos?accion=registrar">Registrar salida</a>
-    </p>
+    <div class="page-head">
+        <h2>Registros de ingreso</h2>
+        <div class="page-head-acciones">
+            <c:if test="${sessionScope.usuario.rolNombre == 'OPERADOR'}">
+                <a class="boton" href="${pageContext.request.contextPath}/registros-ingreso?accion=registrar">Registrar ingreso</a>
+                <a class="boton boton-secundario" href="${pageContext.request.contextPath}/pagos?accion=registrar">Registrar salida</a>
+            </c:if>
+        </div>
+    </div>
 
     <c:choose>
         <c:when test="${empty ingresos}">
             <p>No hay registros de ingreso.</p>
         </c:when>
         <c:otherwise>
-            <table border="1" cellpadding="6">
+            <table>
                 <thead>
                     <tr>
-                        <th>ID ticket</th>
-                        <th>ID vehículo</th>
+                        <th>Vehículo</th>
                         <th>Hora entrada</th>
                         <th>Hora salida</th>
                         <th>Operador entrada</th>
@@ -35,12 +37,11 @@
                 <tbody>
                     <c:forEach var="r" items="${ingresos}">
                         <tr>
-                            <td>${r.id}</td>
-                            <td>${r.idVehiculo}</td>
-                            <td>${r.horaEntrada}</td>
-                            <td>${r.horaSalida}</td>
-                            <td>${r.idOperadorEntrada}</td>
-                            <td>${r.idOperadorSalida}</td>
+                            <td><span class="placa">${placas[r.idVehiculo]}</span></td>
+                            <td>${r.horaEntradaTexto}</td>
+                            <td>${r.horaSalidaTexto}</td>
+                            <td>${operadores[r.idOperadorEntrada]}</td>
+                            <td>${operadores[r.idOperadorSalida]}</td>
                         </tr>
                     </c:forEach>
                 </tbody>
@@ -48,5 +49,6 @@
         </c:otherwise>
     </c:choose>
 
+    <jsp:include page="/WEB-INF/views/comunes/auto-refresco.jsp" />
 </body>
 </html>

@@ -33,6 +33,27 @@ public abstract class Usuario {
 
     public abstract Rol rol();
 
+    // Getters JavaBean (necesarios para que JSP/EL resuelva ${usuario.nombre}, etc.)
+    public UUID getId() {
+        return id;
+    }
+
+    public String getNombre() {
+        return nombre;
+    }
+
+    public String getCedula() {
+        return cedula;
+    }
+
+    public Rol getRol() {
+        return rol();
+    }
+
+    public String getRolNombre() {
+        return rol().name();
+    }
+
     @Override
     public boolean equals(Object o) {
         if (!(o instanceof Usuario usuario)) return false;

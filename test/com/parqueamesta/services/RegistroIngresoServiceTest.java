@@ -30,7 +30,7 @@ public class RegistroIngresoServiceTest {
             statement.executeUpdate("DELETE FROM registro_ingreso");
             statement.executeUpdate("DELETE FROM tarifa");
             statement.executeUpdate("DELETE FROM vehiculos");
-            statement.executeUpdate("DELETE FROM clientes");
+            statement.executeUpdate("DELETE FROM usuarios");
             statement.executeUpdate("DELETE FROM tipos_vehiculo");
         }
     }
@@ -42,15 +42,14 @@ public class RegistroIngresoServiceTest {
 
             UUID idTipo;
             try (var st = connection.prepareStatement(
-                    "INSERT INTO tipos_vehiculo (nombre, descripcion) VALUES (?, ?) RETURNING id")) {
+                    "INSERT INTO tipos_vehiculo (nombre, formato_placa) VALUES (?, 'CARRO') RETURNING id")) {
                 st.setString(1, "Tipo-" + sufijo);
-                st.setString(2, "desc");
                 try (var rs = st.executeQuery()) { rs.next(); idTipo = rs.getObject("id", UUID.class); }
             }
 
             UUID idCliente;
             try (var st = connection.prepareStatement(
-                    "INSERT INTO clientes (nombre, cedula) VALUES (?, ?) RETURNING id")) {
+                    "INSERT INTO usuarios (nombre, cedula, rol) VALUES (?, ?, 'CLIENTE') RETURNING id")) {
                 st.setString(1, "Cliente Test");
                 st.setString(2, sufijo);
                 try (var rs = st.executeQuery()) { rs.next(); idCliente = rs.getObject("id", UUID.class); }
@@ -58,11 +57,10 @@ public class RegistroIngresoServiceTest {
 
             UUID idVehiculo;
             try (var st = connection.prepareStatement(
-                    "INSERT INTO vehiculos (placa, marca, owner_id, tipo_id) VALUES (?, ?, ?, ?) RETURNING id")) {
+                    "INSERT INTO vehiculos (placa, owner_id, tipo_id) VALUES (?, ?, ?) RETURNING id")) {
                 st.setString(1, "ABC-" + sufijo.substring(0, 3));
-                st.setString(2, "Marca");
-                st.setObject(3, idCliente);
-                st.setObject(4, idTipo);
+                st.setObject(2, idCliente);
+                st.setObject(3, idTipo);
                 try (var rs = st.executeQuery()) { rs.next(); idVehiculo = rs.getObject("id", UUID.class); }
             }
 
@@ -114,7 +112,7 @@ public class RegistroIngresoServiceTest {
         var ticket = service.registrarIngreso(fixture.idVehiculo(), entrada, UUID.randomUUID());
         assertTrue(ticket.isPresent());
 
-        var pago = service.registrarSalida(ticket.get().id(), salida, UUID.randomUUID(), fixture.idTipoVehiculo());
+        var pago = service.registrarSalida(ticket.get().id(), salida, UUID.randomUUID());
 
         assertTrue(pago.isPresent());
         assertEquals(new BigDecimal("4000.00"), pago.get().valor());
@@ -129,13 +127,11 @@ public class RegistroIngresoServiceTest {
         var ticket = service.registrarIngreso(fixture.idVehiculo(), entrada, UUID.randomUUID());
         assertTrue(ticket.isPresent());
 
-        var primero = service.registrarSalida(ticket.get().id(), entrada.plusHours(1), UUID.randomUUID(),
-                fixture.idTipoVehiculo());
+        var primero = service.registrarSalida(ticket.get().id(), entrada.plusHours(1), UUID.randomUUID());
 
         assertTrue(primero.isPresent());
         assertThrows(TicketYaCerradoException.class, () ->
-                service.registrarSalida(ticket.get().id(), entrada.plusHours(2), UUID.randomUUID(),
-                        fixture.idTipoVehiculo()));
+                service.registrarSalida(ticket.get().id(), entrada.plusHours(2), UUID.randomUUID()));
     }
 
     @Test
@@ -147,8 +143,7 @@ public class RegistroIngresoServiceTest {
     @Test
     void registrarSalida_conTicketInexistenteLanzaExcepcion() {
         assertThrows(TicketNoEncontradoException.class, () ->
-                service.registrarSalida(UUID.randomUUID(), LocalDateTime.now(), UUID.randomUUID(),
-                        UUID.randomUUID()));
+                service.registrarSalida(UUID.randomUUID(), LocalDateTime.now(), UUID.randomUUID()));
     }
 
     @Test
@@ -173,8 +168,7 @@ public class RegistroIngresoServiceTest {
 
         // El INSERT del pago falla (overflow numerico) -> SQLException -> RuntimeException
         assertThrows(RuntimeException.class, () ->
-                service.registrarSalida(ticket.get().id(), entrada.plusHours(2), UUID.randomUUID(),
-                        fixture.idTipoVehiculo()));
+                service.registrarSalida(ticket.get().id(), entrada.plusHours(2), UUID.randomUUID()));
 
         // La transaccion se revirtio: el ticket sigue abierto (hora_salida = null)
         var ticketAbierto = service.ticketActivo(fixture.idVehiculo());

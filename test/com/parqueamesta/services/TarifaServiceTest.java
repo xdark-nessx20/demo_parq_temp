@@ -24,7 +24,7 @@ public class TarifaServiceTest {
             statement.executeUpdate("DELETE FROM registro_ingreso");
             statement.executeUpdate("DELETE FROM tarifa");
             statement.executeUpdate("DELETE FROM vehiculos");
-            statement.executeUpdate("DELETE FROM clientes");
+            statement.executeUpdate("DELETE FROM usuarios");
             statement.executeUpdate("DELETE FROM tipos_vehiculo");
         }
     }
@@ -35,9 +35,8 @@ public class TarifaServiceTest {
         try (var connection = DB.conectar()) {
             UUID idTipo;
             try (var st = connection.prepareStatement(
-                    "INSERT INTO tipos_vehiculo (nombre, descripcion) VALUES (?, ?) RETURNING id")) {
+                    "INSERT INTO tipos_vehiculo (nombre, formato_placa) VALUES (?, 'CARRO') RETURNING id")) {
                 st.setString(1, "Tipo-" + sufijo);
-                st.setString(2, "desc");
                 try (var rs = st.executeQuery()) { rs.next(); idTipo = rs.getObject("id", UUID.class); }
             }
 

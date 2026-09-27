@@ -145,6 +145,31 @@ public record RepositorioRegistroIngreso() {
         }
     }
 
+    // Todos los tickets abiertos (sin hora de salida).
+    public List<RegistroIngreso> getActivos() {
+        var query = "SELECT id, id_vehiculo, hora_entrada, hora_salida, " +
+                    "id_operador_entrada, id_operador_salida FROM registro_ingreso " +
+                    "WHERE hora_salida IS NULL ORDER BY hora_entrada DESC";
+        var registros = new ArrayList<RegistroIngreso>();
+
+        try (var connection = DB.conectar();
+             var statement = connection.prepareStatement(query);
+             var result = statement.executeQuery()) {
+            while (result.next()) {
+                var id = result.getObject("id", UUID.class);
+                var idVehiculo = result.getObject("id_vehiculo", UUID.class);
+                var horaEntrada = result.getTimestamp("hora_entrada").toLocalDateTime();
+                var idOperadorEntrada = result.getObject("id_operador_entrada", UUID.class);
+                var idOperadorSalida = result.getObject("id_operador_salida", UUID.class);
+                registros.add(new RegistroIngreso(id, idVehiculo, horaEntrada, null,
+                        idOperadorEntrada, idOperadorSalida));
+            }
+            return registros;
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     // Pone la hora de salida y el operador de salida al ticket cuando el vehículo sale.
     // Version que reutiliza la conexion pasada (para participar en una transaccion).
     public boolean setSalida(Connection connection, UUID id, LocalDateTime horaSalida, UUID idOperadorSalida)

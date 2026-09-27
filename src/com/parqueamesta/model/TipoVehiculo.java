@@ -6,21 +6,20 @@ import java.util.UUID;
 public class TipoVehiculo {
     private UUID id;
     private String nombre;
-    private String descripcion;
+    private String formatoPlaca;
 
-    public TipoVehiculo(UUID id, String name, String descripcion) {
+    public TipoVehiculo(UUID id, String nombre, String formatoPlaca) {
         this.id = id;
-        this.nombre = name;
-        this.descripcion = descripcion;
+        this.nombre = nombre;
+        this.formatoPlaca = formatoPlaca;
     }
 
-    public TipoVehiculo(String name, String descripcion) {
-        this.nombre = name;
-        this.descripcion = descripcion;
+    public TipoVehiculo(String nombre, String formatoPlaca) {
+        this.nombre = nombre;
+        this.formatoPlaca = formatoPlaca;
     }
 
     //Getters con record style
-
     public UUID id() {
         return id;
     }
@@ -29,18 +28,39 @@ public class TipoVehiculo {
         return nombre;
     }
 
-    public String descripcion() {
-        return descripcion;
+    public String formatoPlaca() {
+        return formatoPlaca;
+    }
+
+    // Getters JavaBean (para JSP/EL)
+    public UUID getId() {
+        return id;
+    }
+
+    public String getNombre() {
+        return nombre;
+    }
+
+    public String getFormatoPlaca() {
+        return formatoPlaca;
+    }
+
+    // Texto legible del formato, para mostrar en pantalla.
+    public String getFormatoTexto() {
+        return esMoto() ? "Moto (AAA-00A)" : "Carro (AAA-000)";
+    }
+
+    public boolean esMoto() {
+        return "MOTO".equalsIgnoreCase(formatoPlaca);
     }
 
     //Setters
-
     public void setNombre(String nombre) {
         this.nombre = nombre;
     }
 
-    public void setDescripcion(String descripcion) {
-        this.descripcion = descripcion;
+    public void setFormatoPlaca(String formatoPlaca) {
+        this.formatoPlaca = formatoPlaca;
     }
 
     @Override
@@ -56,6 +76,7 @@ public class TipoVehiculo {
 
     @Override
     public String toString() {
-        return "TipoVehiculo {id: %s, nombre: %s, descripcion: %s}".formatted(id.toString(), nombre, descripcion);
+        return "TipoVehiculo {id: %s, nombre: %s, formatoPlaca: %s}"
+                .formatted(id != null ? id.toString() : "", nombre, formatoPlaca);
     }
 }

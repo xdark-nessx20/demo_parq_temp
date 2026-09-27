@@ -39,6 +39,11 @@ public class TarifaService {
         return repo.getAll();
     }
 
+    public boolean delete(UUID idTarifa) {
+        if (idTarifa == null) return false;
+        return repo.delete(idTarifa);
+    }
+
     // Calcula el valor a pagar por el tiempo de estadia.
     // Politica: hora completa, cualquier fraccion se redondea hacia arriba, minimo 1 hora.
     public BigDecimal calcular(BigDecimal valorHora, LocalDateTime horaEntrada, LocalDateTime horaSalida) {
@@ -50,5 +55,10 @@ public class TarifaService {
         long minutos = Duration.between(horaEntrada, horaSalida).toMinutes();
         long horas = (long) Math.ceil(minutos / 60.0);
         return Math.max(horas, 1);
+    }
+
+    // Horas que se cobran por una estadia (minimo 1, fracciones hacia arriba).
+    public long horasCobradasPublico(LocalDateTime horaEntrada, LocalDateTime horaSalida) {
+        return horasCobradas(horaEntrada, horaSalida);
     }
 }

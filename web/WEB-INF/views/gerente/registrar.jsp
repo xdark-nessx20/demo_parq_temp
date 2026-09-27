@@ -7,8 +7,14 @@
     <title>Registrar gerente</title>
 </head>
 <body>
+    <jsp:include page="/WEB-INF/views/comunes/header.jsp" />
 
-    <h2>Registrar gerente</h2>
+    <div class="page-head">
+        <h2>Registrar gerente</h2>
+        <div class="page-head-acciones">
+            <a class="boton boton-secundario" href="${pageContext.request.contextPath}/gerentes">Volver</a>
+        </div>
+    </div>
 
     <c:if test="${not empty error}">
         <p style="color:red;"><strong>${error}</strong></p>
@@ -27,6 +33,12 @@
             <input type="text" id="cedula" name="cedula"
                    value="${param.cedula}" required />
         </div>
+
+        <div>
+            <label for="contrasena">Contraseña:</label>
+            <input type="password" id="contrasena" name="contrasena" value="${param.contrasena}" data-pw required />
+        </div>
+        <jsp:include page="/WEB-INF/views/comunes/reglas-password.jsp" />
 
         <button type="submit">Registrar</button>
     </form>

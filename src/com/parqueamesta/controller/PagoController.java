@@ -1,10 +1,15 @@
 package com.parqueamesta.controller;
 
+import com.parqueamesta.model.Pago;
+import com.parqueamesta.model.Usuario;
 import com.parqueamesta.services.PagoService;
 import com.parqueamesta.services.RegistroIngresoService;
+import com.parqueamesta.services.TarifaService;
+import com.parqueamesta.services.VehiculoService;
 import com.parqueamesta.services.exceptions.TarifaNoEncontradaException;
 import com.parqueamesta.services.exceptions.TicketNoEncontradoException;
 import com.parqueamesta.services.exceptions.TicketYaCerradoException;
+import com.parqueamesta.services.exceptions.VehiculoNoEncontradoException;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -13,6 +18,7 @@ import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
+import java.util.HashMap;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -22,42 +28,65 @@ public class PagoController extends HttpServlet {
     private static final String VISTA_LISTAR = "/WEB-INF/views/pago/listar.jsp";
     private static final String VISTA_REGISTRAR = "/WEB-INF/views/pago/registrar.jsp";
     private static final String VISTA_ERROR = "/WEB-INF/views/error.jsp";
+    private static final String VISTA_LOGIN = "/WEB-INF/views/login.jsp";
 
     private final RegistroIngresoService registroService = new RegistroIngresoService();
     private final PagoService pagoService = new PagoService();
+    private final TarifaService tarifaService = new TarifaService();
+    private final VehiculoService vehiculoService = new VehiculoService();
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws IOException, ServletException {
 
-        var idRegistro = parseUuid(request.getParameter("idRegistro"));
-        var idOperador = parseUuid(request.getParameter("idOperador"));
-        var idTipoVehiculo = parseUuid(request.getParameter("idTipoVehiculo"));
+        var usuario = usuarioDeSesion(request);
+        if (usuario == null) {
+            request.setAttribute("error", "Debe iniciar sesión");
+            request.getRequestDispatcher(VISTA_LOGIN).forward(request, response);
+            return;
+        }
 
-        if (idRegistro.isEmpty() || idOperador.isEmpty() || idTipoVehiculo.isEmpty()) {
-            request.setAttribute("error", "Los IDs no son válidos");
-            request.getRequestDispatcher(VISTA_REGISTRAR).forward(request, response);
+        // Solo el Operador efectua pagos (el Gerente solo los ve).
+        if (usuario.rol() != com.parqueamesta.model.Rol.OPERADOR) {
+            request.getSession().setAttribute("error", "Solo el operador puede registrar salidas y cobrar");
+            response.sendRedirect(request.getContextPath() + "/pagos");
+            return;
+        }
+
+        // El operador cobra un pago pendiente (registra el pago en el sistema).
+        if ("cobrar".equals(request.getParameter("accion"))) {
+            var idPago = parseUuid(request.getParameter("idPago"));
+            if (idPago.isPresent() && pagoService.marcarPagado(idPago.get())) {
+                request.getSession().setAttribute("mensaje", "Pago cobrado correctamente");
+            } else {
+                request.getSession().setAttribute("error", "No se pudo cobrar el pago");
+            }
+            response.sendRedirect(request.getContextPath() + "/pagos");
+            return;
+        }
+
+        var idRegistro = parseUuid(request.getParameter("idRegistro"));
+        if (idRegistro.isEmpty()) {
+            request.setAttribute("error", "Seleccione un ticket");
+            mostrarFormulario(request, response);
             return;
         }
 
         try {
-            var pago = registroService.registrarSalida(
-                    idRegistro.get(),
-                    LocalDateTime.now(),
-                    idOperador.get(),
-                    idTipoVehiculo.get());
-
+            // El operador de la salida es el usuario de la sesión.
+            var pago = registroService.registrarSalida(idRegistro.get(), LocalDateTime.now(), usuario.id());
             request.setAttribute("pago", pago.get());
+            cargarDesglose(request, idRegistro.get());
             request.getRequestDispatcher(VISTA_PAGAR).forward(request, response);
-        } catch (TarifaNoEncontradaException e) {
+        } catch (TarifaNoEncontradaException | VehiculoNoEncontradoException e) {
             request.setAttribute("error", e.getMessage());
-            request.getRequestDispatcher(VISTA_REGISTRAR).forward(request, response);
+            mostrarFormulario(request, response);
         } catch (TicketYaCerradoException e) {
             request.setAttribute("error", e.getMessage());
-            request.getRequestDispatcher(VISTA_REGISTRAR).forward(request, response);
+            mostrarFormulario(request, response);
         } catch (TicketNoEncontradoException e) {
             request.setAttribute("error", e.getMessage());
-            request.getRequestDispatcher(VISTA_REGISTRAR).forward(request, response);
+            mostrarFormulario(request, response);
         }
     }
 
@@ -72,14 +101,30 @@ public class PagoController extends HttpServlet {
             case "listar" -> listar(request, response);
             case "buscar" -> buscar(request, response);
             case "registrar" -> registrar(request, response);
+            case "estado" -> estado(request, response);
             default -> response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Acción no reconocida: " + accion);
         }
+    }
+
+    // Endpoint ligero para el auto-refresco "en vivo" del listado de pagos.
+    private void estado(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        response.setContentType("text/plain;charset=UTF-8");
+        response.getWriter().print(firma(pagoService.listar()));
+    }
+
+    private String firma(java.util.List<Pago> pagos) {
+        var sb = new StringBuilder();
+        for (var p : pagos) sb.append(p.id()).append(':').append(p.pagado()).append('|');
+        return sb.toString();
     }
 
     private void listar(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         var pagos = pagoService.listar();
         request.setAttribute("pagos", pagos);
+        request.setAttribute("firma", firma(pagos));
+        request.setAttribute("refrescoUrl", "/pagos?accion=estado");
+        cargarPlacas(request);
         request.getRequestDispatcher(VISTA_LISTAR).forward(request, response);
     }
 
@@ -94,19 +139,63 @@ public class PagoController extends HttpServlet {
         }
 
         var pago = pagoService.buscarPorRegistro(idRegistro.get());
-
         if (pago.isEmpty()) {
             request.setAttribute("error", "Pago no encontrado");
             request.getRequestDispatcher(VISTA_ERROR).forward(request, response);
             return;
         }
         request.setAttribute("pago", pago.get());
+        cargarDesglose(request, idRegistro.get());
         request.getRequestDispatcher(VISTA_PAGAR).forward(request, response);
     }
 
     private void registrar(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        mostrarFormulario(request, response);
+    }
+
+    // Carga los tickets abiertos (para el desplegable) y muestra el formulario.
+    private void mostrarFormulario(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        request.setAttribute("tickets", registroService.ticketsActivos());
+        cargarPlacas(request);
         request.getRequestDispatcher(VISTA_REGISTRAR).forward(request, response);
+    }
+
+    // Carga el desglose del pago (vehiculo, horas, tarifa por hora) para la pantalla de pago.
+    private void cargarDesglose(HttpServletRequest request, UUID idRegistro) {
+        var registro = registroService.buscar(idRegistro).orElse(null);
+        if (registro == null) return;
+
+        request.setAttribute("horaEntrada", registro.getHoraEntradaTexto());
+        request.setAttribute("horaSalida", registro.getHoraSalidaTexto());
+
+        var vehiculo = vehiculoService.findById(registro.idVehiculo()).orElse(null);
+        if (vehiculo == null) return;
+
+        request.setAttribute("vehiculoPlaca", vehiculo.placa());
+        if (vehiculo.tipo() == null) return;
+
+        tarifaService.tarifaActual(vehiculo.tipo().id()).ifPresent(t -> {
+            request.setAttribute("valorHoraTexto", com.parqueamesta.util.Formato.moneda(t.valorHora()));
+            request.setAttribute("horas",
+                    tarifaService.horasCobradasPublico(registro.horaEntrada(), registro.horaSalida()));
+        });
+    }
+
+    // Mapa registro->placa para mostrar el vehiculo en el listado de pagos.
+    private void cargarPlacas(HttpServletRequest request) {
+        var placasPorRegistro = new HashMap<UUID, String>();
+        for (var r : registroService.listar()) {
+            var placa = vehiculoService.findById(r.idVehiculo()).map(v -> v.placa()).orElse("");
+            placasPorRegistro.put(r.id(), placa);
+        }
+        request.setAttribute("placasPorRegistro", placasPorRegistro);
+    }
+
+    private Usuario usuarioDeSesion(HttpServletRequest request) {
+        var session = request.getSession(false);
+        return session == null ? null : (Usuario) session.getAttribute("usuario");
     }
 
     private Optional<UUID> parseUuid(String valor) {

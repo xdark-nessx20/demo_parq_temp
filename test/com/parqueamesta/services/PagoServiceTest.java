@@ -24,7 +24,7 @@ public class PagoServiceTest {
             statement.executeUpdate("DELETE FROM registro_ingreso");
             statement.executeUpdate("DELETE FROM tarifa");
             statement.executeUpdate("DELETE FROM vehiculos");
-            statement.executeUpdate("DELETE FROM clientes");
+            statement.executeUpdate("DELETE FROM usuarios");
             statement.executeUpdate("DELETE FROM tipos_vehiculo");
         }
     }
@@ -36,15 +36,14 @@ public class PagoServiceTest {
 
             UUID idTipo;
             try (var st = connection.prepareStatement(
-                    "INSERT INTO tipos_vehiculo (nombre, descripcion) VALUES (?, ?) RETURNING id")) {
+                    "INSERT INTO tipos_vehiculo (nombre, formato_placa) VALUES (?, 'CARRO') RETURNING id")) {
                 st.setString(1, "Tipo-" + sufijo);
-                st.setString(2, "desc");
                 try (var rs = st.executeQuery()) { rs.next(); idTipo = rs.getObject("id", UUID.class); }
             }
 
             UUID idCliente;
             try (var st = connection.prepareStatement(
-                    "INSERT INTO clientes (nombre, cedula) VALUES (?, ?) RETURNING id")) {
+                    "INSERT INTO usuarios (nombre, cedula, rol) VALUES (?, ?, 'CLIENTE') RETURNING id")) {
                 st.setString(1, "Cliente Test");
                 st.setString(2, sufijo);
                 try (var rs = st.executeQuery()) { rs.next(); idCliente = rs.getObject("id", UUID.class); }
@@ -52,11 +51,10 @@ public class PagoServiceTest {
 
             UUID idVehiculo;
             try (var st = connection.prepareStatement(
-                    "INSERT INTO vehiculos (placa, marca, owner_id, tipo_id) VALUES (?, ?, ?, ?) RETURNING id")) {
+                    "INSERT INTO vehiculos (placa, owner_id, tipo_id) VALUES (?, ?, ?) RETURNING id")) {
                 st.setString(1, "ABC-" + sufijo.substring(0, 3));
-                st.setString(2, "Marca");
-                st.setObject(3, idCliente);
-                st.setObject(4, idTipo);
+                st.setObject(2, idCliente);
+                st.setObject(3, idTipo);
                 try (var rs = st.executeQuery()) { rs.next(); idVehiculo = rs.getObject("id", UUID.class); }
             }
 

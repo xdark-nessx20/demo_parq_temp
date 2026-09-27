@@ -7,15 +7,22 @@
     <title>Gerentes</title>
 </head>
 <body>
+    <jsp:include page="/WEB-INF/views/comunes/header.jsp" />
+    <jsp:include page="/WEB-INF/views/comunes/mensajes.jsp" />
 
-    <h2>Gerentes registrados</h2>
+    <div class="page-head">
+        <h2>Gerentes registrados</h2>
+        <div class="page-head-acciones">
+            <a class="boton" href="${pageContext.request.contextPath}/gerentes?accion=registrar">Registrar gerente</a>
+        </div>
+    </div>
 
     <c:choose>
         <c:when test="${empty gerentes}">
             <p>No hay gerentes registrados.</p>
         </c:when>
         <c:otherwise>
-            <table border="1" cellpadding="6">
+            <table>
                 <thead>
                     <tr>
                         <th>Nombre</th>
@@ -29,9 +36,16 @@
                             <td>${g.nombre}</td>
                             <td>${g.cedula}</td>
                             <td>
-                                <a href="${pageContext.request.contextPath}/gerentes?accion=buscar&cedula=${g.cedula}">
-                                    Ver detalle
-                                </a>
+                                <div class="acciones-tabla">
+                                    <a class="boton boton-secundario boton-chico" href="${pageContext.request.contextPath}/gerentes?accion=buscar&cedula=${g.cedula}">Ver</a>
+                                    <a class="boton boton-secundario boton-chico" href="${pageContext.request.contextPath}/gerentes?accion=editar&cedula=${g.cedula}">Editar</a>
+                                    <form action="${pageContext.request.contextPath}/gerentes" method="post"
+                                          onsubmit="return confirm('¿Eliminar a ${g.nombre}?');">
+                                        <input type="hidden" name="accion" value="eliminar" />
+                                        <input type="hidden" name="cedula" value="${g.cedula}" />
+                                        <button type="submit" class="boton-rojo boton-chico">Eliminar</button>
+                                    </form>
+                                </div>
                             </td>
                         </tr>
                     </c:forEach>

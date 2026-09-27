@@ -6,21 +6,18 @@ import java.util.UUID;
 public class Vehiculo {
     private UUID id;
     private String placa;
-    private String marca;
     private Cliente owner;
     private TipoVehiculo tipo;
 
-    public Vehiculo(UUID id, String placa, String marca, Cliente owner, TipoVehiculo tipo) {
+    public Vehiculo(UUID id, String placa, Cliente owner, TipoVehiculo tipo) {
         this.id = id;
         this.placa = placa;
-        this.marca = marca;
         this.owner = owner;
         this.tipo = tipo;
     }
 
-    public Vehiculo(String placa, String marca, Cliente owner, TipoVehiculo tipo) {
+    public Vehiculo(String placa, Cliente owner, TipoVehiculo tipo) {
         this.placa = placa;
-        this.marca = marca;
         this.owner = owner;
         this.tipo = tipo;
     }
@@ -34,10 +31,6 @@ public class Vehiculo {
         return placa;
     }
 
-    public String marca() {
-        return marca;
-    }
-
     public Cliente owner() {
         return owner;
     }
@@ -46,14 +39,27 @@ public class Vehiculo {
         return tipo;
     }
 
+    // Getters JavaBean (para JSP/EL)
+    public UUID getId() {
+        return id;
+    }
+
+    public String getPlaca() {
+        return placa;
+    }
+
+    public Cliente getOwner() {
+        return owner;
+    }
+
+    public TipoVehiculo getTipo() {
+        return tipo;
+    }
+
     //Setters
 
     public void setPlaca(String placa) {
         this.placa = placa;
-    }
-
-    public void setMarca(String marca) {
-        this.marca = marca;
     }
 
     public void setOwner(Cliente owner) {
@@ -77,8 +83,8 @@ public class Vehiculo {
 
     @Override
     public String toString() {
-        return "Vehiculo {id: %s, placa: %s, marca: %s, owner: %s, tipo: %s}"
-                .formatted(id.toString(), placa, marca,
+        return "Vehiculo {id: %s, placa: %s, owner: %s, tipo: %s}"
+                .formatted(id != null ? id.toString() : "", placa,
                         owner != null ? owner.toString() : "", tipo != null ? tipo.toString() : "");
     }
 }
