@@ -15,9 +15,8 @@ CREATE TABLE IF NOT EXISTS usuarios (
 
 -- Tipos de vehículo (Carro, Moto, Camioneta, ...)
 CREATE TABLE IF NOT EXISTS tipos_vehiculo (
-    id          uuid         PRIMARY KEY DEFAULT gen_random_uuid(),
-    nombre      varchar(50)  NOT NULL,
-    descripcion varchar(200)
+    id     uuid        PRIMARY KEY DEFAULT gen_random_uuid(),
+    nombre varchar(50) NOT NULL
 );
 
 -- Vehículos; el propietario es un usuario con rol CLIENTE

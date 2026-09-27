@@ -42,9 +42,8 @@ public class RegistroIngresoServiceTest {
 
             UUID idTipo;
             try (var st = connection.prepareStatement(
-                    "INSERT INTO tipos_vehiculo (nombre, descripcion) VALUES (?, ?) RETURNING id")) {
+                    "INSERT INTO tipos_vehiculo (nombre) VALUES (?) RETURNING id")) {
                 st.setString(1, "Tipo-" + sufijo);
-                st.setString(2, "desc");
                 try (var rs = st.executeQuery()) { rs.next(); idTipo = rs.getObject("id", UUID.class); }
             }
 

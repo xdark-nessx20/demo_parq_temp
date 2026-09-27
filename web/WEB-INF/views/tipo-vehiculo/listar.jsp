@@ -25,7 +25,6 @@
                 <thead>
                     <tr>
                         <th>Nombre</th>
-                        <th>Descripción</th>
                         <th>Acciones</th>
                     </tr>
                 </thead>
@@ -33,7 +32,6 @@
                     <c:forEach var="tipo" items="${tipos}">
                         <tr>
                             <td>${tipo.nombre}</td>
-                            <td>${tipo.descripcion}</td>
                             <td>
                                 <a href="${pageContext.request.contextPath}/tipos-vehiculo?accion=buscar&nombre=${tipo.nombre}">Ver</a>
                                 <a href="${pageContext.request.contextPath}/tipos-vehiculo?accion=editar&id=${tipo.id}">Editar</a>

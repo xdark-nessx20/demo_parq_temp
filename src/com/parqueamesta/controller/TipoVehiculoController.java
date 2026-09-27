@@ -69,9 +69,8 @@ public class TipoVehiculoController extends HttpServlet {
     private void registrar(HttpServletRequest request, HttpServletResponse response)
             throws IOException, ServletException {
         String nombre = request.getParameter("nombre");
-        String descripcion = request.getParameter("descripcion");
 
-        if (service.save(nombre, descripcion)) {
+        if (service.save(nombre)) {
             response.sendRedirect(request.getContextPath() + "/tipos-vehiculo");
         } else {
             request.setAttribute("error", "No se ha podido realizar la operacion");
@@ -97,9 +96,8 @@ public class TipoVehiculoController extends HttpServlet {
             throws IOException, ServletException {
         var id = parseUuid(request.getParameter("id"));
         String nombre = request.getParameter("nombre");
-        String descripcion = request.getParameter("descripcion");
 
-        if (id.isPresent() && service.update(id.get(), nombre, descripcion)) {
+        if (id.isPresent() && service.update(id.get(), nombre)) {
             response.sendRedirect(request.getContextPath() + "/tipos-vehiculo");
         } else {
             request.setAttribute("error", "No se pudo actualizar (revise el nombre)");

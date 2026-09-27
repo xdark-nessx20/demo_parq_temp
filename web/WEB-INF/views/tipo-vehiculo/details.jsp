@@ -15,10 +15,6 @@
             <th>Nombre</th>
             <td>${tipo.nombre}</td>
         </tr>
-        <tr>
-            <th>Descripción</th>
-            <td>${tipo.descripcion}</td>
-        </tr>
     </table>
 
     <p>

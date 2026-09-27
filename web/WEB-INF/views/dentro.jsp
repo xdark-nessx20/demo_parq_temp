@@ -22,9 +22,11 @@
         </div>
     </div>
 
-    <div class="acciones">
-        <a class="boton" href="${pageContext.request.contextPath}/registros-ingreso?accion=registrar">Registrar ingreso</a>
-    </div>
+    <c:if test="${sessionScope.usuario.rolNombre == 'OPERADOR'}">
+        <div class="acciones">
+            <a class="boton" href="${pageContext.request.contextPath}/registros-ingreso?accion=registrar">Registrar ingreso</a>
+        </div>
+    </c:if>
 
     <c:choose>
         <c:when test="${empty vehiculosDentro}">
@@ -51,11 +53,13 @@
                             <td>${v.horaEntrada}</td>
                             <td>${v.tiempo}</td>
                             <td>
-                                <form action="${pageContext.request.contextPath}/dentro" method="post"
-                                      onsubmit="return confirm('¿Registrar la salida de ${v.placa}?');">
-                                    <input type="hidden" name="idRegistro" value="${v.id}" />
-                                    <button type="submit" class="boton-verde boton-chico">Dar salida</button>
-                                </form>
+                                <c:if test="${sessionScope.usuario.rolNombre == 'OPERADOR'}">
+                                    <form action="${pageContext.request.contextPath}/dentro" method="post"
+                                          onsubmit="return confirm('¿Registrar la salida de ${v.placa}?');">
+                                        <input type="hidden" name="idRegistro" value="${v.id}" />
+                                        <button type="submit" class="boton-verde boton-chico">Dar salida</button>
+                                    </form>
+                                </c:if>
                             </td>
                         </tr>
                     </c:forEach>

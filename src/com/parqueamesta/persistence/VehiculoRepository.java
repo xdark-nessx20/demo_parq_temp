@@ -61,7 +61,7 @@ public record VehiculoRepository() {
                     //Tipo
                     var tipo_id = result.getObject("ty_id", UUID.class);
                     var tipo_name = result.getString("ty_nombre");
-                    var tipo = new TipoVehiculo(tipo_id, tipo_name, null);
+                    var tipo = new TipoVehiculo(tipo_id, tipo_name);
 
                     return Optional.of(new Vehiculo(id, placa, owner, tipo));
                 }
@@ -100,7 +100,7 @@ public record VehiculoRepository() {
 
                     var tipo_id = result.getObject("ty_id", UUID.class);
                     var tipo_name = result.getString("ty_nombre");
-                    var tipo = new TipoVehiculo(tipo_id, tipo_name, null);
+                    var tipo = new TipoVehiculo(tipo_id, tipo_name);
 
                     return Optional.of(new Vehiculo(vid, placa, owner, tipo));
                 }
@@ -137,7 +137,7 @@ public record VehiculoRepository() {
                 TipoVehiculo tipo = null;
                 var tipoId = set.getObject("ty_id", UUID.class);
                 if (tipoId != null) {
-                    tipo = new TipoVehiculo(tipoId, set.getString("ty_nombre"), null);
+                    tipo = new TipoVehiculo(tipoId, set.getString("ty_nombre"));
                 }
 
                 vehiculos.add(new Vehiculo(id, placa, owner, tipo));
@@ -178,7 +178,7 @@ public record VehiculoRepository() {
                     TipoVehiculo tipo = null;
                     var tipoId = set.getObject("ty_id", UUID.class);
                     if (tipoId != null) {
-                        tipo = new TipoVehiculo(tipoId, set.getString("ty_nombre"), null);
+                        tipo = new TipoVehiculo(tipoId, set.getString("ty_nombre"));
                     }
 
                     vehiculos.add(new Vehiculo(id, placa, owner, tipo));

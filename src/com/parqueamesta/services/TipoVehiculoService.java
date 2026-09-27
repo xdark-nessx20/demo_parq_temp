@@ -13,11 +13,10 @@ public class TipoVehiculoService {
     public TipoVehiculoService() {
     }
 
-    public boolean save(String nombre, String descripcion) {
+    public boolean save(String nombre) {
         if (nombreInvalido(nombre)) return false;
 
-        var tipo = new TipoVehiculo(nombre, descripcion);
-        return repo.save(tipo);
+        return repo.save(new TipoVehiculo(nombre));
     }
 
     public Optional<TipoVehiculo> findByName(String nombre) {
@@ -34,10 +33,10 @@ public class TipoVehiculoService {
         return repo.getAll();
     }
 
-    public boolean update(UUID id, String nombre, String descripcion) {
+    public boolean update(UUID id, String nombre) {
         if (id == null) return false;
         if (nombreInvalido(nombre)) return false;
-        return repo.update(id, nombre, descripcion);
+        return repo.update(id, nombre);
     }
 
     public boolean delete(UUID id) {
@@ -46,6 +45,6 @@ public class TipoVehiculoService {
     }
 
     private boolean nombreInvalido(String nombre) {
-        return nombre == null || nombre.isBlank() || nombre.length() < 5;
+        return nombre == null || nombre.isBlank() || nombre.length() < 3;
     }
 }

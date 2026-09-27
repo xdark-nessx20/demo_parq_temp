@@ -23,12 +23,6 @@
                    value="${param.nombre}" required />
         </div>
 
-        <div>
-            <label for="descripcion">Descripción:</label>
-            <textarea id="descripcion" name="descripcion" rows="4"
-                      required>${param.descripcion}</textarea>
-        </div>
-
         <button type="submit">Registrar</button>
     </form>
 

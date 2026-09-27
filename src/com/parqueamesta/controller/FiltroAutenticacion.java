@@ -22,6 +22,10 @@ public class FiltroAutenticacion implements Filter {
     private static final List<String> SOLO_GERENTE =
             List.of("/tarifas", "/operadores", "/gerentes", "/tipos-vehiculo");
 
+    // Secciones de operacion: solo el Operador (el Gerente administra, no opera).
+    private static final List<String> SOLO_OPERADOR =
+            List.of("/registros-ingreso", "/pagos");
+
     @Override
     public void doFilter(ServletRequest req, ServletResponse res, FilterChain chain)
             throws IOException, ServletException {
@@ -62,6 +66,12 @@ public class FiltroAutenticacion implements Filter {
                 response.sendRedirect(request.getContextPath() + "/dentro");
                 return;
             }
+            // Secciones de operacion: el Gerente no opera.
+            if (esSoloOperador(path) && usuario.rol() != Rol.OPERADOR) {
+                session.setAttribute("error", "Solo el operador puede registrar ingresos y salidas");
+                response.sendRedirect(request.getContextPath() + "/dentro");
+                return;
+            }
         }
 
         chain.doFilter(req, res);
@@ -71,11 +81,16 @@ public class FiltroAutenticacion implements Filter {
         if (path.isEmpty() || path.equals("/")) return true;
         return path.equals("/index.jsp")
                 || path.equals("/login")
+                || path.equals("/registro")
                 || path.equals("/logout")
                 || path.startsWith("/css/");
     }
 
     private boolean esSoloGerente(String path) {
         return SOLO_GERENTE.stream().anyMatch(path::startsWith);
+    }
+
+    private boolean esSoloOperador(String path) {
+        return SOLO_OPERADOR.stream().anyMatch(path::startsWith);
     }
 }

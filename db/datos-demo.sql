@@ -6,9 +6,9 @@
 --   Cliente   12345678   / cliente123
 -- ============================================================
 
-INSERT INTO tipos_vehiculo (id, nombre, descripcion) VALUES
-  ('11111111-1111-1111-1111-111111111111', 'Carro', 'Automovil'),
-  ('22222222-2222-2222-2222-222222222222', 'Moto', 'Motocicleta')
+INSERT INTO tipos_vehiculo (id, nombre) VALUES
+  ('11111111-1111-1111-1111-111111111111', 'Carro'),
+  ('22222222-2222-2222-2222-222222222222', 'Moto')
 ON CONFLICT (id) DO NOTHING;
 
 INSERT INTO usuarios (id, nombre, cedula, rol, contrasena_hash) VALUES

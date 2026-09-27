@@ -174,7 +174,8 @@ thead th {
 }
 tbody td { padding: 13px 16px; border-bottom: 1px solid var(--border); font-size: .95rem; vertical-align: middle; }
 tbody tr:last-child td { border-bottom: none; }
-tbody tr:hover td { background: #f8fafc; }
+tbody tr:nth-child(even) td { background: #fbfcfe; }
+tbody tr:hover td { background: #eff6ff; }
 td strong { font-weight: 700; }
 
 /* Placa estilo matrícula */
@@ -291,3 +292,60 @@ table form, .acciones form, form.form-inline {
 .muted { color: var(--muted); }
 .acciones-tabla { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
 .acciones-tabla form { display: inline; }
+
+/* ---------------- Login / Registro (split) ---------------- */
+body > .auth { max-width: 920px; padding: 0; margin: 5vh auto; }
+.auth {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow-lg);
+    overflow: hidden;
+}
+.auth-side {
+    background: #0f172a;
+    color: #fff;
+    padding: 40px 34px;
+    display: flex;
+    flex-direction: column;
+}
+.auth-side .auth-brand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 1.45rem;
+    font-weight: 800;
+    letter-spacing: -.02em;
+}
+.auth-side .auth-brand::before {
+    content: "P";
+    width: 34px;
+    height: 34px;
+    border-radius: 9px;
+    background: var(--accent);
+    color: #0f172a;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 800;
+}
+.auth-side .auth-tag { color: #94a3b8; margin: 12px 0 0; }
+.auth-side ul { list-style: none; padding: 0; margin: auto 0 0; }
+.auth-side li { position: relative; padding: 8px 0 8px 22px; color: #e2e8f0; font-size: .95rem; }
+.auth-side li::before { content: "•"; position: absolute; left: 0; top: 2px; color: var(--accent); font-size: 1.4rem; line-height: 1.2; }
+.auth-main { padding: 40px 34px; }
+.auth-main h1 { font-size: 1.35rem; }
+.auth-main form { border: none; box-shadow: none; padding: 0; max-width: none; margin: 0 0 16px; background: none; }
+.auth-main button[type="submit"] { width: 100%; }
+.roles { display: grid; gap: 10px; margin-top: 10px; }
+.role-card { border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 12px 14px; }
+.role-card strong { display: block; }
+.role-card span { color: var(--muted); font-size: .88rem; }
+
+@media (max-width: 760px) {
+    .auth { grid-template-columns: 1fr; }
+    .auth-side { padding: 28px; }
+    .auth-side ul { margin-top: 18px; }
+}

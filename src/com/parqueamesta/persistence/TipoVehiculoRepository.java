@@ -13,12 +13,11 @@ import java.util.UUID;
 public record TipoVehiculoRepository() {
 
     public boolean save(TipoVehiculo tipoVehiculo) {
-        var query = "INSERT INTO tipos_vehiculo (nombre, descripcion) VALUES (?, ?)";
+        var query = "INSERT INTO tipos_vehiculo (nombre) VALUES (?)";
         try (var connection = DB.conectar()) {
             var statement = connection.prepareStatement(query);
 
             statement.setString(1, tipoVehiculo.nombre());
-            statement.setString(2, tipoVehiculo.descripcion());
 
             int affectedRows = statement.executeUpdate();
             statement.close();
@@ -29,7 +28,7 @@ public record TipoVehiculoRepository() {
     }
 
     public Optional<TipoVehiculo> get(String nombre) {
-        var query = "SELECT * FROM tipos_vehiculo WHERE LOWER(nombre) LIKE LOWER(?);";
+        var query = "SELECT id, nombre FROM tipos_vehiculo WHERE LOWER(nombre) LIKE LOWER(?)";
 
         try (var connection = DB.conectar()) {
             var statement = connection.prepareStatement(query);
@@ -38,9 +37,23 @@ public record TipoVehiculoRepository() {
             try (var result = statement.executeQuery()) {
                 if (result.next()) {
                     UUID id = result.getObject("id", UUID.class);
-                    var nombreTipo = result.getString("nombre");
-                    var descripcion = result.getString("descripcion");
-                    return Optional.of(new TipoVehiculo(id, nombreTipo, descripcion));
+                    return Optional.of(new TipoVehiculo(id, result.getString("nombre")));
+                }
+            }
+            return Optional.empty();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public Optional<TipoVehiculo> getById(UUID id) {
+        var query = "SELECT id, nombre FROM tipos_vehiculo WHERE id = ?";
+        try (var connection = DB.conectar()) {
+            var statement = connection.prepareStatement(query);
+            statement.setObject(1, id);
+            try (var result = statement.executeQuery()) {
+                if (result.next()) {
+                    return Optional.of(new TipoVehiculo(id, result.getString("nombre")));
                 }
             }
             return Optional.empty();
@@ -50,16 +63,13 @@ public record TipoVehiculoRepository() {
     }
 
     public List<TipoVehiculo> getAll() {
-        var query = "SELECT * FROM tipos_vehiculo";
+        var query = "SELECT id, nombre FROM tipos_vehiculo";
         var tipos = new ArrayList<TipoVehiculo>();
 
         try (Connection connection = DB.conectar(); var statement = connection.prepareStatement(query);
              var result = statement.executeQuery()) {
             while (result.next()) {
-                var id = result.getObject("id", UUID.class);
-                var nombre = result.getString("nombre");
-                var descripcion = result.getString("descripcion");
-                tipos.add(new TipoVehiculo(id, nombre, descripcion));
+                tipos.add(new TipoVehiculo(result.getObject("id", UUID.class), result.getString("nombre")));
             }
             return tipos;
         } catch (SQLException e) {
@@ -67,29 +77,12 @@ public record TipoVehiculoRepository() {
         }
     }
 
-    public Optional<TipoVehiculo> getById(UUID id) {
-        var query = "SELECT * FROM tipos_vehiculo WHERE id = ?";
-        try (var connection = DB.conectar()) {
-            var statement = connection.prepareStatement(query);
-            statement.setObject(1, id);
-            try (var result = statement.executeQuery()) {
-                if (result.next()) {
-                    return Optional.of(new TipoVehiculo(id, result.getString("nombre"), result.getString("descripcion")));
-                }
-            }
-            return Optional.empty();
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    public boolean update(UUID id, String nombre, String descripcion) {
-        var query = "UPDATE tipos_vehiculo SET nombre = ?, descripcion = ? WHERE id = ?";
+    public boolean update(UUID id, String nombre) {
+        var query = "UPDATE tipos_vehiculo SET nombre = ? WHERE id = ?";
         try (var connection = DB.conectar()) {
             var statement = connection.prepareStatement(query);
             statement.setString(1, nombre);
-            statement.setString(2, descripcion);
-            statement.setObject(3, id);
+            statement.setObject(2, id);
             int affectedRows = statement.executeUpdate();
             statement.close();
             return affectedRows > 0;

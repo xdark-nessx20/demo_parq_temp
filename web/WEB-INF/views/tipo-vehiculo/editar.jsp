@@ -22,10 +22,6 @@
             <label for="nombre">Nombre:</label>
             <input type="text" id="nombre" name="nombre" value="${tipo.nombre}" required />
         </div>
-        <div>
-            <label for="descripcion">Descripción:</label>
-            <input type="text" id="descripcion" name="descripcion" value="${tipo.descripcion}" />
-        </div>
         <button type="submit">Guardar cambios</button>
     </form>
 
