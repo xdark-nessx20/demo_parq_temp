@@ -1,5 +1,6 @@
 package com.parqueamesta.controller;
 
+import com.parqueamesta.model.RegistroIngreso;
 import com.parqueamesta.model.Usuario;
 import com.parqueamesta.services.OperadorService;
 import com.parqueamesta.services.RegistroIngresoService;
@@ -84,14 +85,32 @@ public class RegistroIngresoController extends HttpServlet {
             case "listar" -> listar(request, response);
             case "buscar" -> buscar(request, response);
             case "registrar" -> registrar(request, response);
+            case "estado" -> estado(request, response);
             default -> response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Acción no reconocida: " + accion);
         }
+    }
+
+    // Endpoint ligero para el auto-refresco "en vivo" del listado de registros.
+    private void estado(HttpServletRequest request, HttpServletResponse response)
+            throws IOException {
+        var idVehiculo = parseUuid(request.getParameter("idVehiculo"));
+        var lista = idVehiculo.isPresent() ? service.historialVehiculo(idVehiculo.get()) : service.listar();
+        response.setContentType("text/plain;charset=UTF-8");
+        response.getWriter().print(firma(lista));
+    }
+
+    private String firma(java.util.List<RegistroIngreso> ingresos) {
+        var sb = new StringBuilder();
+        for (var r : ingresos) sb.append(r.id()).append(':').append(r.horaSalida()).append('|');
+        return sb.toString();
     }
 
     private void listar(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         var ingresos = service.listar();
         request.setAttribute("ingresos", ingresos);
+        request.setAttribute("firma", firma(ingresos));
+        request.setAttribute("refrescoUrl", "/registros-ingreso?accion=estado");
         cargarMapas(request);
         request.getRequestDispatcher(VISTA_LISTAR).forward(request, response);
     }
@@ -108,6 +127,8 @@ public class RegistroIngresoController extends HttpServlet {
 
         var historial = service.historialVehiculo(idVehiculo.get());
         request.setAttribute("ingresos", historial);
+        request.setAttribute("firma", firma(historial));
+        request.setAttribute("refrescoUrl", "/registros-ingreso?accion=estado&idVehiculo=" + idVehiculo.get());
         cargarMapas(request);
         request.getRequestDispatcher(VISTA_LISTAR).forward(request, response);
     }

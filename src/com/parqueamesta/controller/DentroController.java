@@ -48,6 +48,7 @@ public class DentroController extends HttpServlet {
         var lista = listarDentro();
         request.setAttribute("vehiculosDentro", lista);
         request.setAttribute("firma", firma(lista));
+        request.setAttribute("refrescoUrl", "/dentro?accion=estado");
         request.getRequestDispatcher(VISTA).forward(request, response);
     }
 

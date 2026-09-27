@@ -1,5 +1,6 @@
 package com.parqueamesta.controller;
 
+import com.parqueamesta.model.Pago;
 import com.parqueamesta.model.Usuario;
 import com.parqueamesta.services.PagoService;
 import com.parqueamesta.services.RegistroIngresoService;
@@ -100,13 +101,29 @@ public class PagoController extends HttpServlet {
             case "listar" -> listar(request, response);
             case "buscar" -> buscar(request, response);
             case "registrar" -> registrar(request, response);
+            case "estado" -> estado(request, response);
             default -> response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Acción no reconocida: " + accion);
         }
     }
 
+    // Endpoint ligero para el auto-refresco "en vivo" del listado de pagos.
+    private void estado(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        response.setContentType("text/plain;charset=UTF-8");
+        response.getWriter().print(firma(pagoService.listar()));
+    }
+
+    private String firma(java.util.List<Pago> pagos) {
+        var sb = new StringBuilder();
+        for (var p : pagos) sb.append(p.id()).append(':').append(p.pagado()).append('|');
+        return sb.toString();
+    }
+
     private void listar(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        request.setAttribute("pagos", pagoService.listar());
+        var pagos = pagoService.listar();
+        request.setAttribute("pagos", pagos);
+        request.setAttribute("firma", firma(pagos));
+        request.setAttribute("refrescoUrl", "/pagos?accion=estado");
         cargarPlacas(request);
         request.getRequestDispatcher(VISTA_LISTAR).forward(request, response);
     }

@@ -84,17 +84,6 @@
         </c:otherwise>
     </c:choose>
 
-    <script>
-        // Auto-refresco "en vivo": si el operador cambia el estado, se refleja solo.
-        var firmaActual = "${firma}";
-        setInterval(function () {
-            fetch("${pageContext.request.contextPath}/mi-cuenta?accion=estado")
-                .then(function (r) { return r.text(); })
-                .then(function (t) {
-                    if (t !== firmaActual) { window.location.reload(); }
-                })
-                .catch(function () {});
-        }, 5000);
-    </script>
+    <jsp:include page="/WEB-INF/views/comunes/auto-refresco.jsp" />
 </body>
 </html>

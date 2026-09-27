@@ -54,6 +54,7 @@ public class MiCuentaController extends HttpServlet {
         var movimientos = listarMovimientos(usuario);
         request.setAttribute("movimientos", movimientos);
         request.setAttribute("firma", firma(movimientos));
+        request.setAttribute("refrescoUrl", "/mi-cuenta?accion=estado");
         request.setAttribute("tipos", tipoService.findAll());
         request.getRequestDispatcher(VISTA).forward(request, response);
     }

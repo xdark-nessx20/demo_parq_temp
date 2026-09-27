@@ -47,5 +47,6 @@
         </c:otherwise>
     </c:choose>
 
+    <jsp:include page="/WEB-INF/views/comunes/auto-refresco.jsp" />
 </body>
 </html>
