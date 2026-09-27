@@ -1,4 +1,5 @@
 @startuml
+title Casos de Uso (nivel 0) - Gestión de Parqueadero
 left to right direction
 
 actor "Cliente" as c
@@ -6,30 +7,42 @@ actor "Operador" as o
 actor "Gerente" as g
 
 package "Sistema de Gestión de Parqueadero" {
-  
-  usecase "Gestionar Ingreso y\nSalida de Vehículos" as UC1
-  usecase "Gestionar Pagos" as UC2
-  usecase "Gestionar Vehículos" as UC3
-  usecase "Gestionar Tarifas" as UC4
-  usecase "Gestionar Tipos de\nVehículo" as UC5
-  usecase "Gestionar Usuarios" as UC6
-  usecase "Consultar Información\ndel Parqueadero" as UC7
+
+  usecase "Iniciar sesión" as UC0
+  usecase "Registrar ingreso\nde vehículo" as UC1
+  usecase "Registrar salida y\ncalcular el pago" as UC2
+  usecase "Pagar" as UC3
+  usecase "Consultar vehículos\ndentro" as UC4
+  usecase "Gestionar vehículos" as UC5
+  usecase "Gestionar clientes" as UC6
+  usecase "Gestionar tarifas" as UC7
+  usecase "Gestionar tipos\nde vehículo" as UC8
+  usecase "Gestionar operadores\ny gerentes" as UC9
+  usecase "Consultar mis vehículos\ny pagos" as UC10
 
 }
 
-c --> UC2
+c --> UC0
 c --> UC3
-c --> UC6
-c --> UC7
+c --> UC5
+c --> UC10
 
+o --> UC0
 o --> UC1
 o --> UC2
 o --> UC3
+o --> UC4
+o --> UC5
 o --> UC6
 
+g --> UC0
+g --> UC1
+g --> UC2
 g --> UC4
 g --> UC5
-g --> UC7
 g --> UC6
+g --> UC7
+g --> UC8
+g --> UC9
 
 @enduml

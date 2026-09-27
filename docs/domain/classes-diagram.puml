@@ -1,27 +1,53 @@
 @startuml
+title Modelo de Clases - Gestión de Parqueadero
 
-class Vehiculo
-enum  TipoVehiculo
-class Tarifa
-abstract class Usuario
+abstract class Usuario {
+  - id: UUID
+  - nombre: String
+  - cedula: String
+  + rol(): Rol
+}
 class Cliente
 class Operador
 class Gerente
-class RegistroIngreso
-class Pago
+
+enum Rol {
+  CLIENTE
+  OPERADOR
+  GERENTE
+}
+
+class Vehiculo {
+  - placa: String
+}
+class TipoVehiculo {
+  - nombre: String
+  - descripcion: String
+}
+class Tarifa {
+  - valorHora: BigDecimal
+  - anioVigencia: int
+}
+class RegistroIngreso {
+  - horaEntrada: LocalDateTime
+  - horaSalida: LocalDateTime
+}
+class Pago {
+  - valor: BigDecimal
+  - fechaPago: LocalDateTime
+  - pagado: boolean
+}
 
 Cliente -up-|> Usuario
 Operador -up-|> Usuario
 Gerente -up-|> Usuario
+Usuario ..> Rol
 
-Cliente "1"--o"*" Vehiculo : "tiene"
-
-Vehiculo "*"--"1" TipoVehiculo : "pertenece"
-TipoVehiculo "1"--*"1" Tarifa : "tiene"
-Vehiculo "1"-right-*"*" RegistroIngreso : "realiza"
-Operador "1"--o"*" RegistroIngreso : "autoriza"
-RegistroIngreso "1"--*"1" Pago : "posee"
-
-Tarifa "1"-right-"*" Pago : "aplica"
+Cliente "0..1" --o "*" Vehiculo : "es dueño de"
+Vehiculo "*" -- "1" TipoVehiculo : "es de tipo"
+TipoVehiculo "1" -- "*" Tarifa : "tiene tarifa"
+Vehiculo "1" -right- "*" RegistroIngreso : "realiza"
+Operador "0..1" --o "*" RegistroIngreso : "autoriza"
+RegistroIngreso "1" -- "0..1" Pago : "posee"
 
 @enduml

@@ -2,39 +2,59 @@
 title Diagrama de Paquetes - Gestión de Parqueadero
 skinparam linetype ortho
 
-package "Presentación" {
-  [MenuPrincipal]
-  [FormularioVehiculo]
-  [PantallaPago]
+package "Presentación (controller)" {
+  [LoginController]
+  [DentroController]
+  [RegistroIngresoController]
+  [PagoController]
+  [TarifaController]
+  [VehiculoController]
+  [ClienteController]
+  [OperadorController]
+  [GerenteController]
+  [TipoVehiculoController]
+  [MiCuentaController]
+  [FiltroAutenticacion]
 }
 
-package "Persistencia" {
-  [RepositorioVehiculo]
+package "Servicio (services)" {
+  [TarifaService]
+  [RegistroIngresoService]
+  [PagoService]
+  [VehiculoService]
+  [ClienteService]
+  [OperadorService]
+  [GerenteService]
+  [TipoVehiculoService]
+}
+
+package "Persistencia (persistence)" {
+  [UsuarioRepository]
+  [VehiculoRepository]
+  [TipoVehiculoRepository]
   [RepositorioTarifa]
   [RepositorioRegistroIngreso]
   [RepositorioPago]
+  [DB]
+  [PasswordHasher]
 }
 
-package "Servicio" {
-  [GestorParqueadero]
-  [CalculadorTarifa]
-}
-
-package "Modelo" {
-  [Vehiculo]
-  [TipoVehiculo]
-  [Tarifa]
+package "Modelo (model)" {
   [Usuario]
   [Cliente]
   [Operador]
   [Gerente]
+  [Rol]
+  [Vehiculo]
+  [TipoVehiculo]
+  [Tarifa]
   [RegistroIngreso]
   [Pago]
 }
 
-"Servicio" --> "Persistencia"
-"Presentación" --> "Modelo"
-"Servicio" --> "Modelo"
-"Presentación" --> "Servicio"
-"Persistencia" --> "Modelo"
+"Presentación (controller)" --> "Servicio (services)"
+"Presentación (controller)" --> "Modelo (model)"
+"Servicio (services)" --> "Persistencia (persistence)"
+"Servicio (services)" --> "Modelo (model)"
+"Persistencia (persistence)" --> "Modelo (model)"
 @enduml
