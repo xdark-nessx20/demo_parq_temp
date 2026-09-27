@@ -190,6 +190,22 @@ public record VehiculoRepository() {
         }
     }
 
+    // Asigna un dueno a un vehiculo que NO tiene (reclamo del cliente).
+    // El "AND owner_id IS NULL" evita pisar un dueno ya existente.
+    public boolean asignarDueno(String placa, UUID ownerId) {
+        var query = "UPDATE vehiculos SET owner_id = ? WHERE placa = ? AND owner_id IS NULL";
+        try (Connection connection = DB.conectar()) {
+            var statement = connection.prepareStatement(query);
+            statement.setObject(1, ownerId);
+            statement.setString(2, placa.toUpperCase());
+            int affectedRows = statement.executeUpdate();
+            statement.close();
+            return affectedRows > 0;
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     public boolean updateTipo(String placa, UUID tipoId) {
         var query = "UPDATE vehiculos SET tipo_id = ? WHERE placa = ?";
         try (Connection connection = DB.conectar()) {

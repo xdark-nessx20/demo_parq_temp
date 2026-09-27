@@ -90,6 +90,16 @@ public class MiCuentaController extends HttpServlet {
             } else {
                 request.getSession().setAttribute("error", "No se pudo registrar (revise la placa según el tipo)");
             }
+        } else if ("reclamarVehiculo".equals(accion)) {
+            // El cliente reclama una placa que entro al parqueadero sin dueno.
+            var resultado = vehiculoService.reclamar(request.getParameter("placa"), usuario.id());
+            switch (resultado) {
+                case OK -> request.getSession().setAttribute("mensaje", "Vehículo reclamado: ya está a tu nombre");
+                case YA_ES_TUYO -> request.getSession().setAttribute("mensaje", "Ese vehículo ya está a tu nombre");
+                case YA_TIENE_DUENO -> request.getSession().setAttribute("error", "Ese vehículo ya tiene dueño");
+                case NO_EXISTE -> request.getSession().setAttribute("error",
+                        "No hay un vehículo sin dueño con esa placa (revísala o regístralo)");
+            }
         } else {
             var idPago = parseUuid(request.getParameter("idPago"));
             if (idPago.isPresent() && pagoService.marcarPagado(idPago.get())) {

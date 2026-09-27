@@ -22,11 +22,13 @@ CREATE TABLE IF NOT EXISTS tipos_vehiculo (
     formato_placa varchar(10) NOT NULL CHECK (formato_placa IN ('CARRO', 'MOTO'))
 );
 
--- Vehículos; el propietario es un usuario con rol CLIENTE
+-- Vehículos; el propietario es un usuario con rol CLIENTE.
+-- owner_id es NULLABLE a propósito: un vehiculo puede entrar al parqueadero
+-- sin dueno (cliente nuevo) y luego el cliente lo "reclama" desde la app.
 CREATE TABLE IF NOT EXISTS vehiculos (
     id       uuid        PRIMARY KEY DEFAULT gen_random_uuid(),
     placa    varchar(20) NOT NULL UNIQUE,
-    owner_id uuid        NOT NULL REFERENCES usuarios(id),
+    owner_id uuid        REFERENCES usuarios(id),
     tipo_id  uuid        REFERENCES tipos_vehiculo(id)
 );
 

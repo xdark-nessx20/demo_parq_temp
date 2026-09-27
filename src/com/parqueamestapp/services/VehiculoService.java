@@ -20,20 +20,43 @@ public class VehiculoService {
     public VehiculoService() {
     }
 
-    // Todo vehiculo debe tener dueno (cliente): no se permiten vehiculos sin propietario.
+    // Resultado de "reclamar" un vehiculo sin dueno desde la app del cliente.
+    public enum ResultadoReclamo { OK, NO_EXISTE, YA_TIENE_DUENO, YA_ES_TUYO }
+
+    // El dueno es OPCIONAL: un vehiculo puede entrar al parqueadero sin dueno
+    // (cliente nuevo) y luego el cliente lo reclama desde la app.
     public boolean save(String placa, String ownerCedula, String nombreTipo) {
         if (tipoInvalido(nombreTipo)) return false;
-        if (ownerCedula == null || ownerCedula.isBlank()) return false;
 
         var t = tipoRepo.get(nombreTipo);
         if (t.isEmpty()) return false;
         if (!placaValida(t.get(), placa)) return false;
 
-        if (ownerCedulaInvalido(ownerCedula)) return false;
-        var o = usuarioRepo.get(ownerCedula);
-        if (o.isEmpty() || o.get().rol() != Rol.CLIENTE) return false;
+        Cliente owner = null;
+        if (ownerCedula != null && !ownerCedula.isBlank()) {
+            if (ownerCedulaInvalido(ownerCedula)) return false;
+            var o = usuarioRepo.get(ownerCedula);
+            if (o.isEmpty() || o.get().rol() != Rol.CLIENTE) return false;
+            owner = (Cliente) o.get();
+        }
 
-        return repo.save(new Vehiculo(normalizarPlaca(placa), (Cliente) o.get(), t.get()));
+        return repo.save(new Vehiculo(normalizarPlaca(placa), owner, t.get()));
+    }
+
+    // El cliente reclama un vehiculo que esta sin dueno y lo registra a su nombre.
+    public ResultadoReclamo reclamar(String placa, UUID ownerId) {
+        if (placa == null || placa.isBlank() || ownerId == null) return ResultadoReclamo.NO_EXISTE;
+
+        var v = repo.get(normalizarPlaca(placa));
+        if (v.isEmpty()) return ResultadoReclamo.NO_EXISTE;
+        if (v.get().owner() != null) {
+            return ownerId.equals(v.get().owner().id())
+                    ? ResultadoReclamo.YA_ES_TUYO
+                    : ResultadoReclamo.YA_TIENE_DUENO;
+        }
+        return repo.asignarDueno(normalizarPlaca(placa), ownerId)
+                ? ResultadoReclamo.OK
+                : ResultadoReclamo.NO_EXISTE;
     }
 
     public Optional<Vehiculo> findByPlaca(String placa) {

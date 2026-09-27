@@ -22,6 +22,13 @@
         <tr><th>Operador entrada</th><td>${operadores[ticket.idOperadorEntrada]}</td></tr>
     </table>
 
+    <c:if test="${sinDueno}">
+        <p class="mensaje mensaje-error">
+            <strong>Vehículo sin dueño.</strong> No estaba registrado, así que entró sin propietario.
+            Dile al cliente que se registre en la app y lo reclame (Mi cuenta → Reclamar vehículo).
+        </p>
+    </c:if>
+
     <div class="acciones">
         <a class="boton" href="${pageContext.request.contextPath}/registros-ingreso?accion=registrar">Registrar otro ingreso</a>
     </div>

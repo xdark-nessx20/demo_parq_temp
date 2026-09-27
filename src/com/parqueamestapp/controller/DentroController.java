@@ -93,7 +93,7 @@ public class DentroController extends HttpServlet {
             var v = vehiculoService.findById(r.idVehiculo()).orElse(null);
             var placa = v != null ? v.placa() : "(desconocido)";
             var tipo = (v != null && v.tipo() != null) ? v.tipo().nombre() : "-";
-            var owner = (v != null && v.owner() != null) ? v.owner().getNombre() : "-";
+            var owner = (v != null && v.owner() != null) ? v.owner().getNombre() : "Sin dueño";
             lista.add(new VehiculoDentro(r.id(), placa, tipo, owner, r.getHoraEntradaTexto(), tiempoDentro(r.horaEntrada())));
         }
         return lista;

@@ -38,16 +38,10 @@
             </select>
         </div>
 
-        <div>
-            <label for="cedulaCliente">Propietario (cliente):</label>
-            <select id="cedulaCliente" name="cedulaCliente">
-                <option value="">-- Seleccione el propietario --</option>
-                <c:forEach var="cl" items="${clientes}">
-                    <option value="${cl.cedula}" ${param.cedulaCliente == cl.cedula ? 'selected' : ''}>${cl.nombre} (${cl.cedula})</option>
-                </c:forEach>
-            </select>
-            <small class="muted">Solo se usa si el vehículo es nuevo; una placa ya registrada conserva su dueño.</small>
-        </div>
+        <p class="muted">
+            Si la placa es nueva, el vehículo entra <strong>sin dueño</strong>. El cliente debe
+            registrarse en la app y <strong>reclamar</strong> su placa (Mi cuenta → Reclamar vehículo).
+        </p>
 
         <button type="submit">Registrar entrada</button>
     </form>

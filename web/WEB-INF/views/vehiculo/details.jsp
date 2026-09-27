@@ -21,8 +21,12 @@
             <td>${vehiculo.placa}</td>
         </tr>
         <tr>
+            <th>Dueño</th>
+            <td>${empty vehiculo.owner ? 'Sin dueño' : vehiculo.owner.nombre}</td>
+        </tr>
+        <tr>
             <th>Cédula propietario</th>
-            <td>${vehiculo.owner.cedula}</td>
+            <td>${empty vehiculo.owner ? '—' : vehiculo.owner.cedula}</td>
         </tr>
         <tr>
             <th>Tipo</th>

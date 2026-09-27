@@ -41,6 +41,18 @@
         <button type="submit">Registrar vehículo</button>
     </form>
 
+    <h2>Reclamar vehículo</h2>
+    <p class="muted">¿Tu carro entró al parqueadero sin estar registrado? Escribe la placa para
+        quedártela a tu nombre (solo funciona si la placa está <strong>sin dueño</strong>).</p>
+    <form action="${pageContext.request.contextPath}/mi-cuenta" method="post">
+        <input type="hidden" name="accion" value="reclamarVehiculo" />
+        <div>
+            <label for="placaReclamar">Placa:</label>
+            <input type="text" id="placaReclamar" name="placa" placeholder="ABC-123 · ABC-12A" required />
+        </div>
+        <button type="submit">Reclamar vehículo</button>
+    </form>
+
     <h2>Mis vehículos</h2>
 
     <c:choose>

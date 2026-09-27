@@ -36,8 +36,8 @@
                     <c:forEach var="v" items="${vehiculos}">
                         <tr>
                             <td><span class="placa">${v.placa}</span></td>
-                            <td>${v.owner.cedula}</td>
-                            <td>${empty v.owner ? '-' : v.owner.nombre}</td>
+                            <td>${empty v.owner ? '—' : v.owner.cedula}</td>
+                            <td>${empty v.owner ? 'Sin dueño' : v.owner.nombre}</td>
                             <td>${v.tipo.nombre}</td>
                             <td>
                                 <div class="acciones-tabla">
