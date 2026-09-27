@@ -44,8 +44,8 @@ public class LoginController extends HttpServlet {
     // Cada rol aterriza en su pantalla principal.
     private String rutaPorRol(Rol rol) {
         return switch (rol) {
-            case GERENTE -> "/tarifas";
-            case OPERADOR -> "/registros-ingreso";
+            case GERENTE -> "/dentro";
+            case OPERADOR -> "/dentro";
             case CLIENTE -> "/vehiculos";
         };
     }

@@ -6,6 +6,7 @@
 
     <c:if test="${not empty sessionScope.usuario}">
         <c:if test="${sessionScope.usuario.rolNombre == 'OPERADOR' or sessionScope.usuario.rolNombre == 'GERENTE'}">
+            <a href="${pageContext.request.contextPath}/dentro">Vehículos dentro</a>
             <a href="${pageContext.request.contextPath}/registros-ingreso">Ingreso</a>
             <a href="${pageContext.request.contextPath}/pagos">Salida / Pagos</a>
         </c:if>

@@ -106,3 +106,4 @@ button:hover, .boton:hover { background: var(--azul); }
 
 .acciones { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 20px; }
 .acciones form { padding: 0; box-shadow: none; background: none; max-width: none; margin: 0; display: inline; }
+table form { padding: 0; box-shadow: none; background: none; max-width: none; margin: 0; }
