@@ -25,6 +25,7 @@ package "Sistema de Gestion de Parqueadero" {
   usecase "Editar mi perfil" as UC13
   usecase "Registrar mis vehiculos" as UC14
   usecase "Consultar pagos" as UC15
+  usecase "Reclamar vehiculo\n(sin dueno)" as UC16
 
 }
 
@@ -33,6 +34,7 @@ c --> UC3
 c --> UC12
 c --> UC13
 c --> UC14
+c --> UC16
 
 o --> UC0
 o --> UC1
