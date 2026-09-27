@@ -29,11 +29,11 @@
         </div>
 
         <div>
-            <label for="cedulaCliente">Propietario (opcional):</label>
-            <select id="cedulaCliente" name="cedulaCliente">
-                <option value="">-- Sin dueño --</option>
+            <label for="cedulaCliente">Propietario:</label>
+            <select id="cedulaCliente" name="cedulaCliente" required>
+                <option value="">-- Seleccione un cliente --</option>
                 <c:forEach var="cl" items="${clientes}">
-                    <option value="${cl.cedula}">${cl.nombre} (${cl.cedula})</option>
+                    <option value="${cl.cedula}" ${param.cedulaCliente == cl.cedula ? 'selected' : ''}>${cl.nombre} (${cl.cedula})</option>
                 </c:forEach>
             </select>
         </div>

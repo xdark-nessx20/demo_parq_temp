@@ -19,23 +19,20 @@ public class VehiculoService {
     public VehiculoService() {
     }
 
-    // El dueño (cliente) es opcional: puede registrarse un vehiculo sin propietario.
+    // Todo vehiculo debe tener dueno (cliente): no se permiten vehiculos sin propietario.
     public boolean save(String placa, String ownerCedula, String nombreTipo) {
         if (tipoInvalido(nombreTipo)) return false;
         if (!placaValida(nombreTipo, placa)) return false;
+        if (ownerCedula == null || ownerCedula.isBlank()) return false;
 
         var t = tipoRepo.get(nombreTipo);
         if (t.isEmpty()) return false;
 
-        Cliente owner = null;
-        if (ownerCedula != null && !ownerCedula.isBlank()) {
-            if (ownerCedulaInvalido(ownerCedula)) return false;
-            var o = usuarioRepo.get(ownerCedula);
-            if (o.isEmpty() || o.get().rol() != Rol.CLIENTE) return false;
-            owner = (Cliente) o.get();
-        }
+        if (ownerCedulaInvalido(ownerCedula)) return false;
+        var o = usuarioRepo.get(ownerCedula);
+        if (o.isEmpty() || o.get().rol() != Rol.CLIENTE) return false;
 
-        return repo.save(new Vehiculo(normalizarPlaca(placa), owner, t.get()));
+        return repo.save(new Vehiculo(normalizarPlaca(placa), (Cliente) o.get(), t.get()));
     }
 
     public Optional<Vehiculo> findByPlaca(String placa) {

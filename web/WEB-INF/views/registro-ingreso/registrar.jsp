@@ -38,6 +38,17 @@
             </select>
         </div>
 
+        <div>
+            <label for="cedulaCliente">Propietario (cliente):</label>
+            <select id="cedulaCliente" name="cedulaCliente">
+                <option value="">-- Seleccione el propietario --</option>
+                <c:forEach var="cl" items="${clientes}">
+                    <option value="${cl.cedula}" ${param.cedulaCliente == cl.cedula ? 'selected' : ''}>${cl.nombre} (${cl.cedula})</option>
+                </c:forEach>
+            </select>
+            <small class="muted">Solo se usa si el vehículo es nuevo; una placa ya registrada conserva su dueño.</small>
+        </div>
+
         <button type="submit">Registrar entrada</button>
     </form>
 

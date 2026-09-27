@@ -91,7 +91,7 @@ public class VehiculoController extends HttpServlet {
         if (service.save(placa, ownerCedula, tipoNombre)) {
             response.sendRedirect(request.getContextPath() + "/vehiculos");
         } else {
-            request.setAttribute("error", "No se ha podido realizar la operacion (revise la placa según el tipo)");
+            request.setAttribute("error", "No se ha podido realizar la operacion (revise la placa según el tipo y el propietario)");
             mostrarFormulario(request, response);
         }
     }
