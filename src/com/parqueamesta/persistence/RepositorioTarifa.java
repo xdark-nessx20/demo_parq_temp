@@ -86,4 +86,18 @@ public record RepositorioTarifa() {
             throw new RuntimeException(e);
         }
     }
+
+    public boolean delete(UUID id) {
+        var query = "DELETE FROM tarifa WHERE id = ?";
+        try (var connection = DB.conectar()) {
+            var statement = connection.prepareStatement(query);
+            statement.setObject(1, id);
+
+            int affectedRows = statement.executeUpdate();
+            statement.close();
+            return affectedRows > 0;
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
 }

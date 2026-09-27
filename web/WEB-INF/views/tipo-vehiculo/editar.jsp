@@ -27,6 +27,13 @@
             <label for="nombre">Nombre:</label>
             <input type="text" id="nombre" name="nombre" value="${tipo.nombre}" required />
         </div>
+        <div>
+            <label for="formatoPlaca">Formato de placa:</label>
+            <select id="formatoPlaca" name="formatoPlaca" required>
+                <option value="CARRO" ${tipo.formatoPlaca == 'CARRO' ? 'selected' : ''}>Carro — AAA-000</option>
+                <option value="MOTO"  ${tipo.formatoPlaca == 'MOTO'  ? 'selected' : ''}>Moto — AAA-00A</option>
+            </select>
+        </div>
         <button type="submit">Guardar cambios</button>
     </form>
 </body>

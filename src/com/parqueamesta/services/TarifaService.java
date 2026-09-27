@@ -39,6 +39,11 @@ public class TarifaService {
         return repo.getAll();
     }
 
+    public boolean delete(UUID idTarifa) {
+        if (idTarifa == null) return false;
+        return repo.delete(idTarifa);
+    }
+
     // Calcula el valor a pagar por el tiempo de estadia.
     // Politica: hora completa, cualquier fraccion se redondea hacia arriba, minimo 1 hora.
     public BigDecimal calcular(BigDecimal valorHora, LocalDateTime horaEntrada, LocalDateTime horaSalida) {

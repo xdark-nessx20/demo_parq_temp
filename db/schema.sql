@@ -14,9 +14,12 @@ CREATE TABLE IF NOT EXISTS usuarios (
 );
 
 -- Tipos de vehículo (Carro, Moto, Camioneta, ...)
+-- formato_placa define que placas acepta el tipo (solo hay 2 formatos):
+--   CARRO -> AAA-000  |  MOTO -> AAA-00A
 CREATE TABLE IF NOT EXISTS tipos_vehiculo (
-    id     uuid        PRIMARY KEY DEFAULT gen_random_uuid(),
-    nombre varchar(50) NOT NULL
+    id            uuid        PRIMARY KEY DEFAULT gen_random_uuid(),
+    nombre        varchar(50) NOT NULL,
+    formato_placa varchar(10) NOT NULL CHECK (formato_placa IN ('CARRO', 'MOTO'))
 );
 
 -- Vehículos; el propietario es un usuario con rol CLIENTE

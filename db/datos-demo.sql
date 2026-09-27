@@ -6,10 +6,10 @@
 --   Cliente   12345678   / Cliente123!
 -- ============================================================
 
-INSERT INTO tipos_vehiculo (id, nombre) VALUES
-  ('11111111-1111-1111-1111-111111111111', 'Carro'),
-  ('22222222-2222-2222-2222-222222222222', 'Moto')
-ON CONFLICT (id) DO NOTHING;
+INSERT INTO tipos_vehiculo (id, nombre, formato_placa) VALUES
+  ('11111111-1111-1111-1111-111111111111', 'Carro', 'CARRO'),
+  ('22222222-2222-2222-2222-222222222222', 'Moto',  'MOTO')
+ON CONFLICT (id) DO UPDATE SET formato_placa = EXCLUDED.formato_placa;
 
 INSERT INTO usuarios (id, nombre, cedula, rol, contrasena_hash) VALUES
   ('aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa', 'Gerente Demo',  '1000000001', 'GERENTE',

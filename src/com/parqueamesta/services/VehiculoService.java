@@ -2,6 +2,7 @@ package com.parqueamesta.services;
 
 import com.parqueamesta.model.Cliente;
 import com.parqueamesta.model.Rol;
+import com.parqueamesta.model.TipoVehiculo;
 import com.parqueamesta.model.Vehiculo;
 import com.parqueamesta.persistence.TipoVehiculoRepository;
 import com.parqueamesta.persistence.UsuarioRepository;
@@ -22,11 +23,11 @@ public class VehiculoService {
     // Todo vehiculo debe tener dueno (cliente): no se permiten vehiculos sin propietario.
     public boolean save(String placa, String ownerCedula, String nombreTipo) {
         if (tipoInvalido(nombreTipo)) return false;
-        if (!placaValida(nombreTipo, placa)) return false;
         if (ownerCedula == null || ownerCedula.isBlank()) return false;
 
         var t = tipoRepo.get(nombreTipo);
         if (t.isEmpty()) return false;
+        if (!placaValida(t.get(), placa)) return false;
 
         if (ownerCedulaInvalido(ownerCedula)) return false;
         var o = usuarioRepo.get(ownerCedula);
@@ -73,9 +74,10 @@ public class VehiculoService {
         return placa != null && repo.get(normalizarPlaca(placa)).isPresent();
     }
 
-    // Valida el formato de placa segun el tipo (Carro: ABC-123 · Moto: ABC-12A).
+    // Valida el formato de placa segun el tipo de vehiculo.
     public boolean placaValidaPara(String nombreTipo, String placa) {
-        return placaValida(nombreTipo, placa);
+        if (tipoInvalido(nombreTipo)) return false;
+        return tipoRepo.get(nombreTipo).map(t -> placaValida(t, placa)).orElse(false);
     }
 
     // Acepta con o sin guion (VJI43C o VJI-43C) y normaliza a "VJI-43C".
@@ -85,10 +87,11 @@ public class VehiculoService {
         return p.length() >= 4 ? p.substring(0, 3) + "-" + p.substring(3) : p;
     }
 
-    private boolean placaValida(String nombreTipo, String placa) {
-        if (placa == null || nombreTipo == null) return false;
+    // El formato lo define el tipo: Carro -> AAA-000 | Moto -> AAA-00A.
+    private boolean placaValida(TipoVehiculo tipo, String placa) {
+        if (placa == null || tipo == null) return false;
         var p = normalizarPlaca(placa);
-        if (nombreTipo.toLowerCase().contains("moto")) {
+        if (tipo.esMoto()) {
             return p.matches("^[A-Z]{3}-[0-9]{2}[A-Z]$");
         }
         return p.matches("^[A-Z]{3}-[0-9]{3}$");

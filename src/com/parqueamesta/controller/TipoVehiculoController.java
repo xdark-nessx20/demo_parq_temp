@@ -69,11 +69,12 @@ public class TipoVehiculoController extends HttpServlet {
     private void registrar(HttpServletRequest request, HttpServletResponse response)
             throws IOException, ServletException {
         String nombre = request.getParameter("nombre");
+        String formatoPlaca = request.getParameter("formatoPlaca");
 
-        if (service.save(nombre)) {
+        if (service.save(nombre, formatoPlaca)) {
             response.sendRedirect(request.getContextPath() + "/tipos-vehiculo");
         } else {
-            request.setAttribute("error", "No se ha podido realizar la operacion");
+            request.setAttribute("error", "No se ha podido realizar la operacion (nombre mínimo 3 letras y formato de placa obligatorio)");
             request.getRequestDispatcher(VISTA_REGISTRAR).forward(request, response);
         }
     }
@@ -96,11 +97,12 @@ public class TipoVehiculoController extends HttpServlet {
             throws IOException, ServletException {
         var id = parseUuid(request.getParameter("id"));
         String nombre = request.getParameter("nombre");
+        String formatoPlaca = request.getParameter("formatoPlaca");
 
-        if (id.isPresent() && service.update(id.get(), nombre)) {
+        if (id.isPresent() && service.update(id.get(), nombre, formatoPlaca)) {
             response.sendRedirect(request.getContextPath() + "/tipos-vehiculo");
         } else {
-            request.setAttribute("error", "No se pudo actualizar (revise el nombre)");
+            request.setAttribute("error", "No se pudo actualizar (revise el nombre y el formato de placa)");
             request.setAttribute("tipo", id.isPresent() ? service.findById(id.get()).orElse(null) : null);
             request.getRequestDispatcher(VISTA_EDITAR).forward(request, response);
         }

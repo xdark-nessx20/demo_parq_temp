@@ -13,10 +13,15 @@ public class TipoVehiculoService {
     public TipoVehiculoService() {
     }
 
-    public boolean save(String nombre) {
-        if (nombreInvalido(nombre)) return false;
+    // Solo hay dos formatos de placa posibles.
+    public static final String FORMATO_CARRO = "CARRO";
+    public static final String FORMATO_MOTO = "MOTO";
 
-        return repo.save(new TipoVehiculo(nombre));
+    public boolean save(String nombre, String formatoPlaca) {
+        if (nombreInvalido(nombre)) return false;
+        if (formatoInvalido(formatoPlaca)) return false;
+
+        return repo.save(new TipoVehiculo(nombre, formatoPlaca.toUpperCase()));
     }
 
     public Optional<TipoVehiculo> findByName(String nombre) {
@@ -33,10 +38,11 @@ public class TipoVehiculoService {
         return repo.getAll();
     }
 
-    public boolean update(UUID id, String nombre) {
+    public boolean update(UUID id, String nombre, String formatoPlaca) {
         if (id == null) return false;
         if (nombreInvalido(nombre)) return false;
-        return repo.update(id, nombre);
+        if (formatoInvalido(formatoPlaca)) return false;
+        return repo.update(id, nombre, formatoPlaca.toUpperCase());
     }
 
     public boolean delete(UUID id) {
@@ -46,5 +52,9 @@ public class TipoVehiculoService {
 
     private boolean nombreInvalido(String nombre) {
         return nombre == null || nombre.isBlank() || nombre.length() < 3;
+    }
+
+    private boolean formatoInvalido(String formato) {
+        return !FORMATO_CARRO.equalsIgnoreCase(formato) && !FORMATO_MOTO.equalsIgnoreCase(formato);
     }
 }

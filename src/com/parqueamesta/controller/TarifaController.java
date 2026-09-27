@@ -30,6 +30,8 @@ public class TarifaController extends HttpServlet {
         String accion = request.getParameter("accion");
         if ("registrar".equals(accion)) {
             crear(request, response);
+        } else if ("eliminar".equals(accion)) {
+            eliminar(request, response);
         } else {
             actualizarPrecio(request, response);
         }
@@ -114,6 +116,18 @@ public class TarifaController extends HttpServlet {
             request.setAttribute("error", "No se pudo actualizar el precio (valor debe ser mayor a 0)");
             request.getRequestDispatcher(VISTA_LISTAR).forward(request, response);
         }
+    }
+
+    private void eliminar(HttpServletRequest request, HttpServletResponse response)
+            throws IOException {
+        var idTarifa = parseUuid(request.getParameter("idTarifa"));
+
+        if (idTarifa.isPresent() && service.delete(idTarifa.get())) {
+            request.getSession().setAttribute("mensaje", "Tarifa eliminada");
+        } else {
+            request.getSession().setAttribute("error", "No se pudo eliminar la tarifa");
+        }
+        response.sendRedirect(request.getContextPath() + "/tarifas");
     }
 
     private Optional<UUID> parseUuid(String valor) {

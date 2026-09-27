@@ -36,7 +36,7 @@ public record VehiculoRepository() {
         var query = """
                 SELECT v.id, v.placa, 
                        u.id as own_id, u.nombre as own_nombre, u.cedula as own_cedula, 
-                       t.id as ty_id, t.nombre as ty_nombre
+                       t.id as ty_id, t.nombre as ty_nombre, t.formato_placa as ty_formato
                 FROM vehiculos v
                 LEFT JOIN usuarios u ON v.owner_id = u.id 
                 JOIN tipos_vehiculo t ON v.tipo_id = t.id
@@ -61,7 +61,7 @@ public record VehiculoRepository() {
                     //Tipo
                     var tipo_id = result.getObject("ty_id", UUID.class);
                     var tipo_name = result.getString("ty_nombre");
-                    var tipo = new TipoVehiculo(tipo_id, tipo_name);
+                    var tipo = new TipoVehiculo(tipo_id, tipo_name, result.getString("ty_formato"));
 
                     return Optional.of(new Vehiculo(id, placa, owner, tipo));
                 }
@@ -76,7 +76,7 @@ public record VehiculoRepository() {
         var query = """
                 SELECT v.id, v.placa, 
                        u.id as own_id, u.nombre as own_nombre, u.cedula as own_cedula, 
-                       t.id as ty_id, t.nombre as ty_nombre
+                       t.id as ty_id, t.nombre as ty_nombre, t.formato_placa as ty_formato
                 FROM vehiculos v
                 LEFT JOIN usuarios u ON v.owner_id = u.id 
                 JOIN tipos_vehiculo t ON v.tipo_id = t.id
@@ -100,7 +100,7 @@ public record VehiculoRepository() {
 
                     var tipo_id = result.getObject("ty_id", UUID.class);
                     var tipo_name = result.getString("ty_nombre");
-                    var tipo = new TipoVehiculo(tipo_id, tipo_name);
+                    var tipo = new TipoVehiculo(tipo_id, tipo_name, result.getString("ty_formato"));
 
                     return Optional.of(new Vehiculo(vid, placa, owner, tipo));
                 }
@@ -115,7 +115,7 @@ public record VehiculoRepository() {
         var query = """
                 SELECT v.id, v.placa, 
                        u.id as own_id, u.nombre as own_nombre, u.cedula as own_cedula, 
-                       t.id as ty_id, t.nombre as ty_nombre
+                       t.id as ty_id, t.nombre as ty_nombre, t.formato_placa as ty_formato
                 FROM vehiculos v
                 LEFT JOIN usuarios u ON v.owner_id = u.id 
                 LEFT JOIN tipos_vehiculo t ON v.tipo_id = t.id
@@ -137,7 +137,7 @@ public record VehiculoRepository() {
                 TipoVehiculo tipo = null;
                 var tipoId = set.getObject("ty_id", UUID.class);
                 if (tipoId != null) {
-                    tipo = new TipoVehiculo(tipoId, set.getString("ty_nombre"));
+                    tipo = new TipoVehiculo(tipoId, set.getString("ty_nombre"), set.getString("ty_formato"));
                 }
 
                 vehiculos.add(new Vehiculo(id, placa, owner, tipo));
@@ -153,7 +153,7 @@ public record VehiculoRepository() {
         var query = """
                 SELECT v.id, v.placa, 
                        u.id as own_id, u.nombre as own_nombre, u.cedula as own_cedula, 
-                       t.id as ty_id, t.nombre as ty_nombre
+                       t.id as ty_id, t.nombre as ty_nombre, t.formato_placa as ty_formato
                 FROM vehiculos v
                 LEFT JOIN usuarios u ON v.owner_id = u.id 
                 LEFT JOIN tipos_vehiculo t ON v.tipo_id = t.id
@@ -178,7 +178,7 @@ public record VehiculoRepository() {
                     TipoVehiculo tipo = null;
                     var tipoId = set.getObject("ty_id", UUID.class);
                     if (tipoId != null) {
-                        tipo = new TipoVehiculo(tipoId, set.getString("ty_nombre"));
+                        tipo = new TipoVehiculo(tipoId, set.getString("ty_nombre"), set.getString("ty_formato"));
                     }
 
                     vehiculos.add(new Vehiculo(id, placa, owner, tipo));

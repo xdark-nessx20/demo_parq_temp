@@ -26,6 +26,7 @@
                 <thead>
                     <tr>
                         <th>Nombre</th>
+                        <th>Formato de placa</th>
                         <th>Acciones</th>
                     </tr>
                 </thead>
@@ -33,6 +34,7 @@
                     <c:forEach var="tipo" items="${tipos}">
                         <tr>
                             <td>${tipo.nombre}</td>
+                            <td>${tipo.formatoTexto}</td>
                             <td>
                                 <div class="acciones-tabla">
                                     <a class="boton boton-secundario boton-chico" href="${pageContext.request.contextPath}/tipos-vehiculo?accion=buscar&nombre=${tipo.nombre}">Ver</a>

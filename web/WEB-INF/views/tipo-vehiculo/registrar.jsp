@@ -28,6 +28,16 @@
                    value="${param.nombre}" required />
         </div>
 
+        <div>
+            <label for="formatoPlaca">Formato de placa (obligatorio):</label>
+            <select id="formatoPlaca" name="formatoPlaca" required>
+                <option value="">-- Seleccione el formato --</option>
+                <option value="CARRO" ${param.formatoPlaca == 'CARRO' ? 'selected' : ''}>Carro — AAA-000</option>
+                <option value="MOTO"  ${param.formatoPlaca == 'MOTO'  ? 'selected' : ''}>Moto — AAA-00A</option>
+            </select>
+            <small class="muted">Con esto el sistema valida las placas de este tipo (no se puede omitir).</small>
+        </div>
+
         <button type="submit">Registrar</button>
     </form>
 
