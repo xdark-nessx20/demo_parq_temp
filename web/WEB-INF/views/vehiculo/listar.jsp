@@ -27,6 +27,7 @@
                     <tr>
                         <th>Placa</th>
                         <th>Cédula propietario</th>
+                        <th>Dueño</th>
                         <th>Tipo</th>
                         <th>Acciones</th>
                     </tr>
@@ -36,6 +37,7 @@
                         <tr>
                             <td><span class="placa">${v.placa}</span></td>
                             <td>${v.owner.cedula}</td>
+                            <td>${empty v.owner ? '-' : v.owner.nombre}</td>
                             <td>${v.tipo.nombre}</td>
                             <td>
                                 <div class="acciones-tabla">
