@@ -38,8 +38,26 @@ public class DentroController extends HttpServlet {
             return;
         }
 
-        request.setAttribute("vehiculosDentro", listarDentro());
+        // Endpoint ligero para el auto-refresco "en vivo".
+        if ("estado".equals(request.getParameter("accion"))) {
+            response.setContentType("text/plain;charset=UTF-8");
+            response.getWriter().print(firma(listarDentro()));
+            return;
+        }
+
+        var lista = listarDentro();
+        request.setAttribute("vehiculosDentro", lista);
+        request.setAttribute("firma", firma(lista));
         request.getRequestDispatcher(VISTA).forward(request, response);
+    }
+
+    // Firma del estado (cambia si cambia el conjunto de vehiculos adentro).
+    private String firma(List<VehiculoDentro> lista) {
+        var sb = new StringBuilder();
+        for (var v : lista) {
+            sb.append(v.getId()).append('|');
+        }
+        return sb.toString();
     }
 
     @Override

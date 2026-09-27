@@ -10,7 +10,8 @@
     <jsp:include page="/WEB-INF/views/comunes/header.jsp" />
 
     <h1>Mi cuenta</h1>
-    <p>Vehículos y movimientos de <strong>${sessionScope.usuario.nombre}</strong>.</p>
+    <p class="muted">Vehículos y movimientos de <strong>${sessionScope.usuario.nombre}</strong>.
+        <span id="vivo" style="color:#16a34a;">●</span> <span class="muted">En vivo</span></p>
 
     <c:if test="${not empty sessionScope.mensaje}">
         <p class="mensaje mensaje-ok">${sessionScope.mensaje}</p>
@@ -84,5 +85,17 @@
         </c:otherwise>
     </c:choose>
 
+    <script>
+        // Auto-refresco "en vivo": si el operador cambia el estado, se refleja solo.
+        var firmaActual = "${firma}";
+        setInterval(function () {
+            fetch("${pageContext.request.contextPath}/mi-cuenta?accion=estado")
+                .then(function (r) { return r.text(); })
+                .then(function (t) {
+                    if (t !== firmaActual) { window.location.reload(); }
+                })
+                .catch(function () {});
+        }, 5000);
+    </script>
 </body>
 </html>

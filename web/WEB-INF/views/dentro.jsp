@@ -12,7 +12,8 @@
     <jsp:include page="/WEB-INF/views/comunes/mensajes.jsp" />
 
     <h1>Vehículos dentro</h1>
-    <p class="muted">Vehículos que están en el parqueadero ahora mismo.</p>
+    <p class="muted">Vehículos que están en el parqueadero ahora mismo.
+        <span style="color:#16a34a;">●</span> <span class="muted">En vivo</span></p>
 
     <div class="stats">
         <div class="stat">
@@ -62,5 +63,18 @@
             </table>
         </c:otherwise>
     </c:choose>
+
+    <script>
+        // Auto-refresco "en vivo": si entra o sale un vehiculo, se refleja solo.
+        var firmaActual = "${firma}";
+        setInterval(function () {
+            fetch("${pageContext.request.contextPath}/dentro?accion=estado")
+                .then(function (r) { return r.text(); })
+                .then(function (t) {
+                    if (t !== firmaActual) { window.location.reload(); }
+                })
+                .catch(function () {});
+        }, 5000);
+    </script>
 </body>
 </html>

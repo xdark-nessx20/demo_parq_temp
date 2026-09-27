@@ -44,9 +44,27 @@ public class MiCuentaController extends HttpServlet {
             return;
         }
 
-        request.setAttribute("movimientos", listarMovimientos(usuario));
+        // Endpoint ligero para el auto-refresco "en vivo": devuelve una firma del estado.
+        if ("estado".equals(request.getParameter("accion"))) {
+            response.setContentType("text/plain;charset=UTF-8");
+            response.getWriter().print(firma(listarMovimientos(usuario)));
+            return;
+        }
+
+        var movimientos = listarMovimientos(usuario);
+        request.setAttribute("movimientos", movimientos);
+        request.setAttribute("firma", firma(movimientos));
         request.setAttribute("tipos", tipoService.findAll());
         request.getRequestDispatcher(VISTA).forward(request, response);
+    }
+
+    // Firma del estado actual (cambia si cambia algun movimiento).
+    private String firma(List<MovimientoCliente> movimientos) {
+        var sb = new StringBuilder();
+        for (var m : movimientos) {
+            sb.append(m.getPlaca()).append(':').append(m.getEstado()).append(':').append(m.getValor()).append('|');
+        }
+        return sb.toString();
     }
 
     @Override
