@@ -21,6 +21,27 @@
         <c:remove var="error" scope="session" />
     </c:if>
 
+    <h2>Registrar mi vehículo</h2>
+    <form action="${pageContext.request.contextPath}/mi-cuenta" method="post">
+        <input type="hidden" name="accion" value="registrarVehiculo" />
+        <div>
+            <label for="placa">Placa:</label>
+            <input type="text" id="placa" name="placa" placeholder="ABC-123 (carro) · ABC-12A (moto)" required />
+        </div>
+        <div>
+            <label for="tipoVehiculo">Tipo de vehículo:</label>
+            <select id="tipoVehiculo" name="tipoVehiculo" required>
+                <option value="">-- Seleccione un tipo --</option>
+                <c:forEach var="t" items="${tipos}">
+                    <option value="${t.nombre}">${t.nombre}</option>
+                </c:forEach>
+            </select>
+        </div>
+        <button type="submit">Registrar vehículo</button>
+    </form>
+
+    <h2>Mis movimientos</h2>
+
     <c:choose>
         <c:when test="${empty movimientos}">
             <p>No tiene vehículos ni movimientos registrados.</p>

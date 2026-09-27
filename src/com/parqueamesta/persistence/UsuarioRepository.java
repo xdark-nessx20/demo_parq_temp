@@ -109,6 +109,33 @@ public record UsuarioRepository() {
         }
     }
 
+    public boolean update(String cedula, String nombre) {
+        var query = "UPDATE usuarios SET nombre = ? WHERE cedula = ?";
+        try (var connection = DB.conectar()) {
+            var statement = connection.prepareStatement(query);
+            statement.setString(1, nombre);
+            statement.setString(2, cedula);
+            int affectedRows = statement.executeUpdate();
+            statement.close();
+            return affectedRows > 0;
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public boolean delete(String cedula) {
+        var query = "DELETE FROM usuarios WHERE cedula = ?";
+        try (var connection = DB.conectar()) {
+            var statement = connection.prepareStatement(query);
+            statement.setString(1, cedula);
+            int affectedRows = statement.executeUpdate();
+            statement.close();
+            return affectedRows > 0;
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     // Crea la subclase correcta (Cliente/Operador/Gerente) segun el rol de la fila.
     private Usuario construir(java.sql.ResultSet result) throws SQLException {
         var id = result.getObject("id", UUID.class);

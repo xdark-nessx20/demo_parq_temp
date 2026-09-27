@@ -34,9 +34,14 @@
                             <td>${tipo.nombre}</td>
                             <td>${tipo.descripcion}</td>
                             <td>
-                                <a href="${pageContext.request.contextPath}/tipos-vehiculo?accion=buscar&nombre=${tipo.nombre}">
-                                    Ver detalle
-                                </a>
+                                <a href="${pageContext.request.contextPath}/tipos-vehiculo?accion=buscar&nombre=${tipo.nombre}">Ver</a>
+                                <a href="${pageContext.request.contextPath}/tipos-vehiculo?accion=editar&id=${tipo.id}">Editar</a>
+                                <form action="${pageContext.request.contextPath}/tipos-vehiculo" method="post"
+                                      onsubmit="return confirm('¿Eliminar el tipo ${tipo.nombre}?');">
+                                    <input type="hidden" name="accion" value="eliminar" />
+                                    <input type="hidden" name="id" value="${tipo.id}" />
+                                    <button type="submit" class="boton-chico">Eliminar</button>
+                                </form>
                             </td>
                         </tr>
                     </c:forEach>

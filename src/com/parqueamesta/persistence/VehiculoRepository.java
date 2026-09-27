@@ -188,6 +188,20 @@ public record VehiculoRepository() {
         }
     }
 
+    public boolean updateTipo(String placa, UUID tipoId) {
+        var query = "UPDATE vehiculos SET tipo_id = ? WHERE placa = ?";
+        try (Connection connection = DB.conectar()) {
+            var statement = connection.prepareStatement(query);
+            statement.setObject(1, tipoId);
+            statement.setString(2, placa.toUpperCase());
+            int affectedRows = statement.executeUpdate();
+            statement.close();
+            return affectedRows > 0;
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     public boolean delete(String placa) {
         var query = "DELETE FROM vehiculos WHERE placa = ?";
 

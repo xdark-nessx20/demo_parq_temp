@@ -6,6 +6,7 @@ import com.parqueamesta.model.Vehiculo;
 import com.parqueamesta.services.PagoService;
 import com.parqueamesta.services.RegistroIngresoService;
 import com.parqueamesta.services.TarifaService;
+import com.parqueamesta.services.TipoVehiculoService;
 import com.parqueamesta.services.VehiculoService;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -21,13 +22,14 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
-// Portal del cliente: ve sus vehiculos, sus tickets (en curso o cerrados) y paga online.
+// Portal del cliente: registra sus vehiculos, ve sus tickets y paga online.
 @WebServlet("/mi-cuenta")
 public class MiCuentaController extends HttpServlet {
     private static final String VISTA = "/WEB-INF/views/mi-cuenta.jsp";
     private static final String VISTA_LOGIN = "/WEB-INF/views/login.jsp";
 
     private final VehiculoService vehiculoService = new VehiculoService();
+    private final TipoVehiculoService tipoService = new TipoVehiculoService();
     private final RegistroIngresoService registroService = new RegistroIngresoService();
     private final PagoService pagoService = new PagoService();
     private final TarifaService tarifaService = new TarifaService();
@@ -43,6 +45,7 @@ public class MiCuentaController extends HttpServlet {
         }
 
         request.setAttribute("movimientos", listarMovimientos(usuario));
+        request.setAttribute("tipos", tipoService.findAll());
         request.getRequestDispatcher(VISTA).forward(request, response);
     }
 
@@ -56,12 +59,25 @@ public class MiCuentaController extends HttpServlet {
             return;
         }
 
-        var idPago = parseUuid(request.getParameter("idPago"));
-        if (idPago.isPresent() && pagoService.marcarPagado(idPago.get())) {
-            request.getSession().setAttribute("mensaje", "Pago realizado correctamente");
+        String accion = request.getParameter("accion");
+
+        if ("registrarVehiculo".equals(accion)) {
+            var placa = request.getParameter("placa");
+            var tipoNombre = request.getParameter("tipoVehiculo");
+            if (vehiculoService.save(placa, usuario.cedula(), tipoNombre)) {
+                request.getSession().setAttribute("mensaje", "Vehículo registrado correctamente");
+            } else {
+                request.getSession().setAttribute("error", "No se pudo registrar (revise la placa según el tipo)");
+            }
         } else {
-            request.getSession().setAttribute("error", "No se pudo procesar el pago");
+            var idPago = parseUuid(request.getParameter("idPago"));
+            if (idPago.isPresent() && pagoService.marcarPagado(idPago.get())) {
+                request.getSession().setAttribute("mensaje", "Pago realizado correctamente");
+            } else {
+                request.getSession().setAttribute("error", "No se pudo procesar el pago");
+            }
         }
+
         response.sendRedirect(request.getContextPath() + "/mi-cuenta");
     }
 
@@ -78,7 +94,6 @@ public class MiCuentaController extends HttpServlet {
                     lista.add(new MovimientoCliente(v.placa(), tipo, r.getHoraEntradaTexto(), r.getHoraSalidaTexto(),
                             "$" + p.valor(), p.getEstado(), p.id()));
                 } else {
-                    // ticket todavia en curso: valor estimado hasta ahora
                     var valor = valorEstimado(v, r.horaEntrada());
                     lista.add(new MovimientoCliente(v.placa(), tipo, r.getHoraEntradaTexto(), "-",
                             "$" + valor, "En curso", null));

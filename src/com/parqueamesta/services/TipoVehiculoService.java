@@ -5,6 +5,7 @@ import com.parqueamesta.persistence.TipoVehiculoRepository;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 public class TipoVehiculoService {
     private final TipoVehiculoRepository repo =  new TipoVehiculoRepository();
@@ -24,8 +25,24 @@ public class TipoVehiculoService {
         return repo.get(nombre);
     }
 
+    public Optional<TipoVehiculo> findById(UUID id) {
+        if (id == null) return Optional.empty();
+        return repo.getById(id);
+    }
+
     public List<TipoVehiculo> findAll() {
         return repo.getAll();
+    }
+
+    public boolean update(UUID id, String nombre, String descripcion) {
+        if (id == null) return false;
+        if (nombreInvalido(nombre)) return false;
+        return repo.update(id, nombre, descripcion);
+    }
+
+    public boolean delete(UUID id) {
+        if (id == null) return false;
+        return repo.delete(id);
     }
 
     private boolean nombreInvalido(String nombre) {

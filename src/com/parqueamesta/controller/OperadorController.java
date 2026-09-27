@@ -11,63 +11,102 @@ import java.io.IOException;
 
 @WebServlet("/operadores")
 public class OperadorController extends HttpServlet {
+    private static final String VISTA_LISTAR = "/WEB-INF/views/operador/listar.jsp";
+    private static final String VISTA_REGISTRAR = "/WEB-INF/views/operador/registrar.jsp";
+    private static final String VISTA_EDITAR = "/WEB-INF/views/operador/editar.jsp";
+    private static final String VISTA_ERROR = "/WEB-INF/views/error.jsp";
+
     private final OperadorService service = new OperadorService();
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-
-        String nombre = request.getParameter("nombre");
-        String cedula = request.getParameter("cedula");
-        String contrasena = request.getParameter("contrasena");
-
-        boolean wasSaved = service.save(nombre, cedula, contrasena);
-
-        if (wasSaved) {
-            response.sendRedirect(request.getContextPath() + "/operadores");
+        String accion = request.getParameter("accion");
+        if ("editar".equals(accion)) {
+            editar(request, response);
+        } else if ("eliminar".equals(accion)) {
+            eliminar(request, response);
         } else {
-            request.setAttribute("error", "No se ha podido realizar la operacion");
-            request.getRequestDispatcher("/WEB-INF/views/operador/registrar.jsp").forward(request, response);
+            registrar(request, response);
         }
     }
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-
         String accion = request.getParameter("accion");
         accion = accion == null ? "listar" : accion;
 
         switch (accion) {
             case "listar" -> listar(request, response);
             case "buscar" -> buscar(request, response);
-            case "registrar" -> registrar(request, response);
+            case "registrar" -> request.getRequestDispatcher(VISTA_REGISTRAR).forward(request, response);
+            case "editar" -> mostrarEditar(request, response);
             default -> response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Acción no reconocida: " + accion);
         }
     }
 
-    private void registrar(HttpServletRequest request, HttpServletResponse response)
-            throws IOException, ServletException {
-        request.getRequestDispatcher("/WEB-INF/views/operador/registrar.jsp").forward(request, response);
-    }
-
     private void listar(HttpServletRequest request, HttpServletResponse response)
             throws IOException, ServletException {
-        var operadores = service.findAll();
-        request.setAttribute("operadores", operadores);
-        request.getRequestDispatcher("/WEB-INF/views/operador/listar.jsp").forward(request, response);
+        request.setAttribute("operadores", service.findAll());
+        request.getRequestDispatcher(VISTA_LISTAR).forward(request, response);
     }
 
     private void buscar(HttpServletRequest request, HttpServletResponse response)
             throws IOException, ServletException {
         var o = service.findByCedula(request.getParameter("cedula"));
-
         if (o.isEmpty()) {
             request.setAttribute("error", "No se encontro el operador");
-            request.getRequestDispatcher("/WEB-INF/views/error.jsp").forward(request, response);
+            request.getRequestDispatcher(VISTA_ERROR).forward(request, response);
             return;
         }
         request.setAttribute("operador", o.get());
         request.getRequestDispatcher("/WEB-INF/views/operador/details.jsp").forward(request, response);
+    }
+
+    private void registrar(HttpServletRequest request, HttpServletResponse response)
+            throws IOException, ServletException {
+        String nombre = request.getParameter("nombre");
+        String cedula = request.getParameter("cedula");
+        String contrasena = request.getParameter("contrasena");
+
+        if (service.save(nombre, cedula, contrasena)) {
+            response.sendRedirect(request.getContextPath() + "/operadores");
+        } else {
+            request.setAttribute("error", "No se ha podido realizar la operacion");
+            request.getRequestDispatcher(VISTA_REGISTRAR).forward(request, response);
+        }
+    }
+
+    private void mostrarEditar(HttpServletRequest request, HttpServletResponse response)
+            throws IOException, ServletException {
+        var o = service.findByCedula(request.getParameter("cedula"));
+        if (o.isEmpty()) {
+            request.setAttribute("error", "No se encontro el operador");
+            request.getRequestDispatcher(VISTA_ERROR).forward(request, response);
+            return;
+        }
+        request.setAttribute("operador", o.get());
+        request.getRequestDispatcher(VISTA_EDITAR).forward(request, response);
+    }
+
+    private void editar(HttpServletRequest request, HttpServletResponse response)
+            throws IOException, ServletException {
+        String cedula = request.getParameter("cedula");
+        String nombre = request.getParameter("nombre");
+
+        if (service.update(cedula, nombre)) {
+            response.sendRedirect(request.getContextPath() + "/operadores");
+        } else {
+            request.setAttribute("error", "No se pudo actualizar (revise el nombre)");
+            request.setAttribute("operador", service.findByCedula(cedula).orElse(null));
+            request.getRequestDispatcher(VISTA_EDITAR).forward(request, response);
+        }
+    }
+
+    private void eliminar(HttpServletRequest request, HttpServletResponse response)
+            throws IOException {
+        service.delete(request.getParameter("cedula"));
+        response.sendRedirect(request.getContextPath() + "/operadores");
     }
 }

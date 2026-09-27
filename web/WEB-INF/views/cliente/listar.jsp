@@ -32,9 +32,14 @@
                             <td>${c.nombre}</td>
                             <td>${c.cedula}</td>
                             <td>
-                                <a href="${pageContext.request.contextPath}/clientes?accion=buscar&cedula=${c.cedula}">
-                                    Ver detalle
-                                </a>
+                                <a href="${pageContext.request.contextPath}/clientes?accion=buscar&cedula=${c.cedula}">Ver</a>
+                                <a href="${pageContext.request.contextPath}/clientes?accion=editar&cedula=${c.cedula}">Editar</a>
+                                <form action="${pageContext.request.contextPath}/clientes" method="post"
+                                      onsubmit="return confirm('¿Eliminar a ${c.nombre}?');">
+                                    <input type="hidden" name="accion" value="eliminar" />
+                                    <input type="hidden" name="cedula" value="${c.cedula}" />
+                                    <button type="submit" class="boton-chico">Eliminar</button>
+                                </form>
                             </td>
                         </tr>
                     </c:forEach>

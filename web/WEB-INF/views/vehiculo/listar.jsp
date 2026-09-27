@@ -34,9 +34,14 @@
                             <td>${v.owner.cedula}</td>
                             <td>${v.tipo.nombre}</td>
                             <td>
-                                <a href="${pageContext.request.contextPath}/vehiculos?accion=buscar&placa=${v.placa}">
-                                    Ver detalle
-                                </a>
+                                <a href="${pageContext.request.contextPath}/vehiculos?accion=buscar&placa=${v.placa}">Ver</a>
+                                <a href="${pageContext.request.contextPath}/vehiculos?accion=editar&placa=${v.placa}">Editar</a>
+                                <form action="${pageContext.request.contextPath}/vehiculos" method="post"
+                                      onsubmit="return confirm('¿Eliminar el vehículo ${v.placa}?');">
+                                    <input type="hidden" name="accion" value="eliminar" />
+                                    <input type="hidden" name="placa" value="${v.placa}" />
+                                    <button type="submit" class="boton-chico">Eliminar</button>
+                                </form>
                             </td>
                         </tr>
                     </c:forEach>

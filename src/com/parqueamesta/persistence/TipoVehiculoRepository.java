@@ -66,4 +66,48 @@ public record TipoVehiculoRepository() {
             throw new RuntimeException(e);
         }
     }
+
+    public Optional<TipoVehiculo> getById(UUID id) {
+        var query = "SELECT * FROM tipos_vehiculo WHERE id = ?";
+        try (var connection = DB.conectar()) {
+            var statement = connection.prepareStatement(query);
+            statement.setObject(1, id);
+            try (var result = statement.executeQuery()) {
+                if (result.next()) {
+                    return Optional.of(new TipoVehiculo(id, result.getString("nombre"), result.getString("descripcion")));
+                }
+            }
+            return Optional.empty();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public boolean update(UUID id, String nombre, String descripcion) {
+        var query = "UPDATE tipos_vehiculo SET nombre = ?, descripcion = ? WHERE id = ?";
+        try (var connection = DB.conectar()) {
+            var statement = connection.prepareStatement(query);
+            statement.setString(1, nombre);
+            statement.setString(2, descripcion);
+            statement.setObject(3, id);
+            int affectedRows = statement.executeUpdate();
+            statement.close();
+            return affectedRows > 0;
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public boolean delete(UUID id) {
+        var query = "DELETE FROM tipos_vehiculo WHERE id = ?";
+        try (var connection = DB.conectar()) {
+            var statement = connection.prepareStatement(query);
+            statement.setObject(1, id);
+            int affectedRows = statement.executeUpdate();
+            statement.close();
+            return affectedRows > 0;
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
 }

@@ -65,6 +65,13 @@ public class VehiculoService {
         return repo.delete(placa);
     }
 
+    public boolean updateTipo(String placa, String nombreTipo) {
+        if (placa == null || placa.isBlank() || nombreTipo == null || nombreTipo.isBlank()) return false;
+        var t = tipoRepo.get(nombreTipo);
+        if (t.isEmpty()) return false;
+        return repo.updateTipo(placa, t.get().id());
+    }
+
     // Valida el formato de placa segun el tipo (Carro: ABC-123 · Moto: ABC-12A).
     public boolean placaValidaPara(String nombreTipo, String placa) {
         return placaValida(nombreTipo, placa);

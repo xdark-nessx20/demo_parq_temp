@@ -30,6 +30,17 @@ public class OperadorService {
         return repo.getByRol(Rol.OPERADOR).stream().map(u -> (Operador) u).toList();
     }
 
+    public boolean update(String cedula, String nombre) {
+        if (nombreInvalido(nombre)) return false;
+        if (cedulaInvalida(cedula)) return false;
+        return repo.update(cedula, nombre);
+    }
+
+    public boolean delete(String cedula) {
+        if (cedulaInvalida(cedula)) return false;
+        return repo.delete(cedula);
+    }
+
     private boolean nombreInvalido(String nombre) {
         return nombre == null || nombre.isBlank() || nombre.length() < 6;
     }
