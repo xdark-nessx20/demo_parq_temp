@@ -45,7 +45,7 @@
                     <c:forEach var="p" items="${pagos}">
                         <tr>
                             <td><span class="placa">${placasPorRegistro[p.idRegistroIngreso]}</span></td>
-                            <td>$${p.valorTexto}</td>
+                            <td class="num">$${p.valorTexto}</td>
                             <td>${p.fechaPagoTexto}</td>
                             <td><span class="badge ${p.pagado ? 'badge-ok' : 'badge-warn'}">${p.estado}</span></td>
                             <td>

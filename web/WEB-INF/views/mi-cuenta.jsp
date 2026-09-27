@@ -67,7 +67,7 @@
                             <td>${m.tipo}</td>
                             <td>${m.horaEntrada}</td>
                             <td>${m.horaSalida}</td>
-                            <td>${m.valor}</td>
+                            <td class="num">${m.valor}</td>
                             <td><span class="badge ${m.estado == 'Pagado' ? 'badge-ok' : (m.estado == 'Pendiente' ? 'badge-warn' : 'badge-info')}">${m.estado}</span></td>                            <td>
                                 <c:if test="${m.pagable}">
                                     <form action="${pageContext.request.contextPath}/mi-cuenta" method="post"

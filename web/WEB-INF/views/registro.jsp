@@ -40,15 +40,16 @@
             <form action="${pageContext.request.contextPath}/registro" method="post">
                 <div>
                     <label for="nombre">Nombre completo</label>
-                    <input type="text" id="nombre" name="nombre" value="${param.nombre}" required />
+                    <input type="text" id="nombre" name="nombre" value="${param.nombre}" autocomplete="name" required />
                 </div>
                 <div>
                     <label for="cedula">Cédula</label>
-                    <input type="text" id="cedula" name="cedula" value="${param.cedula}" required />
+                    <input type="text" id="cedula" name="cedula" value="${param.cedula}"
+                           autocomplete="username" spellcheck="false" required />
                 </div>
                 <div>
                     <label for="contrasena">Contraseña</label>
-                    <input type="password" id="contrasena" name="contrasena" data-pw required />
+                    <input type="password" id="contrasena" name="contrasena" data-pw autocomplete="new-password" required />
                 </div>
                 <jsp:include page="/WEB-INF/views/comunes/reglas-password.jsp" />
                 <button type="submit">Crear cuenta</button>

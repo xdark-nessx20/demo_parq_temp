@@ -66,11 +66,12 @@
             <form action="${pageContext.request.contextPath}/login" method="post">
                 <div>
                     <label for="cedula">Cédula</label>
-                    <input type="text" id="cedula" name="cedula" value="${param.cedula}" required autofocus />
+                    <input type="text" id="cedula" name="cedula" value="${param.cedula}"
+                           autocomplete="username" spellcheck="false" required autofocus />
                 </div>
                 <div>
                     <label for="contrasena">Contraseña</label>
-                    <input type="password" id="contrasena" name="contrasena" required />
+                    <input type="password" id="contrasena" name="contrasena" autocomplete="current-password" required />
                 </div>
                 <button type="submit">Iniciar sesión</button>
             </form>
