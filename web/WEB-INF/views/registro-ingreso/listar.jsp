@@ -35,7 +35,7 @@
                 <tbody>
                     <c:forEach var="r" items="${ingresos}">
                         <tr>
-                            <td>${placas[r.idVehiculo]}</td>
+                            <td><span class="placa">${placas[r.idVehiculo]}</span></td>
                             <td>${r.horaEntradaTexto}</td>
                             <td>${r.horaSalidaTexto}</td>
                             <td>${operadores[r.idOperadorEntrada]}</td>

@@ -4,27 +4,32 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Vehículos dentro</title>
 </head>
 <body>
     <jsp:include page="/WEB-INF/views/comunes/header.jsp" />
+    <jsp:include page="/WEB-INF/views/comunes/mensajes.jsp" />
 
-    <h1>Vehículos dentro del parqueadero</h1>
+    <h1>Vehículos dentro</h1>
+    <p class="muted">Vehículos que están en el parqueadero ahora mismo.</p>
 
-    <c:if test="${not empty sessionScope.mensaje}">
-        <p class="mensaje mensaje-ok">${sessionScope.mensaje}</p>
-        <c:remove var="mensaje" scope="session" />
-    </c:if>
-    <c:if test="${not empty sessionScope.error}">
-        <p class="mensaje mensaje-error">${sessionScope.error}</p>
-        <c:remove var="error" scope="session" />
-    </c:if>
+    <div class="stats">
+        <div class="stat">
+            <span class="stat-num">${vehiculosDentro.size()}</span>
+            <span class="stat-label">Vehículos adentro</span>
+        </div>
+    </div>
 
-    <p><strong>${vehiculosDentro.size()}</strong> vehículo(s) adentro.</p>
+    <div class="acciones">
+        <a class="boton" href="${pageContext.request.contextPath}/registros-ingreso?accion=registrar">Registrar ingreso</a>
+    </div>
 
     <c:choose>
         <c:when test="${empty vehiculosDentro}">
-            <p>No hay vehículos dentro en este momento.</p>
+            <div class="card">
+                <p class="muted">No hay vehículos dentro en este momento.</p>
+            </div>
         </c:when>
         <c:otherwise>
             <table>
@@ -40,7 +45,7 @@
                 <tbody>
                     <c:forEach var="v" items="${vehiculosDentro}">
                         <tr>
-                            <td><strong>${v.placa}</strong></td>
+                            <td><span class="placa">${v.placa}</span></td>
                             <td>${v.tipo}</td>
                             <td>${v.horaEntrada}</td>
                             <td>${v.tiempo}</td>
@@ -57,10 +62,5 @@
             </table>
         </c:otherwise>
     </c:choose>
-
-    <div class="acciones">
-        <a class="boton" href="${pageContext.request.contextPath}/registros-ingreso?accion=registrar">Registrar ingreso</a>
-    </div>
-
 </body>
 </html>

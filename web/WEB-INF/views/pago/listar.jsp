@@ -42,10 +42,10 @@
                 <tbody>
                     <c:forEach var="p" items="${pagos}">
                         <tr>
-                            <td>${placasPorRegistro[p.idRegistroIngreso]}</td>
+                            <td><span class="placa">${placasPorRegistro[p.idRegistroIngreso]}</span></td>
                             <td>$${p.valorTexto}</td>
                             <td>${p.fechaPagoTexto}</td>
-                            <td>${p.estado}</td>
+                            <td><span class="badge ${p.pagado ? 'badge-ok' : 'badge-warn'}">${p.estado}</span></td>
                             <td>
                                 <c:if test="${not p.pagado}">
                                     <form action="${pageContext.request.contextPath}/pagos" method="post"
