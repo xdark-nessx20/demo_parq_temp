@@ -41,8 +41,8 @@ public class MiPerfilController extends HttpServlet {
             var resultado = service.cambiarContrasena(usuario.cedula(),
                     request.getParameter("actual"), request.getParameter("nueva"));
 
-            // Peticion AJAX (fetch): se devuelve el codigo y el JSP abre el modal sin recargar.
-            if ("fetch".equals(request.getHeader("X-Requested-With"))) {
+            // Peticion AJAX (fetch o campo ajax=1): se devuelve el codigo y el JSP abre el modal sin recargar.
+            if ("fetch".equals(request.getHeader("X-Requested-With")) || "1".equals(request.getParameter("ajax"))) {
                 response.setContentType("text/plain;charset=UTF-8");
                 response.getWriter().print(resultado.name());
                 return;

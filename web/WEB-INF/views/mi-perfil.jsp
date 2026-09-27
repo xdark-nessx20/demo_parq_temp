@@ -28,6 +28,7 @@
     <h2>Cambiar contraseña</h2>
     <form id="formContrasena" action="${pageContext.request.contextPath}/mi-perfil" method="post">
         <input type="hidden" name="accion" value="contrasena" />
+        <input type="hidden" name="ajax" value="1" />
         <div>
             <label for="actual">Contraseña actual</label>
             <input type="password" id="actual" name="actual" required />
@@ -64,7 +65,7 @@
                 })
                 .then(function (r) { return r.text(); })
                 .then(function (res) {
-                    var codigo = res.trim();
+                    var codigo = (res || '').trim().toUpperCase();
                     var m = MENSAJES[codigo] || ['error', 'No se pudo cambiar la contraseña.'];
                     window.mostrarMensaje(m[0], m[1]);
                     if (codigo === 'OK') form.reset();
