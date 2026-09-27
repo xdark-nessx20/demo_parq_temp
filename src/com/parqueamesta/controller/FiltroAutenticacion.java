@@ -22,10 +22,6 @@ public class FiltroAutenticacion implements Filter {
     private static final List<String> SOLO_GERENTE =
             List.of("/tarifas", "/operadores", "/gerentes", "/tipos-vehiculo");
 
-    // Secciones de operacion: solo el Operador (el Gerente administra, no opera).
-    private static final List<String> SOLO_OPERADOR =
-            List.of("/registros-ingreso");
-
     @Override
     public void doFilter(ServletRequest req, ServletResponse res, FilterChain chain)
             throws IOException, ServletException {
@@ -66,8 +62,9 @@ public class FiltroAutenticacion implements Filter {
                 response.sendRedirect(request.getContextPath() + "/dentro");
                 return;
             }
-            // Secciones de operacion: el Gerente no opera.
-            if (esSoloOperador(path) && usuario.rol() != Rol.OPERADOR) {
+            // Escrituras de operacion (ingreso, salida, cobro): solo el Operador.
+            // El Gerente SI puede ver el listado de ingresos, pero no registrar.
+            if (esEscrituraOperacion(request, path) && usuario.rol() != Rol.OPERADOR) {
                 session.setAttribute("error", "Solo el operador puede registrar ingresos y salidas");
                 response.sendRedirect(request.getContextPath() + "/dentro");
                 return;
@@ -90,7 +87,12 @@ public class FiltroAutenticacion implements Filter {
         return SOLO_GERENTE.stream().anyMatch(path::startsWith);
     }
 
-    private boolean esSoloOperador(String path) {
-        return SOLO_OPERADOR.stream().anyMatch(path::startsWith);
+    // Escrituras de operacion: POST en ingreso/pago/dar-salida, o el formulario de registro.
+    private boolean esEscrituraOperacion(HttpServletRequest request, String path) {
+        if (!path.equals("/dentro") && !path.equals("/registros-ingreso") && !path.equals("/pagos")) {
+            return false;
+        }
+        if ("POST".equalsIgnoreCase(request.getMethod())) return true;
+        return "registrar".equals(request.getParameter("accion"));
     }
 }

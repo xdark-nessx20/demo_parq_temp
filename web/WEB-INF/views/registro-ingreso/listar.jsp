@@ -12,8 +12,10 @@
     <div class="page-head">
         <h2>Registros de ingreso</h2>
         <div class="page-head-acciones">
-            <a class="boton" href="${pageContext.request.contextPath}/registros-ingreso?accion=registrar">Registrar ingreso</a>
-            <a class="boton boton-secundario" href="${pageContext.request.contextPath}/pagos?accion=registrar">Registrar salida</a>
+            <c:if test="${sessionScope.usuario.rolNombre == 'OPERADOR'}">
+                <a class="boton" href="${pageContext.request.contextPath}/registros-ingreso?accion=registrar">Registrar ingreso</a>
+                <a class="boton boton-secundario" href="${pageContext.request.contextPath}/pagos?accion=registrar">Registrar salida</a>
+            </c:if>
         </div>
     </div>
 
