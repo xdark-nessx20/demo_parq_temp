@@ -22,7 +22,7 @@
             <p>No hay tipos de vehículo registrados.</p>
         </c:when>
         <c:otherwise>
-            <table border="1" cellpadding="6">
+            <table>
                 <thead>
                     <tr>
                         <th>Nombre</th>

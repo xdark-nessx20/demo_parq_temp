@@ -12,17 +12,19 @@
     <div class="page-head">
         <h2>Ingreso registrado</h2>
         <div class="page-head-acciones">
-            <a class="boton boton-secundario" href="${pageContext.request.contextPath}/registros-ingreso">← Volver</a>
+            <a class="boton boton-secundario" href="${pageContext.request.contextPath}/dentro">Volver</a>
         </div>
     </div>
 
-    <table border="1" cellpadding="6">
+    <table>
         <tr><th>Vehículo</th><td>${placas[ticket.idVehiculo]}</td></tr>
         <tr><th>Hora entrada</th><td>${ticket.horaEntradaTexto}</td></tr>
         <tr><th>Operador entrada</th><td>${operadores[ticket.idOperadorEntrada]}</td></tr>
     </table>
 
-    <a class="boton" href="${pageContext.request.contextPath}/registros-ingreso?accion=registrar">Registrar otro ingreso</a>
+    <div class="acciones">
+        <a class="boton" href="${pageContext.request.contextPath}/registros-ingreso?accion=registrar">Registrar otro ingreso</a>
+    </div>
 
 </body>
 </html>

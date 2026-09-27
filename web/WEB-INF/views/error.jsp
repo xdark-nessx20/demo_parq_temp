@@ -12,7 +12,7 @@
     <div class="page-head">
         <h2>Ocurrió un error</h2>
         <div class="page-head-acciones">
-            <a class="boton boton-secundario" href="javascript:history.back()">← Volver</a>
+            <a class="boton boton-secundario" href="javascript:history.back()">Volver</a>
         </div>
     </div>
 

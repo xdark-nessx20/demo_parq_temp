@@ -12,7 +12,7 @@
     <div class="page-head">
         <h2>Registrar operador</h2>
         <div class="page-head-acciones">
-            <a class="boton boton-secundario" href="${pageContext.request.contextPath}/operadores">← Volver</a>
+            <a class="boton boton-secundario" href="${pageContext.request.contextPath}/operadores">Volver</a>
         </div>
     </div>
 

@@ -184,14 +184,15 @@ tbody tr:last-child td { border-bottom: none; }
 tbody tr:hover td { background: var(--primary-soft); }
 .num { text-align: right; font-variant-numeric: tabular-nums; }
 
-/* Placa estilo matrícula */
+/* Placa estilo matrícula (amarilla, letras negras) */
 .placa {
     display: inline-block;
     font-family: "Consolas", "Courier New", monospace;
     font-weight: 700;
     letter-spacing: .06em;
-    background: #0f172a;
-    color: #fff;
+    background: #facc15;
+    color: #111111;
+    border: 1px solid #ca8a04;
     border-radius: 6px;
     padding: 3px 11px;
 }
@@ -362,6 +363,26 @@ body > .auth { max-width: 940px; padding: 0; margin: 5vh auto; }
 .modal-overlay.abierto .modal-pago { transform: scale(1) translateY(0); }
 .modal-pago h3 { margin: 0 0 10px; }
 .modal-pago p { color: var(--muted); font-size: .92rem; margin: 0; }
+
+/* Modal de mensaje (exito / advertencia / error) */
+.modal-mensaje {
+    background: var(--surface); border-radius: var(--radius); box-shadow: var(--shadow-lg);
+    padding: 28px 32px; max-width: 400px; margin: 20px; text-align: center;
+    transform: scale(.92) translateY(10px); transition: transform .25s ease;
+}
+.modal-overlay.abierto .modal-mensaje { transform: scale(1) translateY(0); }
+.modal-mensaje p { margin: 0 0 18px; color: var(--text); }
+.mm-icono {
+    width: 48px; height: 48px; border-radius: 50%; margin: 0 auto 14px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.5rem; font-weight: 800; line-height: 1;
+}
+.modal-mensaje.es-ok .mm-icono { background: var(--success-soft); color: #14532d; }
+.modal-mensaje.es-ok .mm-icono::before { content: "\2713"; }
+.modal-mensaje.es-warn .mm-icono { background: var(--warning-soft); color: #78350f; }
+.modal-mensaje.es-warn .mm-icono::before { content: "\26A0"; }
+.modal-mensaje.es-error .mm-icono { background: var(--danger-soft); color: #7f1d1d; }
+.modal-mensaje.es-error .mm-icono::before { content: "\2715"; }
 .puntos { display: flex; gap: 9px; justify-content: center; margin-top: 20px; }
 .puntos span {
     width: 12px; height: 12px; border-radius: 50%; background: var(--primary);
@@ -374,7 +395,7 @@ body > .auth { max-width: 940px; padding: 0; margin: 5vh auto; }
     40%           { transform: scale(1);   opacity: 1; }
 }
 @media (prefers-reduced-motion: reduce) {
-    .modal-overlay, .modal-pago { transition: none; }
+    .modal-overlay, .modal-pago, .modal-mensaje { transition: none; }
     .puntos span { animation: none; }
 }
 

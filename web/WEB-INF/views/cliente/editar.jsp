@@ -12,7 +12,7 @@
     <div class="page-head">
         <h2>Editar cliente</h2>
         <div class="page-head-acciones">
-            <a class="boton boton-secundario" href="${pageContext.request.contextPath}/clientes">← Volver</a>
+            <a class="boton boton-secundario" href="${pageContext.request.contextPath}/clientes">Volver</a>
         </div>
     </div>
 

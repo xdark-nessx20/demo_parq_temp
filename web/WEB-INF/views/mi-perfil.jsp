@@ -26,7 +26,7 @@
     </form>
 
     <h2>Cambiar contraseña</h2>
-    <form action="${pageContext.request.contextPath}/mi-perfil" method="post">
+    <form id="formContrasena" action="${pageContext.request.contextPath}/mi-perfil" method="post">
         <input type="hidden" name="accion" value="contrasena" />
         <div>
             <label for="actual">Contraseña actual</label>
@@ -39,5 +39,39 @@
         <jsp:include page="/WEB-INF/views/comunes/reglas-password.jsp" />
         <button type="submit">Cambiar contraseña</button>
     </form>
+
+    <jsp:include page="/WEB-INF/views/comunes/modal-mensaje.jsp" />
+    <script>
+        // Envia el cambio de contrasena por AJAX: muestra un modal y conserva los
+        // campos si hay error/advertencia; los limpia si fue exitoso.
+        (function () {
+            var form = document.getElementById('formContrasena');
+            if (!form) return;
+
+            var MENSAJES = {
+                OK:                 ['ok',    'Contraseña actualizada correctamente.'],
+                ACTUAL_INCORRECTA:  ['error', 'La contraseña actual no coincide con la del sistema.'],
+                IGUAL_A_ANTERIOR:   ['warn',  'La nueva contraseña es igual a la anterior.'],
+                NO_CUMPLE:          ['error', 'La nueva contraseña no cumple con los requisitos.']
+            };
+
+            form.addEventListener('submit', function (e) {
+                e.preventDefault();
+                fetch(form.action, {
+                    method: 'POST',
+                    body: new FormData(form),
+                    headers: { 'X-Requested-With': 'fetch' }
+                })
+                .then(function (r) { return r.text(); })
+                .then(function (res) {
+                    var codigo = res.trim();
+                    var m = MENSAJES[codigo] || ['error', 'No se pudo cambiar la contraseña.'];
+                    window.mostrarMensaje(m[0], m[1]);
+                    if (codigo === 'OK') form.reset();
+                })
+                .catch(function () {});
+            });
+        })();
+    </script>
 </body>
 </html>

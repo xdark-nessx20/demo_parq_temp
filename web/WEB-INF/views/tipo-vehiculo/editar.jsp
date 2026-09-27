@@ -12,7 +12,7 @@
     <div class="page-head">
         <h2>Editar tipo de vehículo</h2>
         <div class="page-head-acciones">
-            <a class="boton boton-secundario" href="${pageContext.request.contextPath}/tipos-vehiculo">← Volver</a>
+            <a class="boton boton-secundario" href="${pageContext.request.contextPath}/tipos-vehiculo">Volver</a>
         </div>
     </div>
 

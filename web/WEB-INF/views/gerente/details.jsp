@@ -11,11 +11,11 @@
     <div class="page-head">
         <h2>Detalle: ${gerente.nombre}</h2>
         <div class="page-head-acciones">
-            <a class="boton boton-secundario" href="${pageContext.request.contextPath}/gerentes">← Volver</a>
+            <a class="boton boton-secundario" href="${pageContext.request.contextPath}/gerentes">Volver</a>
         </div>
     </div>
 
-    <table border="1" cellpadding="6">
+    <table>
         <tr>
             <th>Nombre</th>
             <td>${gerente.nombre}</td>

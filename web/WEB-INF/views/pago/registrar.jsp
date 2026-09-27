@@ -12,7 +12,7 @@
     <div class="page-head">
         <h2>Registrar salida de vehículo</h2>
         <div class="page-head-acciones">
-            <a class="boton boton-secundario" href="${pageContext.request.contextPath}/pagos">← Volver</a>
+            <a class="boton boton-secundario" href="${pageContext.request.contextPath}/pagos">Volver</a>
         </div>
     </div>
 

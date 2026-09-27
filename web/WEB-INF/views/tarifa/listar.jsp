@@ -25,7 +25,7 @@
             <p>No hay tarifas registradas.</p>
         </c:when>
         <c:otherwise>
-            <table border="1" cellpadding="6">
+            <table>
                 <thead>
                     <tr>
                         <th>Tipo de vehículo</th>

@@ -24,7 +24,7 @@
             <p>No hay registros de ingreso.</p>
         </c:when>
         <c:otherwise>
-            <table border="1" cellpadding="6">
+            <table>
                 <thead>
                     <tr>
                         <th>Vehículo</th>

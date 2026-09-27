@@ -12,7 +12,7 @@
     <div class="page-head">
         <h2>Registrar nueva tarifa</h2>
         <div class="page-head-acciones">
-            <a class="boton boton-secundario" href="${pageContext.request.contextPath}/tarifas">← Volver</a>
+            <a class="boton boton-secundario" href="${pageContext.request.contextPath}/tarifas">Volver</a>
         </div>
     </div>
 

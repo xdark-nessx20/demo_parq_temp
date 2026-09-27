@@ -12,11 +12,11 @@
     <div class="page-head">
         <h2>Pago registrado</h2>
         <div class="page-head-acciones">
-            <a class="boton boton-secundario" href="${pageContext.request.contextPath}/pagos">← Volver</a>
+            <a class="boton boton-secundario" href="${pageContext.request.contextPath}/pagos">Volver</a>
         </div>
     </div>
 
-    <table border="1" cellpadding="6">
+    <table>
         <tr><th>Vehículo</th><td>${vehiculoPlaca}</td></tr>
         <tr><th>Hora entrada</th><td>${horaEntrada}</td></tr>
         <tr><th>Hora salida</th><td>${horaSalida}</td></tr>
@@ -26,7 +26,9 @@
         <tr><th>Fecha de pago</th><td>${pago.fechaPagoTexto}</td></tr>
     </table>
 
-    <a class="boton" href="${pageContext.request.contextPath}/pagos?accion=registrar">Registrar otra salida</a>
+    <div class="acciones">
+        <a class="boton" href="${pageContext.request.contextPath}/pagos?accion=registrar">Registrar otra salida</a>
+    </div>
 
 </body>
 </html>

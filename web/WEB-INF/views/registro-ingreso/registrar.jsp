@@ -12,7 +12,7 @@
     <div class="page-head">
         <h2>Registrar ingreso de vehículo</h2>
         <div class="page-head-acciones">
-            <a class="boton boton-secundario" href="${pageContext.request.contextPath}/registros-ingreso">← Volver</a>
+            <a class="boton boton-secundario" href="${pageContext.request.contextPath}/registros-ingreso">Volver</a>
         </div>
     </div>
 
