@@ -10,6 +10,8 @@
 
     <h2>Gerentes registrados</h2>
 
+    <p><a href="${pageContext.request.contextPath}/gerentes?accion=registrar">Registrar gerente</a></p>
+
     <c:choose>
         <c:when test="${empty gerentes}">
             <p>No hay gerentes registrados.</p>

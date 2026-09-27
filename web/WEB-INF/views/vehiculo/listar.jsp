@@ -10,6 +10,8 @@
 
     <h2>Vehículos registrados</h2>
 
+    <p><a href="${pageContext.request.contextPath}/vehiculos?accion=registrar">Registrar vehículo</a></p>
+
     <c:choose>
         <c:when test="${empty vehiculos}">
             <p>No hay vehículos registrados.</p>

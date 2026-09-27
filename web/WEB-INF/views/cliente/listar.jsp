@@ -10,6 +10,8 @@
 
     <h2>Clientes registrados</h2>
 
+    <p><a href="${pageContext.request.contextPath}/clientes?accion=registrar">Registrar cliente</a></p>
+
     <c:choose>
         <c:when test="${empty clientes}">
             <p>No hay clientes registrados.</p>

@@ -10,6 +10,8 @@
 
     <h2>Operadores registrados</h2>
 
+    <p><a href="${pageContext.request.contextPath}/operadores?accion=registrar">Registrar operador</a></p>
+
     <c:choose>
         <c:when test="${empty operadores}">
             <p>No hay operadores registrados.</p>
