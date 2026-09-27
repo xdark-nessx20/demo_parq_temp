@@ -1,48 +1,56 @@
 @startuml
-title Casos de Uso (nivel 0) - Gestión de Parqueadero
+title Casos de Uso (nivel 0) - Gestion de Parqueadero
 left to right direction
+skinparam packageStyle rectangle
 
 actor "Cliente" as c
 actor "Operador" as o
 actor "Gerente" as g
 
-package "Sistema de Gestión de Parqueadero" {
+package "Sistema de Gestion de Parqueadero" {
 
-  usecase "Iniciar sesión" as UC0
-  usecase "Registrar ingreso\nde vehículo" as UC1
+  usecase "Iniciar sesion" as UC0
+  usecase "Registrar ingreso\nde vehiculo" as UC1
   usecase "Registrar salida y\ncalcular el pago" as UC2
-  usecase "Pagar" as UC3
-  usecase "Consultar vehículos\ndentro" as UC4
-  usecase "Gestionar vehículos" as UC5
-  usecase "Gestionar clientes" as UC6
-  usecase "Gestionar tarifas" as UC7
-  usecase "Gestionar tipos\nde vehículo" as UC8
-  usecase "Gestionar operadores\ny gerentes" as UC9
-  usecase "Consultar mis vehículos\ny pagos" as UC10
+  usecase "Pagar (por el usuario)" as UC3
+  usecase "Cobrar pago (caja)" as UC4
+  usecase "Consultar vehiculos\ndentro" as UC5
+  usecase "Consultar registros\nde ingreso" as UC6
+  usecase "Gestionar vehiculos" as UC7
+  usecase "Gestionar clientes" as UC8
+  usecase "Gestionar tarifas" as UC9
+  usecase "Gestionar tipos\nde vehiculo" as UC10
+  usecase "Gestionar operadores\ny gerentes" as UC11
+  usecase "Consultar mis vehiculos\ny pagos" as UC12
+  usecase "Editar mi perfil" as UC13
+  usecase "Registrar mis vehiculos" as UC14
+  usecase "Consultar pagos" as UC15
 
 }
 
 c --> UC0
 c --> UC3
-c --> UC5
-c --> UC10
+c --> UC12
+c --> UC13
+c --> UC14
 
 o --> UC0
 o --> UC1
 o --> UC2
-o --> UC3
 o --> UC4
 o --> UC5
 o --> UC6
+o --> UC13
 
 g --> UC0
-g --> UC1
-g --> UC2
-g --> UC4
 g --> UC5
 g --> UC6
 g --> UC7
 g --> UC8
 g --> UC9
+g --> UC10
+g --> UC11
+g --> UC13
+g --> UC15
 
 @enduml
