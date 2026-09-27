@@ -158,6 +158,7 @@ public class PagoController extends HttpServlet {
     private void mostrarFormulario(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         request.setAttribute("tickets", registroService.ticketsActivos());
+        cargarPlacas(request);
         request.getRequestDispatcher(VISTA_REGISTRAR).forward(request, response);
     }
 

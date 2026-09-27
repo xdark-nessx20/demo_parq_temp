@@ -23,11 +23,11 @@
     <form action="${pageContext.request.contextPath}/pagos" method="post">
 
         <div>
-            <label for="idRegistro">Ticket:</label>
+            <label for="idRegistro">Vehículo (ticket abierto):</label>
             <select id="idRegistro" name="idRegistro" required>
-                <option value="">-- Seleccione un ticket abierto --</option>
+                <option value="">-- Seleccione un vehículo --</option>
                 <c:forEach var="r" items="${tickets}">
-                    <option value="${r.id}">Ticket ${r.id} (entrada ${r.horaEntrada})</option>
+                    <option value="${r.id}">${empty placasPorRegistro[r.id] ? 'Vehículo sin placa' : placasPorRegistro[r.id]} — entrada ${r.horaEntradaTexto}</option>
                 </c:forEach>
             </select>
         </div>
