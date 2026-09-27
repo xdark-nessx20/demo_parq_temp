@@ -18,21 +18,17 @@
     <form action="${pageContext.request.contextPath}/registros-ingreso" method="post">
 
         <div>
-            <label for="idVehiculo">Vehículo:</label>
-            <select id="idVehiculo" name="idVehiculo" required>
-                <option value="">-- Seleccione un vehículo --</option>
-                <c:forEach var="v" items="${vehiculos}">
-                    <option value="${v.id}">${v.placa} (${v.tipo.nombre})</option>
-                </c:forEach>
-            </select>
+            <label for="placa">Placa:</label>
+            <input type="text" id="placa" name="placa" value="${param.placa}"
+                   placeholder="ABC-123 (carro) · ABC-12A (moto)" required />
         </div>
 
         <div>
-            <label for="idOperador">Operador:</label>
-            <select id="idOperador" name="idOperador" required>
-                <option value="">-- Seleccione un operador --</option>
-                <c:forEach var="o" items="${operadores}">
-                    <option value="${o.id}">${o.nombre} (${o.cedula})</option>
+            <label for="tipoVehiculo">Tipo de vehículo:</label>
+            <select id="tipoVehiculo" name="tipoVehiculo" required>
+                <option value="">-- Seleccione un tipo --</option>
+                <c:forEach var="t" items="${tipos}">
+                    <option value="${t.nombre}" ${param.tipoVehiculo == t.nombre ? 'selected' : ''}>${t.nombre}</option>
                 </c:forEach>
             </select>
         </div>

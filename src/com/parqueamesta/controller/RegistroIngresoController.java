@@ -1,7 +1,9 @@
 package com.parqueamesta.controller;
 
+import com.parqueamesta.model.Usuario;
 import com.parqueamesta.services.OperadorService;
 import com.parqueamesta.services.RegistroIngresoService;
+import com.parqueamesta.services.TipoVehiculoService;
 import com.parqueamesta.services.VehiculoService;
 import com.parqueamesta.services.exceptions.TicketAbiertoException;
 import jakarta.servlet.ServletException;
@@ -21,30 +23,47 @@ public class RegistroIngresoController extends HttpServlet {
     private static final String VISTA_TICKET = "/WEB-INF/views/registro-ingreso/ticket.jsp";
     private static final String VISTA_LISTAR = "/WEB-INF/views/registro-ingreso/listar.jsp";
     private static final String VISTA_REGISTRAR = "/WEB-INF/views/registro-ingreso/registrar.jsp";
+    private static final String VISTA_LOGIN = "/WEB-INF/views/login.jsp";
 
     private final RegistroIngresoService service = new RegistroIngresoService();
     private final VehiculoService vehiculoService = new VehiculoService();
     private final OperadorService operadorService = new OperadorService();
+    private final TipoVehiculoService tipoService = new TipoVehiculoService();
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws IOException, ServletException {
 
-        var idVehiculo = parseUuid(request.getParameter("idVehiculo"));
-        var idOperador = parseUuid(request.getParameter("idOperador"));
+        var usuario = usuarioDeSesion(request);
+        if (usuario == null) {
+            request.setAttribute("error", "Debe iniciar sesión");
+            request.getRequestDispatcher(VISTA_LOGIN).forward(request, response);
+            return;
+        }
 
-        if (idVehiculo.isEmpty() || idOperador.isEmpty()) {
-            request.setAttribute("error", "Los IDs no son válidos");
-            request.getRequestDispatcher(VISTA_REGISTRAR).forward(request, response);
+        String placa = request.getParameter("placa");
+        String tipoNombre = request.getParameter("tipoVehiculo");
+
+        if (!vehiculoService.placaValidaPara(tipoNombre, placa)) {
+            request.setAttribute("error", "La placa no corresponde al tipo (Carro: ABC-123 · Moto: ABC-12A)");
+            mostrarFormulario(request, response);
+            return;
+        }
+
+        // Si el vehiculo no existe, se crea en este momento (sin dueño).
+        var vehiculo = vehiculoService.findByPlaca(placa).orElse(null);
+        if (vehiculo == null) {
+            vehiculoService.save(placa, null, tipoNombre);
+            vehiculo = vehiculoService.findByPlaca(placa).orElse(null);
+        }
+        if (vehiculo == null) {
+            request.setAttribute("error", "No se pudo registrar el vehículo");
+            mostrarFormulario(request, response);
             return;
         }
 
         try {
-            var ticket = service.registrarIngreso(
-                    idVehiculo.get(),
-                    LocalDateTime.now(),
-                    idOperador.get());
-
+            var ticket = service.registrarIngreso(vehiculo.id(), LocalDateTime.now(), usuario.id());
             request.setAttribute("ticket", ticket.get());
             cargarMapas(request);
             request.getRequestDispatcher(VISTA_TICKET).forward(request, response);
@@ -93,6 +112,18 @@ public class RegistroIngresoController extends HttpServlet {
         request.getRequestDispatcher(VISTA_LISTAR).forward(request, response);
     }
 
+    private void registrar(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        mostrarFormulario(request, response);
+    }
+
+    // Carga los tipos de vehiculo (para el desplegable) y muestra el formulario.
+    private void mostrarFormulario(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        request.setAttribute("tipos", tipoService.findAll());
+        request.getRequestDispatcher(VISTA_REGISTRAR).forward(request, response);
+    }
+
     // Mapas id->texto para mostrar placas y nombres en vez de UUIDs.
     private void cargarMapas(HttpServletRequest request) {
         var placas = new HashMap<UUID, String>();
@@ -103,17 +134,9 @@ public class RegistroIngresoController extends HttpServlet {
         request.setAttribute("operadores", operadores);
     }
 
-    private void registrar(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        mostrarFormulario(request, response);
-    }
-
-    // Carga vehiculos y operadores (para los desplegables) y muestra el formulario.
-    private void mostrarFormulario(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        request.setAttribute("vehiculos", vehiculoService.findAll());
-        request.setAttribute("operadores", operadorService.findAll());
-        request.getRequestDispatcher(VISTA_REGISTRAR).forward(request, response);
+    private Usuario usuarioDeSesion(HttpServletRequest request) {
+        var session = request.getSession(false);
+        return session == null ? null : (Usuario) session.getAttribute("usuario");
     }
 
     private Optional<UUID> parseUuid(String valor) {

@@ -21,8 +21,8 @@ public class VehiculoService {
 
     // El dueño (cliente) es opcional: puede registrarse un vehiculo sin propietario.
     public boolean save(String placa, String ownerCedula, String nombreTipo) {
-        if (placaInvalida(placa)) return false;
         if (tipoInvalido(nombreTipo)) return false;
+        if (!placaValida(nombreTipo, placa)) return false;
 
         var t = tipoRepo.get(nombreTipo);
         if (t.isEmpty()) return false;
@@ -35,11 +35,11 @@ public class VehiculoService {
             owner = (Cliente) o.get();
         }
 
-        return repo.save(new Vehiculo(placa, owner, t.get()));
+        return repo.save(new Vehiculo(placa.toUpperCase(), owner, t.get()));
     }
 
     public Optional<Vehiculo> findByPlaca(String placa) {
-        if (placaInvalida(placa)) return Optional.empty();
+        if (placa == null || placa.isBlank()) return Optional.empty();
 
         return repo.get(placa);
     }
@@ -55,17 +55,27 @@ public class VehiculoService {
     }
 
     public boolean delete(String placa){
-        if (placaInvalida(placa)) return false;
+        if (placa == null || placa.isBlank()) return false;
 
         return repo.delete(placa);
     }
 
-    private boolean placaInvalida(String placa) {
-        return placa == null || !placa.matches("[A-Z]{3}-[0-9]{3}");
+    // Valida el formato de placa segun el tipo (Carro: ABC-123 · Moto: ABC-12A).
+    public boolean placaValidaPara(String nombreTipo, String placa) {
+        return placaValida(nombreTipo, placa);
+    }
+
+    private boolean placaValida(String nombreTipo, String placa) {
+        if (placa == null || nombreTipo == null) return false;
+        var p = placa.toUpperCase();
+        if (nombreTipo.toLowerCase().contains("moto")) {
+            return p.matches("^[A-Z]{3}-[0-9]{2}[A-Z]$");
+        }
+        return p.matches("^[A-Z]{3}-[0-9]{3}$");
     }
 
     private boolean ownerCedulaInvalido(String ownerCedula) {
-        return ownerCedula == null || !ownerCedula.matches("^[1-9][0-9]{7}([0-9]{2})?");
+        return !ownerCedula.matches("^[1-9][0-9]{7}([0-9]{2})?");
     }
 
     private boolean tipoInvalido(String tipo) {
