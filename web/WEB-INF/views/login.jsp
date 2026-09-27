@@ -79,13 +79,6 @@
             <p class="muted">¿No tienes cuenta?
                 <a href="${pageContext.request.contextPath}/registro">Regístrate</a>
             </p>
-
-            <h3>Roles</h3>
-            <div class="roles">
-                <div class="role-card"><strong>Operador</strong><span>Registra ingresos, da salida y cobra vehículos.</span></div>
-                <div class="role-card"><strong>Gerente</strong><span>Administra tarifas, tipos de vehículo y personas.</span></div>
-                <div class="role-card"><strong>Cliente</strong><span>Registra sus vehículos y paga en línea.</span></div>
-            </div>
         </main>
     </div>
 </body>
