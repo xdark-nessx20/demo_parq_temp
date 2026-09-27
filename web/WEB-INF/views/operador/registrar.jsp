@@ -9,7 +9,12 @@
 <body>
     <jsp:include page="/WEB-INF/views/comunes/header.jsp" />
 
-    <h2>Registrar operador</h2>
+    <div class="page-head">
+        <h2>Registrar operador</h2>
+        <div class="page-head-acciones">
+            <a class="boton boton-secundario" href="${pageContext.request.contextPath}/operadores">← Volver</a>
+        </div>
+    </div>
 
     <c:if test="${not empty error}">
         <p style="color:red;"><strong>${error}</strong></p>

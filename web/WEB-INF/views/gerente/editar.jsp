@@ -9,7 +9,12 @@
 <body>
     <jsp:include page="/WEB-INF/views/comunes/header.jsp" />
 
-    <h2>Editar gerente</h2>
+    <div class="page-head">
+        <h2>Editar gerente</h2>
+        <div class="page-head-acciones">
+            <a class="boton boton-secundario" href="${pageContext.request.contextPath}/gerentes">← Volver</a>
+        </div>
+    </div>
 
     <c:if test="${not empty error}">
         <p class="mensaje mensaje-error">${error}</p>
@@ -28,7 +33,5 @@
         </div>
         <button type="submit">Guardar cambios</button>
     </form>
-
-    <p><a href="${pageContext.request.contextPath}/gerentes">Volver al listado</a></p>
 </body>
 </html>

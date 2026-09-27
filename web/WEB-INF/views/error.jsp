@@ -9,7 +9,12 @@
 <body>
     <jsp:include page="/WEB-INF/views/comunes/header.jsp" />
 
-    <h2>Ocurrió un error</h2>
+    <div class="page-head">
+        <h2>Ocurrió un error</h2>
+        <div class="page-head-acciones">
+            <a class="boton boton-secundario" href="javascript:history.back()">← Volver</a>
+        </div>
+    </div>
 
     <p>
         <c:choose>
@@ -20,10 +25,6 @@
                 No se pudo completar la operación solicitada.
             </c:otherwise>
         </c:choose>
-    </p>
-
-    <p>
-        <a href="javascript:history.back()">Volver atrás</a>
     </p>
 
 </body>

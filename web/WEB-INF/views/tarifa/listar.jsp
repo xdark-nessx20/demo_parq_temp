@@ -9,9 +9,12 @@
 <body>
     <jsp:include page="/WEB-INF/views/comunes/header.jsp" />
 
-    <h2>Tarifas vigentes</h2>
-
-    <p><a href="${pageContext.request.contextPath}/tarifas?accion=registrar">Registrar nueva tarifa</a></p>
+    <div class="page-head">
+        <h2>Tarifas vigentes</h2>
+        <div class="page-head-acciones">
+            <a class="boton" href="${pageContext.request.contextPath}/tarifas?accion=registrar">Registrar nueva tarifa</a>
+        </div>
+    </div>
 
     <c:if test="${not empty error}">
         <p style="color:red;"><strong>${error}</strong></p>

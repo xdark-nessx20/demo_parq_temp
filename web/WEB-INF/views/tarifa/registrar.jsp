@@ -9,7 +9,12 @@
 <body>
     <jsp:include page="/WEB-INF/views/comunes/header.jsp" />
 
-    <h2>Registrar nueva tarifa</h2>
+    <div class="page-head">
+        <h2>Registrar nueva tarifa</h2>
+        <div class="page-head-acciones">
+            <a class="boton boton-secundario" href="${pageContext.request.contextPath}/tarifas">← Volver</a>
+        </div>
+    </div>
 
     <c:if test="${not empty error}">
         <p style="color:red;"><strong>${error}</strong></p>
@@ -42,8 +47,6 @@
 
         <button type="submit">Registrar</button>
     </form>
-
-    <p><a href="${pageContext.request.contextPath}/tarifas">Volver a tarifas</a></p>
 
 </body>
 </html>

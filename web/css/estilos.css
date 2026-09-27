@@ -218,8 +218,24 @@ button:hover, .boton:hover { background: var(--primary-dark); text-decoration: n
 .boton-gris { background: #fff; color: var(--text); border-color: var(--border); }
 .boton-gris:hover { background: #f1f5f9; }
 .boton-chico { padding: 6px 13px; font-size: .85rem; }
+.boton-secundario { background: #fff; color: var(--text); border-color: #cbd5e1; }
+.boton-secundario:hover { background: var(--thead); border-color: var(--muted); }
+.boton-rojo { background: #fff; color: var(--danger); border-color: #fca5a5; }
+.boton-rojo:hover { background: var(--danger-soft); border-color: var(--danger); }
 
 .acciones { display: flex; gap: 10px; flex-wrap: wrap; margin: 16px 0; align-items: center; }
+
+/* Barra de título con acciones alineadas a la derecha */
+.page-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 14px;
+    flex-wrap: wrap;
+    margin: 0 0 18px;
+}
+.page-head h1, .page-head h2 { margin: 0; }
+.page-head-acciones { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
 
 /* ---------------- Formularios ---------------- */
 form {
@@ -330,5 +346,5 @@ body > .auth { max-width: 940px; padding: 0; margin: 5vh auto; }
 .pw-toggle.on .ic-eye-off { display: inline; }
 
 /* ---------------- Utilidades ---------------- */
-.acciones-tabla { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+.acciones-tabla { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
 .acciones-tabla form { display: inline; }

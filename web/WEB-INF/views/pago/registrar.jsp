@@ -9,7 +9,12 @@
 <body>
     <jsp:include page="/WEB-INF/views/comunes/header.jsp" />
 
-    <h2>Registrar salida de vehículo</h2>
+    <div class="page-head">
+        <h2>Registrar salida de vehículo</h2>
+        <div class="page-head-acciones">
+            <a class="boton boton-secundario" href="${pageContext.request.contextPath}/pagos">← Volver</a>
+        </div>
+    </div>
 
     <c:if test="${not empty error}">
         <p style="color:red;"><strong>${error}</strong></p>
@@ -29,8 +34,6 @@
 
         <button type="submit">Registrar salida</button>
     </form>
-
-    <p><a href="${pageContext.request.contextPath}/pagos">Volver a pagos</a></p>
 
 </body>
 </html>

@@ -9,13 +9,13 @@
 <body>
     <jsp:include page="/WEB-INF/views/comunes/header.jsp" />
 
-    <h2>Registros de ingreso</h2>
-
-    <p>
-        <a href="${pageContext.request.contextPath}/registros-ingreso?accion=registrar">Registrar ingreso</a>
-        &nbsp;|&nbsp;
-        <a href="${pageContext.request.contextPath}/pagos?accion=registrar">Registrar salida</a>
-    </p>
+    <div class="page-head">
+        <h2>Registros de ingreso</h2>
+        <div class="page-head-acciones">
+            <a class="boton" href="${pageContext.request.contextPath}/registros-ingreso?accion=registrar">Registrar ingreso</a>
+            <a class="boton boton-secundario" href="${pageContext.request.contextPath}/pagos?accion=registrar">Registrar salida</a>
+        </div>
+    </div>
 
     <c:choose>
         <c:when test="${empty ingresos}">

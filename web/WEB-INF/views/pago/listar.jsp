@@ -9,7 +9,14 @@
 <body>
     <jsp:include page="/WEB-INF/views/comunes/header.jsp" />
 
-    <h2>Pagos registrados</h2>
+    <div class="page-head">
+        <h2>Pagos registrados</h2>
+        <div class="page-head-acciones">
+            <c:if test="${sessionScope.usuario.rolNombre == 'OPERADOR'}">
+                <a class="boton" href="${pageContext.request.contextPath}/pagos?accion=registrar">Registrar salida y pago</a>
+            </c:if>
+        </div>
+    </div>
 
     <c:if test="${not empty sessionScope.mensaje}">
         <p class="mensaje mensaje-ok">${sessionScope.mensaje}</p>
@@ -18,12 +25,6 @@
     <c:if test="${not empty sessionScope.error}">
         <p class="mensaje mensaje-error">${sessionScope.error}</p>
         <c:remove var="error" scope="session" />
-    </c:if>
-
-    <c:if test="${sessionScope.usuario.rolNombre == 'OPERADOR'}">
-        <p>
-            <a href="${pageContext.request.contextPath}/pagos?accion=registrar">Registrar salida y pago</a>
-        </p>
     </c:if>
 
     <c:choose>

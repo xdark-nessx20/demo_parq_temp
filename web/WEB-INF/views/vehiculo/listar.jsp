@@ -10,9 +10,12 @@
     <jsp:include page="/WEB-INF/views/comunes/header.jsp" />
     <jsp:include page="/WEB-INF/views/comunes/mensajes.jsp" />
 
-    <h2>Vehículos registrados</h2>
-
-    <p><a href="${pageContext.request.contextPath}/vehiculos?accion=registrar">Registrar vehículo</a></p>
+    <div class="page-head">
+        <h2>Vehículos registrados</h2>
+        <div class="page-head-acciones">
+            <a class="boton" href="${pageContext.request.contextPath}/vehiculos?accion=registrar">Registrar vehículo</a>
+        </div>
+    </div>
 
     <c:choose>
         <c:when test="${empty vehiculos}">
@@ -35,14 +38,16 @@
                             <td>${v.owner.cedula}</td>
                             <td>${v.tipo.nombre}</td>
                             <td>
-                                <a href="${pageContext.request.contextPath}/vehiculos?accion=buscar&placa=${v.placa}">Ver</a>
-                                <a href="${pageContext.request.contextPath}/vehiculos?accion=editar&placa=${v.placa}">Editar</a>
-                                <form action="${pageContext.request.contextPath}/vehiculos" method="post"
-                                      onsubmit="return confirm('¿Eliminar el vehículo ${v.placa}?');">
-                                    <input type="hidden" name="accion" value="eliminar" />
-                                    <input type="hidden" name="placa" value="${v.placa}" />
-                                    <button type="submit" class="boton-chico">Eliminar</button>
-                                </form>
+                                <div class="acciones-tabla">
+                                    <a class="boton boton-secundario boton-chico" href="${pageContext.request.contextPath}/vehiculos?accion=buscar&placa=${v.placa}">Ver</a>
+                                    <a class="boton boton-secundario boton-chico" href="${pageContext.request.contextPath}/vehiculos?accion=editar&placa=${v.placa}">Editar</a>
+                                    <form action="${pageContext.request.contextPath}/vehiculos" method="post"
+                                          onsubmit="return confirm('¿Eliminar el vehículo ${v.placa}?');">
+                                        <input type="hidden" name="accion" value="eliminar" />
+                                        <input type="hidden" name="placa" value="${v.placa}" />
+                                        <button type="submit" class="boton-rojo boton-chico">Eliminar</button>
+                                    </form>
+                                </div>
                             </td>
                         </tr>
                     </c:forEach>
