@@ -60,7 +60,10 @@
                 e.preventDefault();
                 fetch(form.action, {
                     method: 'POST',
-                    body: new FormData(form),
+                    // URLSearchParams (no FormData): asi el cuerpo va urlencoded y el
+                    // servlet lee los parametros con request.getParameter (FormData manda
+                    // multipart/form-data y getParameter devolveria null).
+                    body: new URLSearchParams(new FormData(form)),
                     headers: { 'X-Requested-With': 'fetch' }
                 })
                 .then(function (r) { return r.text(); })
